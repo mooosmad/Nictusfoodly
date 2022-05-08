@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nictusfood/auth/login.dart';
+import 'package:nictusfood/auth/update.dart';
 import 'package:nictusfood/constant/colors.dart';
 
 class MyAppBar extends StatelessWidget {
@@ -45,7 +48,7 @@ class MyAppBar extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              // Get.to(LoginScreen());
+              Get.to(LoginScreen());
             },
             child: Container(
               child: Icon(
