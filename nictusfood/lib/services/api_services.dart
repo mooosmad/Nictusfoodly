@@ -106,6 +106,12 @@ class APIService {
     return ret;
   }
 
+  logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("idUser", "-1");
+    Fluttertoast.showToast(msg: "Deconnexion effectué");
+  }
+
   Future<bool?> loginCustomer(String username, String password) async {
     try {
       var response = await Dio().post(
@@ -119,6 +125,7 @@ class APIService {
       );
       if (response.statusCode == 200) {
         var res = response.data;
+
         print(response.data);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("idUser", res["data"]["id"].toString());

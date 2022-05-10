@@ -1,10 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nictusfood/auth/login.dart';
-import 'package:nictusfood/auth/update.dart';
 import 'package:nictusfood/constant/colors.dart';
 
 class MyAppBar extends StatelessWidget {
@@ -29,7 +26,9 @@ class MyAppBar extends StatelessWidget {
               padding: EdgeInsets.only(left: 5, right: 5, top: 15),
               height: 35,
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: Center(
                 child: TextFormField(
                   style: GoogleFonts.poppins(
@@ -48,7 +47,7 @@ class MyAppBar extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Get.to(LoginScreen());
+              // Get.to(LoginScreen());
             },
             child: Container(
               child: Icon(
