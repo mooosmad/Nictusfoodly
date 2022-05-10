@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, file_names
 
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/constant/colors.dart';
+import 'package:nictusfood/controller/cart_state.dart';
+import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/screens/cart.dart';
@@ -15,7 +18,9 @@ import 'package:nictusfood/services/config.dart';
 
 class ProductPage extends StatefulWidget {
   final Category? category;
-  const ProductPage({Key? key, required this.category}) : super(key: key);
+  final bool? isGrid;
+  const ProductPage({Key? key, required this.category, required this.isGrid})
+      : super(key: key);
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -24,6 +29,8 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   List<Product>? products = [];
   bool load = false;
+  final controller = Get.put(MyCartController());
+
   getProductByCategorie() async {
     setState(() {
       load = true;
@@ -56,9 +63,28 @@ class _ProductPageState extends State<ProductPage> {
           );
         },
         child: Center(
-          child: Image.asset(
-            "assets/appassets/shopping-cart 1.png",
-            width: 30,
+          child: Obx(
+            () {
+              return controller.cart.isNotEmpty
+                  ? Badge(
+                      badgeContent: Text(
+                        controller.cart.length > 9
+                            ? "9+"
+                            : controller.cart.length.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: Image.asset(
+                        "assets/appassets/shopping-cart 1.png",
+                        width: 30,
+                      ),
+                    )
+                  : Image.asset(
+                      "assets/appassets/shopping-cart 1.png",
+                      width: 30,
+                    );
+            },
           ),
         ),
       ),
@@ -70,8 +96,18 @@ class _ProductPageState extends State<ProductPage> {
                   pinned: true,
                   backgroundColor: maincolor,
                   elevation: 0,
-                  automaticallyImplyLeading: false,
+                  leading: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                  // automaticallyImplyLeading: false,
                   expandedHeight: 200,
+
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
@@ -99,112 +135,277 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                 ),
                 if (products!.isNotEmpty)
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) {
-                        return myContainer(products![i]);
-                      },
-                      childCount: products!.length,
-                    ),
-                  )
+                  widget.isGrid!
+                      ? SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, i) {
+                              return myContainer(products![i]);
+                            },
+                            childCount: products!.length,
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                            mainAxisSpacing: 5,
+                            crossAxisSpacing: 5,
+                            childAspectRatio: 0.9,
+                          ),
+                        )
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, i) {
+                              return myContainer(products![i]);
+                            },
+                            childCount: products!.length,
+                          ),
+                        )
               ],
             ),
     );
   }
 
   Widget myContainer(Product product) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(
-            DetailPage(
-              product: product,
-            ),
-            transition: Transition.rightToLeft);
-      },
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 9),
-            child: Row(
-              children: [
-                Container(
-                  width: 99,
-                  height: 99,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        offset: Offset(0.5, .5),
-                        blurRadius: 2.0,
-                        spreadRadius: .5,
-                      ),
-                    ],
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                          product.images![0].srcPath!),
-                      fit: BoxFit.cover,
-                    ),
+    return widget.isGrid!
+        ? InkWell(
+            onTap: () {
+              Get.to(
+                  DetailPage(
+                    product: product,
                   ),
-                ),
+                  transition: Transition.rightToLeft);
+            },
+            child: Column(
+              children: [
                 Expanded(
                   child: Container(
-                    height: 100,
-                    padding: EdgeInsets.only(top: 5, right: 5, left: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              product.productName!,
-                              style: GoogleFonts.poppins(
-                                textStyle:
-                                    TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            FittedBox(
-                              child: Text(
-                                product.price! + 'FCFA',
-                                style: GoogleFonts.poppins(
-                                  textStyle:
-                                      TextStyle(fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          ],
+                    padding: EdgeInsets.all(5),
+                    margin: EdgeInsets.all(5),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                              product.images![0].srcPath!),
+                          fit: BoxFit.cover,
                         ),
-                        SizedBox(height: 10),
-                        Expanded(
-                          child: Text(
-                            Config().parserHTMLTAG(product.productDesc!),
-                            style: GoogleFonts.poppins(
-                              textStyle: TextStyle(),
-                            ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            offset: Offset(0.5, 1),
+                            blurRadius: 2.0,
+                            spreadRadius: .5,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                // Container(
-                //   width: 70,
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.start,
-                //     children: [
+                Text(
+                  product.productName!,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        product.price! + 'FCFA',
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print("object");
+                        //create new CartModel
+                        var cartItem = CartModel(
+                          quantity: 1.obs,
+                          price: product.price,
+                          productDesc: product.productDesc,
+                          productName: product.productName,
+                          images: product.images,
+                          productId: product.productId,
+                          regularPrice: product.regularPrice,
+                          status: product.status,
+                        );
 
-                //
-                //     ],
-                //   ),
-                // )
+                        if (Config().isExistscart(controller.cart, cartItem)) {
+                          print("EXISTE DEJA DANS MON PANNIER");
+                          var productToUpdate = controller.cart.firstWhere(
+                              (element) =>
+                                  element.productId == product.productId);
+                          productToUpdate.quantity =
+                              productToUpdate.quantity! + 1;
+                        } else {
+                          print("VIENT  D'ETRE AJOUTER DANS MON PANNIER");
+                          controller.cart.add(cartItem);
+                          Get.snackbar(
+                            "Panier",
+                            "${product.productName} ajouté dans le panier",
+                            duration: Duration(
+                              milliseconds: 900,
+                            ),
+                          );
+                        }
+                      },
+                      child: SizedBox(
+                        width: 30,
+                        child: Image.asset(
+                          "assets/appassets/shopping-cart 1.png",
+                          cacheHeight: 25,
+                          cacheWidth: 25,
+                        ),
+                        height: 30,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
-          ),
-          Divider(),
-        ],
-      ),
-    );
+          )
+        : Column(
+            children: [
+              Stack(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.to(
+                          DetailPage(
+                            product: product,
+                          ),
+                          transition: Transition.rightToLeft);
+                    },
+                    child: Container(
+                      // color: Colors.red,
+                      margin: EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 99,
+                            height: 99,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(28),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  offset: Offset(0.5, .5),
+                                  blurRadius: 2.0,
+                                  spreadRadius: .5,
+                                ),
+                              ],
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    product.images![0].srcPath!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 100,
+                              padding:
+                                  EdgeInsets.only(top: 5, right: 5, left: 5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        product.productName!,
+                                        style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      FittedBox(
+                                        child: Text(
+                                          product.price! + 'FCFA',
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(
+                                    child: Text(
+                                      Config()
+                                          .parserHTMLTAG(product.productDesc!),
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 2,
+                    right: 8,
+                    child: InkWell(
+                      onTap: () {
+                        print("object");
+                        //create new CartModel
+                        var cartItem = CartModel(
+                          quantity: 1.obs,
+                          price: product.price,
+                          productDesc: product.productDesc,
+                          productName: product.productName,
+                          images: product.images,
+                          productId: product.productId,
+                          regularPrice: product.regularPrice,
+                          status: product.status,
+                        );
+
+                        if (Config().isExistscart(controller.cart, cartItem)) {
+                          print("EXISTE DEJA DANS MON PANNIER");
+                          var productToUpdate = controller.cart.firstWhere(
+                              (element) =>
+                                  element.productId == product.productId);
+                          productToUpdate.quantity =
+                              productToUpdate.quantity! + 1;
+                        } else {
+                          print("VIENT  D'ETRE AJOUTER DANS MON PANNIER");
+                          controller.cart.add(cartItem);
+                          Get.snackbar(
+                            "Panier",
+                            "${product.productName} ajouté dans le panier",
+                            duration: Duration(
+                              milliseconds: 900,
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 30,
+                        child: Image.asset(
+                          "assets/appassets/shopping-cart 1.png",
+                          cacheHeight: 25,
+                          cacheWidth: 25,
+                        ),
+                        height: 30,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Divider(),
+            ],
+          );
   }
 }

@@ -38,14 +38,14 @@ class APIService {
     }
   }
 
-  updateUser(CustomerModel newmodel, int idUser) async {
+  Future<bool> updateUser(Map<String, dynamic> newmodel, int idUser) async {
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
     );
     try {
       var response = await Dio().post(
         Config.url + "customers/$idUser",
-        data: newmodel.toJson(),
+        data: newmodel,
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -56,9 +56,14 @@ class APIService {
 
       print("UPDATE USER  : ${response.statusCode}");
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print("--------------");
         print(response.data);
+        Fluttertoast.showToast(msg: "Information modifier avec succes");
+
+        return true;
+      } else {
+        return false;
       }
     } on DioError catch (e) {
       print(e);
@@ -66,6 +71,7 @@ class APIService {
       Fluttertoast.showToast(
         msg: Config().parserHTMLTAG(e.response!.data["message"]),
       );
+      return false;
     }
   }
 

@@ -2,6 +2,8 @@
 
 import 'dart:async';
 
+import 'package:badges/badges.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:get/get.dart';
@@ -9,7 +11,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:location/location.dart';
 import 'package:nictusfood/auth/login.dart';
 import 'package:nictusfood/auth/registrer.dart';
+import 'package:nictusfood/auth/update.dart';
 import 'package:nictusfood/constant/colors.dart';
+import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/cart.dart';
@@ -38,9 +42,11 @@ class _HomeState extends State<Home> {
   LocationData? myLocation;
   String quartier = "";
   String myStreet = "";
+  String? idUser;
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   final _advancedDrawerController = AdvancedDrawerController();
   StreamController<Customer?> streamController = StreamController();
+  final controller = Get.put(MyCartController());
 
   checkPermission() async {
     serviceEnabled = await location.serviceEnabled();
@@ -95,10 +101,10 @@ class _HomeState extends State<Home> {
 
   getCustomer() async {
     final prefs = await SharedPreferences.getInstance();
-    String? idUser = prefs.getString("idUser") ?? "-1";
+    idUser = prefs.getString("idUser") ?? "-1";
     if (idUser != "-1") {
       customer = await APIService().getUser(
-        int.parse(idUser),
+        int.parse(idUser!),
       );
       if (mounted) {
         setState(() {});
@@ -108,10 +114,10 @@ class _HomeState extends State<Home> {
 
   Future<Customer?> returnCustomer() async {
     final prefs = await SharedPreferences.getInstance();
-    String? idUser = prefs.getString("idUser") ?? "-1";
+    idUser = prefs.getString("idUser") ?? "-1";
     if (idUser != "-1") {
-      var customer = await APIService().getUser(
-        int.parse(idUser),
+      customer = await APIService().getUser(
+        int.parse(idUser!),
       );
       return customer;
     } else {
@@ -178,10 +184,26 @@ class _HomeState extends State<Home> {
                                       color: Colors.black26,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: FlutterLogo(),
+                                    child: idUser != null
+                                        ? Container(
+                                            child: CachedNetworkImage(
+                                              imageUrl: customer!.urlPic!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
                                   ),
                                   ListTile(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Get.to(
+                                          UpdapteScreen(
+                                            customer: customer,
+                                            idUser: idUser,
+                                          ),
+                                          transition: Transition.downToUp);
+                                    },
                                     leading: Icon(Icons.account_circle_rounded),
                                     title: Text('Profile'),
                                   ),
@@ -274,7 +296,24 @@ class _HomeState extends State<Home> {
                                       color: Colors.black26,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: FlutterLogo(),
+                                    child: idUser != null
+                                        ? Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5),
+                                              child: Text(
+                                                "Veuillez Vous Conntecter",
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 17,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          )
+                                        : Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
                                   ),
                                   ListTile(
                                     onTap: () {
@@ -351,10 +390,27 @@ class _HomeState extends State<Home> {
               );
             },
             child: Center(
-              child: Image.asset(
-                "assets/appassets/shopping-cart 1.png",
-                width: 30,
-              ),
+              child: Obx(() {
+                return controller.cart.isNotEmpty
+                    ? Badge(
+                        badgeContent: Text(
+                          controller.cart.length > 9
+                              ? "9+"
+                              : controller.cart.length.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: Image.asset(
+                          "assets/appassets/shopping-cart 1.png",
+                          width: 30,
+                        ),
+                      )
+                    : Image.asset(
+                        "assets/appassets/shopping-cart 1.png",
+                        width: 30,
+                      );
+              }),
             ),
           ),
           body: load!
@@ -456,12 +512,19 @@ class _HomeState extends State<Home> {
         GestureDetector(
           onTap: () {
             if (categories.keys.toList()[0] == "La carte") {
-              Get.to(OtherCategoriePage());
+              Get.to(
+                OtherCategoriePage(
+                  categories: categories["La carte"],
+                ),
+                transition: Transition.downToUp,
+              );
             } else {
               Get.to(
                 () {
                   return ProductPage(
-                      category: categories.values.toList()[0][0]);
+                    category: categories.values.toList()[0][0],
+                    isGrid: false,
+                  );
                 },
                 transition: Transition.downToUp,
               );

@@ -45,23 +45,23 @@ class MyAppBar extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              // Get.to(LoginScreen());
-            },
-            child: Container(
-              child: Icon(
-                Icons.person,
-                color: maincolor,
-              ),
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-            ),
-          )
+          // GestureDetector(
+          //   onTap: () {
+          //     // Get.to(LoginScreen());
+          //   },
+          //   child: Container(
+          //     child: Icon(
+          //       Icons.person,
+          //       color: maincolor,
+          //     ),
+          //     width: 30,
+          //     height: 30,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       shape: BoxShape.circle,
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );
