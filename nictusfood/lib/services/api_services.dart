@@ -135,6 +135,7 @@ class APIService {
         print(response.data);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("idUser", res["data"]["id"].toString());
+        Fluttertoast.showToast(msg: "Connexion effectué");
         return res["success"];
       } else {
         return false;
@@ -264,6 +265,28 @@ class APIService {
     } catch (e) {
       print(e.toString());
       return false;
+    }
+  }
+
+  getOrder(int idUser) async {
+    print(idUser);
+    var authToken = base64.encode(
+      utf8.encode(Config.key + ":" + Config.secret),
+    );
+    try {
+      var response = await Dio().get(
+        "https://versamete.net/wp-json/wc/v2/orders?customer=$idUser",
+        options: Options(
+          headers: {
+            HttpHeaders.authorizationHeader: 'Basic $authToken',
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+        ),
+      );
+      print(response.data);
+      print(response.statusCode);
+    } on DioError catch (e) {
+      print(e.response);
     }
   }
 }

@@ -1,19 +1,27 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print, prefer_const_literals_to_create_immutables, must_be_immutable
 
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nictusfood/auth/registrer.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
+import 'package:nictusfood/controller/changestatelivraison.dart';
 import 'package:nictusfood/models/cartmodel.dart';
+import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartPage extends StatelessWidget {
   CartPage({Key? key}) : super(key: key);
 
   final controller = Get.put(MyCartController());
+  RxString value = "".obs;
+  var groupValue = "emporter".obs;
+  final controllerLivraison = Get.put(StateLivraison());
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +75,109 @@ class CartPage extends StatelessWidget {
                       )
                     : Expanded(
                         child: Container(
-                          margin: EdgeInsets.symmetric(
-                            // horizontal: 15,
-                            vertical: 20,
+                          margin: EdgeInsets.only(top: 20, bottom: 2),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    itemCount: controller.cart.length + 1,
+                                    itemBuilder: (context, i) {
+                                      return i == controller.cart.length
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Divider(
+                                                  thickness: 3,
+                                                  color: Colors.black,
+                                                ),
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  children: [
+                                                    Obx(() {
+                                                      return Radio(
+                                                          value: "emporter",
+                                                          groupValue:
+                                                              controllerLivraison
+                                                                  .groupValue
+                                                                  .value,
+                                                          onChanged: (val) {
+                                                            controllerLivraison
+                                                                .changeValue(
+                                                                    val);
+                                                          });
+                                                    }),
+                                                    Text(
+                                                      "à emporter",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        textStyle: TextStyle(
+                                                          fontSize: 17,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Obx(() {
+                                                      return Radio(
+                                                          value: "livrer",
+                                                          groupValue:
+                                                              controllerLivraison
+                                                                  .groupValue
+                                                                  .value,
+                                                          onChanged: (val) {
+                                                            controllerLivraison
+                                                                .changeValue(
+                                                                    val!);
+                                                          });
+                                                    }),
+                                                    Text(
+                                                      "à Livrer",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        textStyle: TextStyle(
+                                                          fontSize: 17,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  "Moyen de payement",
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.poppins(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 17,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                payementDrop(),
+                                                SizedBox(height: 10),
+                                                myButton(),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                  color: Color(0xFFF4F4F4),
+                                                ),
+                                              ],
+                                            )
+                                          : myContainer(
+                                              controller.cart[i],
+                                            );
+                                    }),
+                              ),
+                            ],
                           ),
-                          child: ListView.builder(
-                              itemCount: controller.cart.length,
-                              itemBuilder: (context, i) {
-                                return myContainer(
-                                  controller.cart[i],
-                                );
-                              }),
                         ),
                       );
               })
@@ -116,19 +216,114 @@ class CartPage extends StatelessWidget {
     );
   }
 
+  Widget myButton() {
+    return Center(
+      child: InkWell(
+        onTap: () async {
+          HapticFeedback.vibrate();
+
+          final prefs = await SharedPreferences.getInstance();
+          var idUser = prefs.getString("idUser") ?? "-1";
+          if (idUser != "-1") {
+            var customer = await APIService().getUser(
+              int.parse(idUser),
+            );
+            print("OKKKKKKKKKKKK $customer");
+            APIService().createCommande(
+              customer!.nom!,
+              customer.adresse!,
+              customer.ville!,
+              customer.email!,
+              customer.phone!,
+              [
+                {"product_id": 164, "quantity": 2},
+                {"product_id": 170, "quantity": 1}
+              ],
+            );
+            print("hihi");
+          } else {
+            Get.to(
+              RegisterScreen(isdrawer: false),
+            );
+          }
+          print(idUser);
+        },
+        child: Container(
+          height: 50,
+          width: 250,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(17),
+            color: maincolor,
+          ),
+          child: Center(
+            child: Text(
+              "Valider ma commande",
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget payementDrop() {
+    return DropdownButtonFormField<String>(
+      value: "espece",
+      items: [
+        DropdownMenuItem(
+          child: Text(
+            "Espèce",
+          ),
+          value: "espece",
+        ),
+      ],
+      hint: Text("Espèce"),
+      style: GoogleFonts.poppins(
+        fontSize: 15,
+        color: Colors.black,
+      ),
+      decoration: InputDecoration(
+        fillColor: Colors.grey[200],
+        filled: true,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.orange,
+          ),
+        ),
+        hintStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+        ),
+      ),
+      focusColor: Colors.red,
+      onChanged: (choice) {
+        value = choice!.obs;
+        print(value);
+      },
+    );
+  }
+
   Widget myContainer(CartModel cartItem) {
     return Dismissible(
       key: Key(cartItem.productId.toString()),
       onDismissed: (d) {
         print(d);
         controller.remove(cartItem);
-        Get.snackbar(
-          "Suppression",
-          "${cartItem.productName} à bien été supprimer dans la panier",
-          duration: Duration(
-            milliseconds: 900,
-          ),
-        );
+        Get.snackbar("Suppression",
+            "${cartItem.productName} à bien été supprimer dans le panier",
+            duration: Duration(
+              milliseconds: 900,
+            ),
+            backgroundColor: Colors.white);
       },
       child: Column(
         children: [

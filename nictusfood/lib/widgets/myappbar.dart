@@ -2,7 +2,6 @@
 
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nictusfood/constant/colors.dart';
 
 class MyAppBar extends StatelessWidget {
   const MyAppBar({Key? key}) : super(key: key);

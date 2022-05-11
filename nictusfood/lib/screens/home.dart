@@ -207,6 +207,14 @@ class _HomeState extends State<Home> {
                                     leading: Icon(Icons.account_circle_rounded),
                                     title: Text('Profile'),
                                   ),
+                                  // ListTile(
+                                  //   onTap: () {
+                                  //     APIService().getOrder(int.parse(idUser!));
+                                  //   },
+                                  //   leading:
+                                  //       Icon(Icons.online_prediction_rounded),
+                                  //   title: Text('Profile'),
+                                  // ),
                                   ListTile(
                                     onTap: () {
                                       Get.defaultDialog(
@@ -217,7 +225,7 @@ class _HomeState extends State<Home> {
                                         ),
                                         contentPadding: EdgeInsets.all(10),
                                         content: Text(
-                                          "Voulez-vous vraiment vous deconnectez? vous predrez votre pannier.",
+                                          "Voulez-vous vraiment vous deconnectez? vous predrez votre panier.",
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.poppins(
                                             fontWeight: FontWeight.w400,
@@ -305,8 +313,8 @@ class _HomeState extends State<Home> {
                                                 "Veuillez Vous Conntecter",
                                                 textAlign: TextAlign.center,
                                                 style: GoogleFonts.poppins(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 14,
                                                     color: Colors.white),
                                               ),
                                             ),
@@ -393,6 +401,7 @@ class _HomeState extends State<Home> {
               child: Obx(() {
                 return controller.cart.isNotEmpty
                     ? Badge(
+                        toAnimate: false,
                         badgeContent: Text(
                           controller.cart.length > 9
                               ? "9+"
@@ -460,29 +469,29 @@ class _HomeState extends State<Home> {
             width: 80,
             height: 120,
           ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(right: 11, left: 5),
-              padding: EdgeInsets.only(left: 5, right: 5, top: 15),
-              height: 35,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
-              child: Center(
-                child: TextFormField(
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(),
-                  ),
-                  decoration: InputDecoration(
-                    hintText: "Avez vous faim?",
-                    hintStyle: GoogleFonts.poppins(
-                      textStyle: TextStyle(),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Expanded(
+          //   child: Container(
+          //     margin: EdgeInsets.only(right: 11, left: 5),
+          //     padding: EdgeInsets.only(left: 5, right: 5, top: 15),
+          //     height: 35,
+          //     decoration: BoxDecoration(
+          //         color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          //     child: Center(
+          //       child: TextFormField(
+          //         style: GoogleFonts.poppins(
+          //           textStyle: TextStyle(),
+          //         ),
+          //         decoration: InputDecoration(
+          //           hintText: "Avez vous faim?",
+          //           hintStyle: GoogleFonts.poppins(
+          //             textStyle: TextStyle(),
+          //           ),
+          //           border: InputBorder.none,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           GestureDetector(
             onTap: () {
               _advancedDrawerController.showDrawer();

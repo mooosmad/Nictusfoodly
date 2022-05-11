@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, file_names
+// ignore_for_file: prefer_const_constructors, file_names, avoid_print, sized_box_for_whitespace
 
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/constant/colors.dart';
@@ -30,6 +31,7 @@ class _ProductPageState extends State<ProductPage> {
   List<Product>? products = [];
   bool load = false;
   final controller = Get.put(MyCartController());
+  var top = 0.0;
 
   getProductByCategorie() async {
     setState(() {
@@ -67,6 +69,7 @@ class _ProductPageState extends State<ProductPage> {
             () {
               return controller.cart.isNotEmpty
                   ? Badge(
+                      toAnimate: false,
                       badgeContent: Text(
                         controller.cart.length > 9
                             ? "9+"
@@ -108,26 +111,30 @@ class _ProductPageState extends State<ProductPage> {
                   // automaticallyImplyLeading: false,
                   expandedHeight: 200,
 
-                  flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: true,
-                    title: Text(
-                      widget.category!.categoryName!.toUpperCase(),
-                      style: TextStyle(
-                        shadows: <Shadow>[
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.8),
-                            offset: Offset(2, 2),
-                            blurRadius: 2.0,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                  flexibleSpace: LayoutBuilder(builder: (context, constraints) {
+                    top = constraints.biggest.height;
+                    print(top); // if 80 c'est que c'est reduit
+                    return FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Text(
+                        widget.category!.categoryName!.toUpperCase(),
+                        style: TextStyle(
+                          shadows: <Shadow>[
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.8),
+                              offset: Offset(2, 2),
+                              blurRadius: 2.0,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    background: Image.asset(
-                      'assets/appassets/image 2.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                      background: Image.asset(
+                        'assets/appassets/image 2.png',
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }),
                 ),
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -168,6 +175,7 @@ class _ProductPageState extends State<ProductPage> {
     return widget.isGrid!
         ? InkWell(
             onTap: () {
+              HapticFeedback.vibrate();
               Get.to(
                   DetailPage(
                     product: product,
@@ -221,6 +229,8 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     InkWell(
                       onTap: () {
+                        HapticFeedback.vibrate();
+
                         print("object");
                         //create new CartModel
                         var cartItem = CartModel(
@@ -235,22 +245,21 @@ class _ProductPageState extends State<ProductPage> {
                         );
 
                         if (Config().isExistscart(controller.cart, cartItem)) {
-                          print("EXISTE DEJA DANS MON PANNIER");
+                          print("EXISTE DEJA DANS MON PANIER");
                           var productToUpdate = controller.cart.firstWhere(
                               (element) =>
                                   element.productId == product.productId);
                           productToUpdate.quantity =
                               productToUpdate.quantity! + 1;
                         } else {
-                          print("VIENT  D'ETRE AJOUTER DANS MON PANNIER");
+                          print("VIENT  D'ETRE AJOUTER DANS MON PANIER");
                           controller.cart.add(cartItem);
-                          Get.snackbar(
-                            "Panier",
-                            "${product.productName} ajouté dans le panier",
-                            duration: Duration(
-                              milliseconds: 900,
-                            ),
-                          );
+                          Get.snackbar("Panier",
+                              "${product.productName} ajouté dans le panier",
+                              duration: Duration(
+                                milliseconds: 900,
+                              ),
+                              backgroundColor: Colors.white);
                         }
                       },
                       child: SizedBox(
@@ -373,14 +382,14 @@ class _ProductPageState extends State<ProductPage> {
                         );
 
                         if (Config().isExistscart(controller.cart, cartItem)) {
-                          print("EXISTE DEJA DANS MON PANNIER");
+                          print("EXISTE DEJA DANS MON PANIER");
                           var productToUpdate = controller.cart.firstWhere(
                               (element) =>
                                   element.productId == product.productId);
                           productToUpdate.quantity =
                               productToUpdate.quantity! + 1;
                         } else {
-                          print("VIENT  D'ETRE AJOUTER DANS MON PANNIER");
+                          print("VIENT  D'ETRE AJOUTER DANS MON PANIER");
                           controller.cart.add(cartItem);
                           Get.snackbar(
                             "Panier",
@@ -388,6 +397,7 @@ class _ProductPageState extends State<ProductPage> {
                             duration: Duration(
                               milliseconds: 900,
                             ),
+                            backgroundColor: Colors.white,
                           );
                         }
                       },

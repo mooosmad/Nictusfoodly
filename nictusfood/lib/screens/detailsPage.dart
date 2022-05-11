@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, prefer_const_constructors
+// ignore_for_file: file_names, prefer_const_constructors, avoid_print
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -158,13 +158,12 @@ class _DetailPageState extends State<DetailPage> {
                               nbr++;
                             });
                           } else {
-                            Get.snackbar(
-                              "Maximum atteint",
-                              "Impossible d'ajouter plus de 10",
-                              duration: Duration(
-                                milliseconds: 900,
-                              ),
-                            );
+                            Get.snackbar("Maximum atteint",
+                                "Impossible d'ajouter plus de 10",
+                                duration: Duration(
+                                  milliseconds: 900,
+                                ),
+                                backgroundColor: Colors.white);
                           }
                         },
                         child: Container(
@@ -213,14 +212,20 @@ class _DetailPageState extends State<DetailPage> {
                         );
 
                         if (Config().isExistscart(controller.cart, cartItem)) {
-                          print("EXISTE DEJA DANS MON PANNIER");
+                          print("EXISTE DEJA DANS MON PANIER");
                           var productToUpdate = controller.cart.firstWhere(
                               (element) =>
                                   element.productId ==
                                   widget.product!.productId);
                           productToUpdate.quantity = nbr.obs;
+                          Get.snackbar("Panier",
+                              "${widget.product!.productName} vient d'être modifié dans le panier",
+                              duration: Duration(
+                                milliseconds: 900,
+                              ),
+                              backgroundColor: Colors.white);
                         } else {
-                          print("VIENT  D'ETRE AJOUTER DANS MON PANNIER");
+                          print("VIENT  D'ETRE AJOUTER DANS MON PANIER");
                           controller.cart.add(cartItem);
                           Get.snackbar(
                             "Panier",
@@ -228,12 +233,13 @@ class _DetailPageState extends State<DetailPage> {
                             duration: Duration(
                               milliseconds: 900,
                             ),
+                            backgroundColor: Colors.white,
                           );
                         }
-                        Get.back();
+                        // Get.back();
                       },
                       child: Text(
-                        "J'ajoute au pannier",
+                        "J'ajoute au panier",
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
