@@ -38,14 +38,14 @@ class APIService {
     }
   }
 
-  updateUser(CustomerModel newmodel, int idUser) async {
+  Future<bool> updateUser(Map<String, dynamic> newmodel, int idUser) async {
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
     );
     try {
       var response = await Dio().post(
         Config.url + "customers/$idUser",
-        data: newmodel.toJson(),
+        data: newmodel,
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -56,9 +56,14 @@ class APIService {
 
       print("UPDATE USER  : ${response.statusCode}");
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print("--------------");
         print(response.data);
+        Fluttertoast.showToast(msg: "Information modifier avec succes");
+
+        return true;
+      } else {
+        return false;
       }
     } on DioError catch (e) {
       print(e);
@@ -66,6 +71,7 @@ class APIService {
       Fluttertoast.showToast(
         msg: Config().parserHTMLTAG(e.response!.data["message"]),
       );
+      return false;
     }
   }
 
@@ -106,6 +112,12 @@ class APIService {
     return ret;
   }
 
+  logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("idUser", "-1");
+    Fluttertoast.showToast(msg: "Deconnexion effectué");
+  }
+
   Future<bool?> loginCustomer(String username, String password) async {
     try {
       var response = await Dio().post(
@@ -119,6 +131,7 @@ class APIService {
       );
       if (response.statusCode == 200) {
         var res = response.data;
+
         print(response.data);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("idUser", res["data"]["id"].toString());

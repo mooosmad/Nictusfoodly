@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/constant/colors.dart';
+import 'package:nictusfood/controller/cart_state.dart';
+import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/services/config.dart';
 
@@ -18,6 +20,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  final controller = Get.put(MyCartController());
   int nbr = 1;
   @override
   Widget build(BuildContext context) {
@@ -119,7 +122,7 @@ class _DetailPageState extends State<DetailPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (nbr > 0) {
+                          if (nbr > 1) {
                             setState(() {
                               nbr--;
                             });
@@ -198,16 +201,39 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                       ),
                       onPressed: () {
-                        Get.snackbar(
-                          "Pannier",
-                          "Bien ajouter au pannier",
-                          duration: Duration(
-                            milliseconds: 900,
-                          ),
+                        var cartItem = CartModel(
+                          quantity: nbr.obs,
+                          price: widget.product!.price,
+                          productDesc: widget.product!.productDesc,
+                          productName: widget.product!.productName,
+                          images: widget.product!.images,
+                          productId: widget.product!.productId,
+                          regularPrice: widget.product!.regularPrice,
+                          status: widget.product!.status,
                         );
+
+                        if (Config().isExistscart(controller.cart, cartItem)) {
+                          print("EXISTE DEJA DANS MON PANNIER");
+                          var productToUpdate = controller.cart.firstWhere(
+                              (element) =>
+                                  element.productId ==
+                                  widget.product!.productId);
+                          productToUpdate.quantity = nbr.obs;
+                        } else {
+                          print("VIENT  D'ETRE AJOUTER DANS MON PANNIER");
+                          controller.cart.add(cartItem);
+                          Get.snackbar(
+                            "Panier",
+                            "${widget.product!.productName} ajouté dans le panier",
+                            duration: Duration(
+                              milliseconds: 900,
+                            ),
+                          );
+                        }
+                        Get.back();
                       },
                       child: Text(
-                        "Je commande",
+                        "J'ajoute au pannier",
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
