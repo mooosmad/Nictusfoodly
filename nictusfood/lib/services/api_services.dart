@@ -269,13 +269,14 @@ class APIService {
   }
 
   getOrder(int idUser) async {
+    //not work
     print(idUser);
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
     );
     try {
       var response = await Dio().get(
-        "https://versamete.net/wp-json/wc/v2/orders?customer=$idUser",
+        "https://versamete.net/wp-json/wc/v3/orders?customer=$idUser",
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -284,6 +285,7 @@ class APIService {
         ),
       );
       print(response.data);
+      print(response.data.length);
       print(response.statusCode);
     } on DioError catch (e) {
       print(e.response);

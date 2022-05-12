@@ -174,13 +174,15 @@ class _ProductPageState extends State<ProductPage> {
   Widget myContainer(Product product) {
     return widget.isGrid!
         ? InkWell(
-            onTap: () {
+            onTap: () async {
               HapticFeedback.vibrate();
-              Get.to(
-                  DetailPage(
-                    product: product,
-                  ),
-                  transition: Transition.rightToLeft);
+              var res = await Get.to(
+                DetailPage(
+                  product: product,
+                ),
+                transition: Transition.rightToLeft,
+              );
+              print(res);
             },
             child: Column(
               children: [

@@ -189,7 +189,8 @@ class CartPage extends StatelessWidget {
           top: 10,
           child: GestureDetector(
             onTap: () {
-              Get.back();
+              Navigator.pop(context);
+              // Get.back();
             },
             child: Container(
               width: 30,
@@ -229,18 +230,19 @@ class CartPage extends StatelessWidget {
               int.parse(idUser),
             );
             print("OKKKKKKKKKKKK $customer");
-            APIService().createCommande(
-              customer!.nom!,
-              customer.adresse!,
-              customer.ville!,
-              customer.email!,
-              customer.phone!,
-              [
-                {"product_id": 164, "quantity": 2},
-                {"product_id": 170, "quantity": 1}
-              ],
-            );
-            print("hihi");
+            // test api create commande ok
+            // APIService().createCommande(
+            //   customer!.nom!,
+            //   customer.adresse!,
+            //   customer.ville!,
+            //   customer.email!,
+            //   customer.phone!,
+            //   [
+            //     {"product_id": 164, "quantity": 2},
+            //     {"product_id": 170, "quantity": 1}
+            //   ],
+            // );
+
           } else {
             Get.to(
               RegisterScreen(isdrawer: false),
@@ -323,6 +325,7 @@ class CartPage extends StatelessWidget {
             duration: Duration(
               milliseconds: 900,
             ),
+            instantInit: false,
             backgroundColor: Colors.white);
       },
       child: Column(

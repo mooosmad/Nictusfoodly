@@ -210,22 +210,29 @@ class _DetailPageState extends State<DetailPage> {
                           regularPrice: widget.product!.regularPrice,
                           status: widget.product!.status,
                         );
-
+                        var res = "exist";
                         if (Config().isExistscart(controller.cart, cartItem)) {
                           print("EXISTE DEJA DANS MON PANIER");
+                          setState(() {
+                            res = "exist";
+                          });
                           var productToUpdate = controller.cart.firstWhere(
                               (element) =>
                                   element.productId ==
                                   widget.product!.productId);
                           productToUpdate.quantity = nbr.obs;
-                          Get.snackbar("Panier",
-                              "${widget.product!.productName} vient d'être modifié dans le panier",
-                              duration: Duration(
-                                milliseconds: 900,
-                              ),
-                              backgroundColor: Colors.white);
+                          Get.snackbar(
+                            "Panier",
+                            "${widget.product!.productName} vient d'être modifié dans le panier",
+                            duration: Duration(
+                              milliseconds: 900,
+                            ),
+                            instantInit: false,
+                            backgroundColor: Colors.white,
+                          );
                         } else {
                           print("VIENT  D'ETRE AJOUTER DANS MON PANIER");
+                          res = "notexist";
                           controller.cart.add(cartItem);
                           Get.snackbar(
                             "Panier",
@@ -234,12 +241,14 @@ class _DetailPageState extends State<DetailPage> {
                               milliseconds: 900,
                             ),
                             backgroundColor: Colors.white,
+                            instantInit: false,
                           );
                         }
-                        // Get.back();
+                        // print(res);
+                        Get.back();
                       },
                       child: Text(
-                        "J'ajoute au panier",
+                        "J'achète",
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),

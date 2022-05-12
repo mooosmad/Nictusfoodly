@@ -213,7 +213,7 @@ class _HomeState extends State<Home> {
                                   //   },
                                   //   leading:
                                   //       Icon(Icons.online_prediction_rounded),
-                                  //   title: Text('Profile'),
+                                  //   title: Text('test api order'),
                                   // ),
                                   ListTile(
                                     onTap: () {
@@ -388,40 +388,42 @@ class _HomeState extends State<Home> {
           key: _key,
           resizeToAvoidBottomInset: false,
           backgroundColor: maincolor,
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.white,
-            onPressed: () {
-              Get.bottomSheet(
-                CartPage(),
-                enableDrag: true,
-                isScrollControlled: true,
-              );
-            },
-            child: Center(
-              child: Obx(() {
-                return controller.cart.isNotEmpty
-                    ? Badge(
-                        toAnimate: false,
-                        badgeContent: Text(
-                          controller.cart.length > 9
-                              ? "9+"
-                              : controller.cart.length.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        child: Image.asset(
-                          "assets/appassets/shopping-cart 1.png",
-                          width: 30,
-                        ),
-                      )
-                    : Image.asset(
-                        "assets/appassets/shopping-cart 1.png",
-                        width: 30,
-                      );
-              }),
-            ),
-          ),
+          floatingActionButton: load!
+              ? null
+              : FloatingActionButton(
+                  backgroundColor: Colors.white,
+                  onPressed: () {
+                    Get.bottomSheet(
+                      CartPage(),
+                      enableDrag: true,
+                      isScrollControlled: true,
+                    );
+                  },
+                  child: Center(
+                    child: Obx(() {
+                      return controller.cart.isNotEmpty
+                          ? Badge(
+                              toAnimate: false,
+                              badgeContent: Text(
+                                controller.cart.length > 9
+                                    ? "9+"
+                                    : controller.cart.length.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              child: Image.asset(
+                                "assets/appassets/shopping-cart 1.png",
+                                width: 30,
+                              ),
+                            )
+                          : Image.asset(
+                              "assets/appassets/shopping-cart 1.png",
+                              width: 30,
+                            );
+                    }),
+                  ),
+                ),
           body: load!
               ? Loading()
               : Stack(
