@@ -4,14 +4,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/models/customermodel.dart';
+import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class APIService {
+  final controller = Get.put(MyCartController());
   Future<Customer?> getUser(int id) async {
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
@@ -116,6 +120,7 @@ class APIService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("idUser", "-1");
     Fluttertoast.showToast(msg: "Deconnexion effectué");
+    controller.cart.clear();
   }
 
   Future<bool?> loginCustomer(String username, String password) async {
@@ -205,8 +210,14 @@ class APIService {
     }
   }
 
-  Future<bool>? createCommande(String name, String adresse, String city,
-      String email, String phone, List<Map<String, dynamic>> products) async {
+  Future<bool>? createCommande(
+      String name,
+      String adresse,
+      String city,
+      String email,
+      String phone,
+      List<Map<String, dynamic>> products,
+      int idUser) async {
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
     );
@@ -214,6 +225,7 @@ class APIService {
       "payment_method": "",
       "payment_method_title": "",
       "set_paid": true,
+      "customer_id": idUser,
       "billing": {
         "first_name": name,
         "last_name": "",
@@ -268,7 +280,7 @@ class APIService {
     }
   }
 
-  getOrder(int idUser) async {
+  Future<List<Order>> getOrder(int idUser) async {
     //not work
     print(idUser);
     var authToken = base64.encode(
@@ -284,11 +296,23 @@ class APIService {
           },
         ),
       );
-      print(response.data);
-      print(response.data.length);
-      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        print("---------------------------");
+        final res = response.data;
+        List<Order> result = res
+            .map((element) {
+              return Order.fromJson(element);
+            })
+            .toList()
+            .cast<Order>();
+        return result;
+      } else {
+        return [];
+      }
     } on DioError catch (e) {
       print(e.response);
+      return [];
     }
   }
 }

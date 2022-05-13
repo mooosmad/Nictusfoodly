@@ -21,8 +21,8 @@ import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/otherCategoriPage.dart';
 import 'package:nictusfood/screens/productPage.dart';
 import 'package:nictusfood/services/api_services.dart';
+import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import "package:geocoding/geocoding.dart" as geo;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -67,11 +67,10 @@ class _HomeState extends State<Home> {
     myLocation = await location.getLocation();
     print(myLocation);
 
-    List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-        myLocation!.latitude!, myLocation!.longitude!);
-
-    quartier = placemarks[0].locality! + "," + placemarks[0].subLocality!;
-    myStreet = placemarks[0].street!;
+    quartier = await Config()
+        .getNameOfQuartier(myLocation!.latitude!, myLocation!.longitude!);
+    myStreet = await Config()
+        .getNameOfStreet(myLocation!.latitude!, myLocation!.longitude!);
 
     setState(() {});
   }
@@ -207,14 +206,13 @@ class _HomeState extends State<Home> {
                                     leading: Icon(Icons.account_circle_rounded),
                                     title: Text('Profile'),
                                   ),
-                                  // ListTile(
-                                  //   onTap: () {
-                                  //     APIService().getOrder(int.parse(idUser!));
-                                  //   },
-                                  //   leading:
-                                  //       Icon(Icons.online_prediction_rounded),
-                                  //   title: Text('test api order'),
-                                  // ),
+                                  ListTile(
+                                    onTap: () {
+                                      APIService().getOrder(int.parse(idUser!));
+                                    },
+                                    leading: Icon(Icons.apps_sharp),
+                                    title: Text('Mes commandes'),
+                                  ),
                                   ListTile(
                                     onTap: () {
                                       Get.defaultDialog(

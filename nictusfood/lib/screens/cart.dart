@@ -6,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:nictusfood/auth/registrer.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/controller/changestatelivraison.dart';
 import 'package:nictusfood/models/cartmodel.dart';
+import 'package:nictusfood/screens/mymap.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -92,63 +94,25 @@ class CartPage extends StatelessWidget {
                                                   thickness: 3,
                                                   color: Colors.black,
                                                 ),
+                                                // SizedBox(height: 10),
+                                                // radios(),
                                                 SizedBox(height: 10),
-                                                Row(
-                                                  children: [
-                                                    Obx(() {
-                                                      return Radio(
-                                                          value: "emporter",
-                                                          groupValue:
-                                                              controllerLivraison
-                                                                  .groupValue
-                                                                  .value,
-                                                          onChanged: (val) {
-                                                            controllerLivraison
-                                                                .changeValue(
-                                                                    val);
-                                                          });
-                                                    }),
-                                                    Text(
-                                                      "à emporter",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                        textStyle: TextStyle(
-                                                          fontSize: 17,
-                                                        ),
-                                                      ),
+                                                Text(
+                                                  "Lieu de Livraison",
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.poppins(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 17,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Obx(() {
-                                                      return Radio(
-                                                          value: "livrer",
-                                                          groupValue:
-                                                              controllerLivraison
-                                                                  .groupValue
-                                                                  .value,
-                                                          onChanged: (val) {
-                                                            controllerLivraison
-                                                                .changeValue(
-                                                                    val!);
-                                                          });
-                                                    }),
-                                                    Text(
-                                                      "à Livrer",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                        textStyle: TextStyle(
-                                                          fontSize: 17,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                SizedBox(height: 10),
+                                                myMap(),
+
+                                                SizedBox(height: 10),
+
                                                 SizedBox(height: 10),
                                                 Text(
                                                   "Moyen de payement",
@@ -217,6 +181,92 @@ class CartPage extends StatelessWidget {
     );
   }
 
+  Widget radios() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Obx(() {
+              return Radio(
+                  value: "emporter",
+                  groupValue: controllerLivraison.groupValue.value,
+                  onChanged: (val) {
+                    controllerLivraison.changeValue(val);
+                  });
+            }),
+            Text(
+              "à emporter",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Obx(() {
+              return Radio(
+                  value: "livrer",
+                  groupValue: controllerLivraison.groupValue.value,
+                  onChanged: (val) {
+                    controllerLivraison.changeValue(val!);
+                  });
+            }),
+            Text(
+              "à Livrer",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget myMap() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        height: 100,
+        child: InkWell(
+          onTap: () async {
+            final res = await Get.to(
+              MyMap(),
+              transition: Transition.size,
+            );
+
+            print(res);
+          },
+          child: IgnorePointer(
+            child: MapboxMap(
+              rotateGesturesEnabled: false,
+              scrollGesturesEnabled: false,
+              onMapCreated: (MapboxMapController c) async {},
+              accessToken:
+                  "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
+              styleString:
+                  "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
+              initialCameraPosition: CameraPosition(
+                zoom: 5,
+                target: LatLng(
+                  5.246863,
+                  -3.992737,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget myButton() {
     return Center(
       child: InkWell(
@@ -231,21 +281,24 @@ class CartPage extends StatelessWidget {
             );
             print("OKKKKKKKKKKKK $customer");
             // test api create commande ok
-            // APIService().createCommande(
-            //   customer!.nom!,
-            //   customer.adresse!,
-            //   customer.ville!,
-            //   customer.email!,
-            //   customer.phone!,
-            //   [
-            //     {"product_id": 164, "quantity": 2},
-            //     {"product_id": 170, "quantity": 1}
-            //   ],
-            // );
-
+            var r = await APIService().createCommande(
+              customer!.nom!,
+              customer.adresse!,
+              customer.ville!,
+              customer.email!,
+              customer.phone!,
+              [
+                {"product_id": 164, "quantity": 2},
+                {"product_id": 170, "quantity": 1}
+              ],
+              int.parse(idUser),
+            );
+            print("r");
           } else {
+            print("object");
             Get.to(
               RegisterScreen(isdrawer: false),
+              preventDuplicates: false,
             );
           }
           print(idUser);

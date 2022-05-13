@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:location/location.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:nictusfood/Components/background.dart';
 import 'package:nictusfood/auth/login.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/customermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/services/api_services.dart';
+import "package:geocoding/geocoding.dart" as geo;
+import 'package:nictusfood/services/config.dart';
 
 class RegisterScreen extends StatefulWidget {
   final bool? isdrawer;
@@ -20,17 +24,77 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterScreen>
+    with WidgetsBindingObserver {
   final formGlobalKey = GlobalKey<FormState>();
   TextEditingController nomComplet = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController numero = TextEditingController();
   TextEditingController adresse = TextEditingController();
+  TextEditingController ville = TextEditingController();
+
   TextEditingController password = TextEditingController();
   TextEditingController retapepassword = TextEditingController();
-
   bool load = false;
   bool isApiCallProcess = false;
+
+  // for maps
+  MapboxMapController? controller;
+  Location location = Location();
+  bool? serviceEnabled;
+  PermissionStatus? permissionGranted;
+  LocationData? myLocation;
+  String quartier = "";
+  String myStreet = "";
+
+  checkPermission() async {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled!) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled!) {
+        return;
+      }
+    }
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    myLocation = await location.getLocation();
+    print(myLocation);
+
+    quartier = await Config()
+        .getNameOfQuartier(myLocation!.latitude!, myLocation!.longitude!);
+    myStreet = await Config()
+        .getNameOfStreet(myLocation!.latitude!, myLocation!.longitude!);
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance!.addObserver(this);
+    checkPermission();
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+    if (state == AppLifecycleState.resumed) {
+      if (mounted) {
+        setState(() {
+          controller!;
+        });
+      }
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,37 +223,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.03),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Champ vide";
-                            }
-                            return null;
-                          },
-                          style: GoogleFonts.poppins(
-                            fontSize: 15,
-                          ),
-                          controller: adresse,
-                          decoration: InputDecoration(
-                            fillColor: Colors.grey[200],
-                            filled: true,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide.none),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0xFFfd9204),
-                              ),
+                      GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          Get.bottomSheet(
+                            myMaps(),
+                            enableDrag: false,
+                            isScrollControlled: true,
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 40),
+                          child: TextFormField(
+                            enabled: false,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Champ vide";
+                              }
+                              return null;
+                            },
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
                             ),
-                            hintText: 'Adresse',
-                            hintStyle: Theme.of(context).textTheme.headline3,
-                            prefixIcon: const Icon(Icons.location_on_rounded,
-                                color: Color(0xFF37474F)),
+                            controller: adresse,
+                            decoration: InputDecoration(
+                              fillColor: Colors.grey[200],
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xFFfd9204),
+                                ),
+                              ),
+                              hintText: 'Adresse',
+                              hintStyle: Theme.of(context).textTheme.headline3,
+                              prefixIcon: const Icon(Icons.location_on_rounded,
+                                  color: Color(0xFF37474F)),
+                            ),
+                            cursorColor: Colors.black,
                           ),
-                          cursorColor: Colors.black,
                         ),
                       ),
                       SizedBox(height: size.height * 0.03),
@@ -283,7 +358,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 lastname,
                                 password.text,
                                 adresse.text,
-                                "ville",
+                                ville.text,
                                 numero.text,
                               );
                               setState(() {
@@ -372,6 +447,154 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+    );
+  }
+
+  Widget myMaps() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height - 100,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  "votre adresse",
+                  style: GoogleFonts.poppins(
+                    textStyle:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  height: 310,
+                  width: double.infinity,
+                  // decoration: BoxDecoration(
+                  //   borderRadius: BorderRadius.circular(20),
+                  // ),
+                  child: myLocation != null
+                      ? Stack(
+                          children: [
+                            MapboxMap(
+                              onMapCreated: (MapboxMapController c) async {
+                                controller = c;
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              accessToken:
+                                  "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
+                              styleString:
+                                  "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
+                              initialCameraPosition: CameraPosition(
+                                zoom: 14,
+                                target: LatLng(myLocation!.latitude!,
+                                    myLocation!.longitude!),
+                              ),
+                              myLocationEnabled: true,
+                              trackCameraPosition: true,
+                            ),
+                            Center(
+                              child: Container(
+                                height: 60,
+                                width: 45,
+                                child: Image.asset(
+                                  "assets/appassets/marker.png",
+                                  frameBuilder: (context, child, frame,
+                                      wasSynchronouslyLoaded) {
+                                    return Transform.translate(
+                                      offset: const Offset(0, -17),
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                ),
+              ),
+              SizedBox(height: 30),
+              InkWell(
+                onTap: () async {
+                  LatLng newpos = controller!.cameraPosition!.target;
+                  var street = await Config()
+                      .getNameOfStreet(newpos.latitude, newpos.longitude);
+                  ville.text = await Config()
+                      .getNameOfQuartier(newpos.latitude, newpos.longitude);
+                  adresse.text = street;
+
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 50,
+                  width: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    color: maincolor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Valider",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          right: 10,
+          top: 10,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              // Get.back();
+            },
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: maincolor),
+              child: Center(
+                child: Icon(Icons.clear, color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: -12,
+          left: (MediaQuery.of(context).size.width / 2) - 25,
+          child: Container(
+            width: 50,
+            height: 5,
+            decoration: BoxDecoration(
+                color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+          ),
+        ),
+      ],
     );
   }
 }
