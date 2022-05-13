@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:badges/badges.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -32,6 +33,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final double _scaleFactor = 1.5;
   Customer? customer;
   List<Category> category = [];
   List<Map<String, List<Category>>> maincategory = [];

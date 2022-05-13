@@ -8,12 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/cartmodel.dart';
+import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/services/config.dart';
 
 class DetailPage extends StatefulWidget {
   final Product? product;
-  const DetailPage({Key? key, this.product}) : super(key: key);
+  final Category? category;
+  const DetailPage({Key? key, this.product, this.category}) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -114,8 +116,72 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ),
                   ),
+                  Center(
+                    child: Text(
+                      Config().parserHTMLTAG(widget.product!.price! + " FCFA"),
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 4),
+                        padding: EdgeInsets.only(top: 10, left: 5),
+                        child: SingleChildScrollView(
+                          child: Wrap(
+                            runSpacing: runSpacing,
+                            spacing: spacing,
+                            alignment: WrapAlignment.center,
+                            children: List.generate(widget.categories!.length,
+                                (index) {
+                              return Stack(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.to(
+                                        ProductPage(
+                                            category: widget.categories![index],
+                                            isGrid: true),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: w,
+                                      height: w,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              widget.categories![index].image!),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned.fill(
+                                    child: Align(
+                                      alignment: Alignment(0, 0.79),
+                                      child: Text(
+                                        widget.categories![index].categoryName!,
+                                        style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              );
+                            }),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
