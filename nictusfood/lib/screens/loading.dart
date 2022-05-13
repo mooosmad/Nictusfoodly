@@ -6,14 +6,9 @@ class Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Center(
-        child: Lottie.asset("assets/lotties/62265-walking-taco.json",
-            width: 130, height: 130),
-      ),
+    return Center(
+      child: Lottie.asset("assets/lotties/62265-walking-taco.json",
+          width: 130, height: 130),
     );
   }
 }

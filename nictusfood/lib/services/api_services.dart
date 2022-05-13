@@ -305,7 +305,7 @@ class APIService {
       );
 
       if (response.statusCode == 200) {
-        print("---------------------------");
+        print("-------------RECUPERATION DES COMMANDES--------------");
         final res = response.data;
         List<Order> result = res
             .map((element) {

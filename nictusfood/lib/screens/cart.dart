@@ -506,14 +506,16 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
               ),
-              Text(
-                (controller.getPrice() + 1000).toString() + " FCFA",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 17,
+              Obx(() {
+                return Text(
+                  (controller.getPrice() + 1000).toString() + " FCFA",
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 17,
+                    ),
                   ),
-                ),
-              ),
+                );
+              })
             ],
           ),
         ],

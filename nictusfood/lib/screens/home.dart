@@ -19,6 +19,7 @@ import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/cart.dart';
 import 'package:nictusfood/screens/loading.dart';
+import 'package:nictusfood/screens/orderPage.dart';
 import 'package:nictusfood/screens/otherCategoriPage.dart';
 import 'package:nictusfood/screens/productPage.dart';
 import 'package:nictusfood/services/api_services.dart';
@@ -214,7 +215,11 @@ class _HomeState extends State<Home> {
                                   ),
                                   ListTile(
                                     onTap: () {
-                                      APIService().getOrder(int.parse(idUser!));
+                                      Get.to(
+                                          OrderPage(
+                                            idUser: idUser,
+                                          ),
+                                          transition: Transition.downToUp);
                                     },
                                     leading: Icon(Icons.apps_sharp),
                                     title: Text('Mes commandes'),

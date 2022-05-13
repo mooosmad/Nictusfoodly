@@ -177,7 +177,10 @@ class _ProductPageState extends State<ProductPage> {
                             },
                             childCount: products!.length,
                           ),
-                        )
+                        ),
+                SliverPadding(
+                  padding: EdgeInsets.only(bottom: 80),
+                ),
               ],
             ),
     );
