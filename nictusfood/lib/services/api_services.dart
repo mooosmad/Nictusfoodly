@@ -38,6 +38,7 @@ class APIService {
       }
     } on DioError catch (e) {
       print(e.response);
+
       return null;
     }
   }
@@ -179,6 +180,9 @@ class APIService {
       return res;
     } on DioError catch (e) {
       print(e.toString());
+      Fluttertoast.showToast(
+        msg: Config().parserHTMLTAG(e.response!.data["message"]),
+      );
       return [];
     }
   }
@@ -206,13 +210,16 @@ class APIService {
       return res;
     } on DioError catch (e) {
       print(e.response);
+      Fluttertoast.showToast(
+        msg: Config().parserHTMLTAG(e.response!.data["message"]),
+      );
       return [];
     }
   }
 
   Future<bool>? createCommande(
       String name,
-      String adresse,
+      String adresseDeLivraison,
       String city,
       String email,
       String phone,
@@ -229,7 +236,7 @@ class APIService {
       "billing": {
         "first_name": name,
         "last_name": "",
-        "address_1": adresse,
+        "address_1": adresseDeLivraison,
         "address_2": "",
         "city": city,
         "state": "",
@@ -241,7 +248,7 @@ class APIService {
       "shipping": {
         "first_name": name,
         "last_name": "",
-        "address_1": adresse,
+        "address_1": adresseDeLivraison,
         "address_2": "",
         "city": city,
         "state": "",
@@ -268,13 +275,13 @@ class APIService {
           },
         ),
       );
-      print(response.statusCode);
+
       if (response.statusCode == 201) {
-        print(response.data);
+        print(response.data.toString());
         return true;
       }
       return false;
-    } catch (e) {
+    } on DioError catch (e) {
       print(e.toString());
       return false;
     }
@@ -312,6 +319,9 @@ class APIService {
       }
     } on DioError catch (e) {
       print(e.response);
+      Fluttertoast.showToast(
+        msg: Config().parserHTMLTAG(e.response!.data["message"]),
+      );
       return [];
     }
   }

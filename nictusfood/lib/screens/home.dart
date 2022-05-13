@@ -93,6 +93,10 @@ class _HomeState extends State<Home> {
       }
     });
     maincategory.add({"La carte": othercategory});
+    print("--------------------------");
+    print(maincategory);
+    print("--------------------------");
+
     load = false;
 
     if (mounted) {
@@ -520,8 +524,10 @@ class _HomeState extends State<Home> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        GestureDetector(
-          onTap: () {
+        BouncingWidget(
+          duration: Duration(milliseconds: 50),
+          scaleFactor: 1.5,
+          onPressed: () {
             if (categories.keys.toList()[0] == "La carte") {
               Get.to(
                 OtherCategoriePage(

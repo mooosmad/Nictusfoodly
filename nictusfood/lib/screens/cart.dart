@@ -3,182 +3,207 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:nictusfood/auth/registrer.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/controller/changestatelivraison.dart';
 import 'package:nictusfood/models/cartmodel.dart';
+import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/mymap.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   CartPage({Key? key}) : super(key: key);
 
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
   final controller = Get.put(MyCartController());
+
   RxString value = "".obs;
+
+  RxString adresseDeLivraison = "".obs;
+
+  bool load = false;
+
   var groupValue = "emporter".obs;
+
   final controllerLivraison = Get.put(StateLivraison());
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height - 100,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-          ),
-          child: Column(
+    return load
+        ? Loading()
+        : Stack(
+            clipBehavior: Clip.none,
             children: [
-              Text(
-                "Mon Panier",
-                style: GoogleFonts.poppins(
-                  textStyle:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height - 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
                 ),
-              ),
-              Obx(() {
-                return controller.cart.isEmpty
-                    ? Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Lottie.asset(
-                                "assets/lotties/629-empty-box.json",
-                                repeat: false,
-                                width: 200,
-                                height: 200,
-                              ),
-                            ),
-                            Text(
-                              "Oups Panier vide veuillez ajouter des produits svp!",
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  fontSize: 17,
-                                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "Mon Panier",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Obx(() {
+                      return controller.cart.isEmpty
+                          ? Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    child: Lottie.asset(
+                                      "assets/lotties/629-empty-box.json",
+                                      repeat: false,
+                                      width: 200,
+                                      height: 200,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Oups Panier vide veuillez ajouter des produits svp!",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             )
-                          ],
-                        ),
-                      )
-                    : Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 20, bottom: 2),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    itemCount: controller.cart.length + 1,
-                                    itemBuilder: (context, i) {
-                                      return i == controller.cart.length
-                                          ? Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Divider(
-                                                  thickness: 3,
-                                                  color: Colors.black,
-                                                ),
-                                                // SizedBox(height: 10),
-                                                // radios(),
-                                                SizedBox(height: 10),
-                                                Text(
-                                                  "Lieu de Livraison",
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.poppins(
-                                                    textStyle: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10),
-                                                myMap(),
+                          : Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 20, bottom: 2),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: ListView.builder(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          itemCount: controller.cart.length + 1,
+                                          itemBuilder: (context, i) {
+                                            return i == controller.cart.length
+                                                ? Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Divider(
+                                                        thickness: 3,
+                                                        color: Colors.black,
+                                                      ),
+                                                      // SizedBox(height: 10),
+                                                      // radios(),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        "Lieu de Livraison",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          textStyle: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      myMap(),
 
-                                                SizedBox(height: 10),
+                                                      SizedBox(height: 10),
 
-                                                SizedBox(height: 10),
-                                                Text(
-                                                  "Moyen de payement",
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.poppins(
-                                                    textStyle: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10),
-                                                payementDrop(),
-                                                SizedBox(height: 10),
-                                                myButton(),
-                                                SizedBox(height: 10),
-                                                Container(
-                                                  color: Color(0xFFF4F4F4),
-                                                ),
-                                              ],
-                                            )
-                                          : myContainer(
-                                              controller.cart[i],
-                                            );
-                                    }),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        "Moyen de payement",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          textStyle: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      payementDrop(),
+                                                      SizedBox(height: 10),
+                                                      myrecap(),
+                                                      SizedBox(height: 10),
+                                                      myButton(),
+                                                      SizedBox(height: 10),
+                                                      Container(
+                                                        color:
+                                                            Color(0xFFF4F4F4),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : myContainer(
+                                                    controller.cart[i],
+                                                  );
+                                          }),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-              })
-            ],
-          ),
-        ),
-        Positioned(
-          right: 10,
-          top: 10,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              // Get.back();
-            },
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: maincolor),
-              child: Center(
-                child: Icon(Icons.clear, color: Colors.white),
+                            );
+                    })
+                  ],
+                ),
               ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: -12,
-          left: (MediaQuery.of(context).size.width / 2) - 25,
-          child: Container(
-            width: 50,
-            height: 5,
-            decoration: BoxDecoration(
-                color: Colors.grey, borderRadius: BorderRadius.circular(20)),
-          ),
-        ),
-      ],
-    );
+              Positioned(
+                right: 10,
+                top: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Get.back();
+                  },
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration:
+                        BoxDecoration(shape: BoxShape.circle, color: maincolor),
+                    child: Center(
+                      child: Icon(Icons.clear, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: -12,
+                left: (MediaQuery.of(context).size.width / 2) - 25,
+                child: Container(
+                  width: 50,
+                  height: 5,
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+            ],
+          );
   }
 
   Widget radios() {
@@ -233,33 +258,21 @@ class CartPage extends StatelessWidget {
   Widget myMap() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
-      child: Container(
+      child: SizedBox(
         height: 100,
+        width: double.infinity,
         child: InkWell(
           onTap: () async {
             final res = await Get.to(
               MyMap(),
               transition: Transition.size,
             );
-
-            print(res);
+            adresseDeLivraison.value = res ?? "";
           },
           child: IgnorePointer(
-            child: MapboxMap(
-              rotateGesturesEnabled: false,
-              scrollGesturesEnabled: false,
-              onMapCreated: (MapboxMapController c) async {},
-              accessToken:
-                  "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
-              styleString:
-                  "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
-              initialCameraPosition: CameraPosition(
-                zoom: 5,
-                target: LatLng(
-                  5.246863,
-                  -3.992737,
-                ),
-              ),
+            child: Image.asset(
+              "assets/appassets/illustration.jpg",
+              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -276,24 +289,45 @@ class CartPage extends StatelessWidget {
           final prefs = await SharedPreferences.getInstance();
           var idUser = prefs.getString("idUser") ?? "-1";
           if (idUser != "-1") {
-            var customer = await APIService().getUser(
-              int.parse(idUser),
-            );
-            print("OKKKKKKKKKKKK $customer");
-            // test api create commande ok
-            var r = await APIService().createCommande(
-              customer!.nom!,
-              customer.adresse!,
-              customer.ville!,
-              customer.email!,
-              customer.phone!,
-              [
-                {"product_id": 164, "quantity": 2},
-                {"product_id": 170, "quantity": 1}
-              ],
-              int.parse(idUser),
-            );
-            print("r");
+            if (adresseDeLivraison.value != "") {
+              setState(() {
+                load = true;
+              });
+              var customer = await APIService().getUser(
+                int.parse(idUser),
+              );
+              print("UTILISATEUR PRESENT$customer");
+              List<Map<String, dynamic>> products = controller.cart
+                  .map((element) {
+                    return {
+                      "product_id": element.productId,
+                      "quantity": element.quantity!.value,
+                    };
+                  })
+                  .toList()
+                  .cast<Map<String, dynamic>>();
+
+              // test api create commande ok
+              var r = await APIService().createCommande(
+                customer!.nom!,
+                adresseDeLivraison.value,
+                customer.ville!,
+                customer.email!,
+                customer.phone!,
+                products,
+                int.parse(idUser),
+              );
+              if (r!) {
+                controller.cart.clear();
+                Fluttertoast.showToast(msg: "Commande effectué");
+                Get.back();
+              }
+              setState(() {
+                load = false;
+              });
+            } else {
+              myDialog();
+            }
           } else {
             print("object");
             Get.to(
@@ -364,6 +398,126 @@ class CartPage extends StatelessWidget {
         value = choice!.obs;
         print(value);
       },
+    );
+  }
+
+  myDialog() {
+    Get.defaultDialog(
+      title: "Champs imcomplet",
+      titleStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.w500,
+        fontSize: 17,
+      ),
+      contentPadding: EdgeInsets.all(10),
+      content: Text(
+        "Veuillez choisir un lieu de livraison avant de commander.",
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w400,
+          fontSize: 14,
+        ),
+      ),
+      confirm: TextButton(
+        onPressed: () async {
+          Get.back();
+        },
+        child: Text(
+          "Compris",
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
+    );
+  }
+
+  Widget myrecap() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+      width: double.infinity,
+      color: Colors.grey[200],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            "Recap.",
+            style: GoogleFonts.poppins(
+              textStyle: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "plats:",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+              Obx(() {
+                return Text(
+                  controller.getPrice().toString() + " FCFA",
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 17,
+                    ),
+                  ),
+                );
+              })
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Livraison",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+              Text(
+                "1000 FCFA",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Total",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Text(
+                (controller.getPrice() + 1000).toString() + " FCFA",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

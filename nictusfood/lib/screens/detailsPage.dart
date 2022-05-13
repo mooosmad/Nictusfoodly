@@ -8,14 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/cartmodel.dart';
-import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/services/config.dart';
 
 class DetailPage extends StatefulWidget {
   final Product? product;
-  final Category? category;
-  const DetailPage({Key? key, this.product, this.category}) : super(key: key);
+  final List<Map<String, dynamic>> idSuggestions;
+  const DetailPage({Key? key, this.product, required this.idSuggestions})
+      : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -24,6 +24,19 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   final controller = Get.put(MyCartController());
   int nbr = 1;
+
+  getProductSuggestion() {
+    widget.idSuggestions.forEach((element) {
+      int id = element.values.toList()[0];
+    });
+  }
+
+  @override
+  void initState() {
+    getProductSuggestion();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,61 +140,6 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   SizedBox(
                     height: 20,
-                  ),
-                  Stack(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 4),
-                        padding: EdgeInsets.only(top: 10, left: 5),
-                        child: SingleChildScrollView(
-                          child: Wrap(
-                            runSpacing: runSpacing,
-                            spacing: spacing,
-                            alignment: WrapAlignment.center,
-                            children: List.generate(widget.categories!.length,
-                                (index) {
-                              return Stack(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.to(
-                                        ProductPage(
-                                            category: widget.categories![index],
-                                            isGrid: true),
-                                      );
-                                    },
-                                    child: Container(
-                                      width: w,
-                                      height: w,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              widget.categories![index].image!),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned.fill(
-                                    child: Align(
-                                      alignment: Alignment(0, 0.79),
-                                      child: Text(
-                                        widget.categories![index].categoryName!,
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
