@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/screens/home.dart';
 import 'package:nictusfood/screens/loading.dart';
+import 'package:nictusfood/screens/mymap.dart';
 import 'package:nictusfood/screens/onboarding.dart';
 import 'package:nictusfood/themes/nictustheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
