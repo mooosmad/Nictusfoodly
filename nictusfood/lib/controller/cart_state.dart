@@ -13,7 +13,7 @@ class MyCartController extends GetxController {
   int getPrice() {
     var price = 0;
     cart.forEach((element) {
-      price += int.parse(element.regularPrice!) * element.quantity!.value;
+      price += int.parse(element.price!) * element.quantity!.value;
     });
     print(price);
     return price;

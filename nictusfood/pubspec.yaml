@@ -59,6 +59,7 @@ dependencies:
   circle_list: ^1.0.5
   bouncing_widget: ^2.0.0
   shimmer: ^2.0.0
+  flutter_plugin_android_lifecycle: ^2.0.6
 
 
 dev_dependencies:
