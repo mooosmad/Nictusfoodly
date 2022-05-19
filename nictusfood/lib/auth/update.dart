@@ -168,6 +168,7 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                     alignment: Alignment.center,
                     margin: const EdgeInsets.symmetric(horizontal: 40),
                     child: TextFormField(
+                      enabled: false,
                       style: GoogleFonts.poppins(
                         fontSize: 15,
                       ),

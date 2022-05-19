@@ -30,6 +30,7 @@ class MyAppBar extends StatelessWidget {
               ),
               child: Center(
                 child: TextFormField(
+                  enabled: false,
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(),
                   ),

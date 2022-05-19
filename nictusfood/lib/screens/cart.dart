@@ -14,6 +14,7 @@ import 'package:nictusfood/controller/changestatelivraison.dart';
 import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/mymap.dart';
+import 'package:nictusfood/screens/validCommand.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +29,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   final controller = Get.put(MyCartController());
 
-  RxString value = "".obs;
+  RxString value = "espece".obs;
 
   RxString adresseDeLivraison = "".obs;
 
@@ -268,6 +269,9 @@ class _CartPageState extends State<CartPage> {
               transition: Transition.size,
             );
             adresseDeLivraison.value = res ?? "";
+            if (res != null) {
+              Fluttertoast.showToast(msg: "choix effectué");
+            }
           },
           child: IgnorePointer(
             child: Image.asset(
@@ -290,41 +294,51 @@ class _CartPageState extends State<CartPage> {
           var idUser = prefs.getString("idUser") ?? "-1";
           if (idUser != "-1") {
             if (adresseDeLivraison.value != "") {
-              setState(() {
-                load = true;
-              });
-              var customer = await APIService().getUser(
-                int.parse(idUser),
+              Get.to(
+                ValidationPage(
+                  items: controller.cart,
+                  lieuxLivraison: adresseDeLivraison.value,
+                  moyentPayement: value.value,
+                  idUser: idUser,
+                ),
+                transition: Transition.rightToLeft,
+                popGesture: true,
               );
-              print("UTILISATEUR PRESENT$customer");
-              List<Map<String, dynamic>> products = controller.cart
-                  .map((element) {
-                    return {
-                      "product_id": element.productId,
-                      "quantity": element.quantity!.value,
-                    };
-                  })
-                  .toList()
-                  .cast<Map<String, dynamic>>();
+              // setState(() {
+              //   load = true;
+              // });
+              // var customer = await APIService().getUser(
+              //   int.parse(idUser),
+              // );
+              // print("UTILISATEUR PRESENT$customer");
+              // List<Map<String, dynamic>> products = controller.cart
+              //     .map((element) {
+              //       return {
+              //         "product_id": element.productId,
+              //         "quantity": element.quantity!.value,
+              //       };
+              //     })
+              //     .toList()
+              //     .cast<Map<String, dynamic>>();
 
-              // test api create commande ok
-              var r = await APIService().createCommande(
-                customer!.nom!,
-                adresseDeLivraison.value,
-                customer.ville!,
-                customer.email!,
-                customer.phone!,
-                products,
-                int.parse(idUser),
-              );
-              if (r!) {
-                controller.cart.clear();
-                Fluttertoast.showToast(msg: "Commande effectué");
-                Get.back();
-              }
-              setState(() {
-                load = false;
-              });
+              // // test api create commande ok
+              // var r = await APIService().createCommande(
+              //   customer!.nom!,
+              //   adresseDeLivraison.value,
+              //   customer.ville!,
+              //   customer.email!,
+              //   customer.phone!,
+              //   products,
+              //   int.parse(idUser),
+              // );
+              // if (r!) {
+              //   controller.cart.clear();
+              //   Fluttertoast.showToast(msg: "Commande effectué");
+              //   Get.back();
+              // }
+              // setState(() {
+              //   load = false;
+              // });
             } else {
               myDialog();
             }
@@ -526,16 +540,13 @@ class _CartPageState extends State<CartPage> {
   Widget myContainer(CartModel cartItem) {
     return Dismissible(
       key: Key(cartItem.productId.toString()),
+      confirmDismiss: (direction) async {
+        print(direction);
+        return await dialogDismmisse();
+      },
       onDismissed: (d) {
         print(d);
-        controller.remove(cartItem);
-        Get.snackbar("Suppression",
-            "${cartItem.productName} à bien été supprimer dans le panier",
-            duration: Duration(
-              milliseconds: 900,
-            ),
-            instantInit: false,
-            backgroundColor: Colors.white);
+        suppressionInTheCart(cartItem);
       },
       child: Column(
         children: [
@@ -573,12 +584,17 @@ class _CartPageState extends State<CartPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 if (cartItem.quantity! > 1) {
                                   // cartItem.quantity = cartItem.quantity! - 1;
                                   controller.decrement(cartItem);
                                 }
-                                print("object");
+                                if (cartItem.quantity == 1) {
+                                  var res = await dialogDismmisse();
+                                  if (res) {
+                                    suppressionInTheCart(cartItem);
+                                  }
+                                }
                               },
                               child: Container(
                                 width: 20,
@@ -686,5 +702,59 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
     );
+  }
+
+  void suppressionInTheCart(CartModel cartItem) {
+    controller.remove(cartItem);
+
+    Get.snackbar("Suppression",
+        "${cartItem.productName} à bien été supprimer dans le panier",
+        duration: Duration(
+          milliseconds: 900,
+        ),
+        instantInit: false,
+        backgroundColor: Colors.white);
+  }
+
+  Future<bool> dialogDismmisse() async {
+    late bool res;
+    var e = await Get.defaultDialog(
+      title: "Suppression",
+      titleStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.w500,
+        fontSize: 17,
+      ),
+      contentPadding: EdgeInsets.all(10),
+      content: Text(
+        "Voulez-vous vraiment supprimer cet element votre panier?",
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w400,
+          fontSize: 14,
+        ),
+      ),
+      confirm: TextButton(
+        onPressed: () async {
+          setState(() {
+            res = true;
+          });
+          Navigator.pop(context);
+        },
+        child: Text(
+          "Oui",
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
+      cancel: TextButton(
+        onPressed: () {
+          setState(() {
+            res = false;
+          });
+          Navigator.pop(context);
+        },
+        child: Text("Non"),
+      ),
+    );
+    return res;
   }
 }

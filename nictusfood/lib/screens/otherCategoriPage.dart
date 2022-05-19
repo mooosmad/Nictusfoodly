@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, prefer_const_constructors
 
+import 'package:animate_do/animate_do.dart';
 import 'package:badges/badges.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
@@ -79,41 +80,43 @@ class _OtherCategoriePageState extends State<OtherCategoriePage> {
                 spacing: spacing,
                 alignment: WrapAlignment.center,
                 children: List.generate(widget.categories!.length, (index) {
-                  return Stack(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(
-                            ProductPage(
-                                category: widget.categories![index],
-                                isGrid: true),
-                          );
-                        },
-                        child: Container(
-                          width: w,
-                          height: w,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  widget.categories![index].image!),
+                  return ElasticIn(
+                    child: Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              ProductPage(
+                                  category: widget.categories![index],
+                                  isGrid: true),
+                            );
+                          },
+                          child: Container(
+                            width: w,
+                            height: w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    widget.categories![index].image!),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment(0, 0.79),
-                          child: Text(
-                            widget.categories![index].categoryName!,
-                            style: GoogleFonts.poppins(
-                              textStyle: TextStyle(),
+                        Positioned.fill(
+                          child: Align(
+                            alignment: Alignment(0, 0.79),
+                            child: Text(
+                              widget.categories![index].categoryName!,
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   );
                 }),
               ),

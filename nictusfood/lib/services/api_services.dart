@@ -161,6 +161,7 @@ class APIService {
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
     );
+    print("---GET CATEGORIES----");
     try {
       var response = await Dio().get(
         "https://versamete.net/wp-json/wc/v2/products/categories",
@@ -179,7 +180,7 @@ class APIService {
           (element) => element.categoryName!.toUpperCase() == 'NON CLASSÉ');
       return res;
     } on DioError catch (e) {
-      print(e.toString());
+      print(e.toString() + " error in get categorie");
       Fluttertoast.showToast(
         msg: Config().parserHTMLTAG(e.response!.data["message"]),
       );
@@ -209,9 +210,11 @@ class APIService {
       });
       return res;
     } on DioError catch (e) {
-      print(e.response);
+      print(e.message);
+
       Fluttertoast.showToast(
-        msg: Config().parserHTMLTAG(e.response!.data["message"]),
+        msg: Config().parserHTMLTAG(
+            "Une erreur est survenue veuillez verifier votre connection internet"),
       );
       return [];
     }

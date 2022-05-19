@@ -13,7 +13,6 @@ import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/customermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/services/api_services.dart';
-import "package:geocoding/geocoding.dart" as geo;
 import 'package:nictusfood/services/config.dart';
 
 class RegisterScreen extends StatefulWidget {
