@@ -589,12 +589,7 @@ class _CartPageState extends State<CartPage> {
                                   // cartItem.quantity = cartItem.quantity! - 1;
                                   controller.decrement(cartItem);
                                 }
-                                if (cartItem.quantity == 1) {
-                                  var res = await dialogDismmisse();
-                                  if (res) {
-                                    suppressionInTheCart(cartItem);
-                                  }
-                                }
+                                
                               },
                               child: Container(
                                 width: 20,

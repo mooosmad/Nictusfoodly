@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nictusfood/auth/confirmemail.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/screens/home.dart';
 import 'package:nictusfood/screens/loading.dart';

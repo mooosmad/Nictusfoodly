@@ -1,15 +1,20 @@
 // ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print
 
+import 'dart:async';
+
+import 'package:email_auth/email_auth.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:location/location.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:map_picker/map_picker.dart';
 import 'package:nictusfood/Components/background.dart';
+import 'package:nictusfood/auth/confirmemail.dart';
 import 'package:nictusfood/auth/login.dart';
 import 'package:nictusfood/constant/colors.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nictusfood/models/customermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/services/api_services.dart';
@@ -36,15 +41,20 @@ class _RegisterScreenState extends State<RegisterScreen>
   TextEditingController retapepassword = TextEditingController();
   bool load = false;
   bool isApiCallProcess = false;
+  bool obscureMP = true;
+  bool obscureRMP = true;
 
   // for maps
-  MapboxMapController? controller;
+  GoogleMapController? controller;
+  CameraPosition? cameraPosition;
+  MapPickerController mapPickerController = MapPickerController();
   Location location = Location();
   bool? serviceEnabled;
   PermissionStatus? permissionGranted;
   LocationData? myLocation;
   String quartier = "";
   String myStreet = "";
+  EmailAuth emailAuth = EmailAuth(sessionName: "nictusfood");
 
   checkPermission() async {
     serviceEnabled = await location.serviceEnabled();
@@ -64,6 +74,10 @@ class _RegisterScreenState extends State<RegisterScreen>
 
     myLocation = await location.getLocation();
     print(myLocation);
+    cameraPosition = CameraPosition(
+      zoom: 14,
+      target: LatLng(myLocation!.latitude!, myLocation!.longitude!),
+    );
 
     quartier = await Config()
         .getNameOfQuartier(myLocation!.latitude!, myLocation!.longitude!);
@@ -73,6 +87,18 @@ class _RegisterScreenState extends State<RegisterScreen>
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Future<bool> sendOtp(String receveur) async {
+    setState(() {
+      load = true;
+    });
+    bool result = await emailAuth.sendOtp(
+      recipientMail: receveur,
+      otpLength: 4,
+    );
+    print("$result est le resultat de sendOTP");
+    return result;
   }
 
   @override
@@ -88,11 +114,19 @@ class _RegisterScreenState extends State<RegisterScreen>
     if (state == AppLifecycleState.resumed) {
       if (mounted) {
         setState(() {
-          controller!;
+          controller;
         });
       }
     }
     super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    if (controller != null) {
+      controller!.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -274,7 +308,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           style: GoogleFonts.poppins(
                             fontSize: 15,
                           ),
-                          obscureText: true,
+                          obscureText: obscureMP ? true : false,
                           controller: password,
                           validator: ((value) {
                             if (value!.length < 6) {
@@ -297,8 +331,22 @@ class _RegisterScreenState extends State<RegisterScreen>
                             ),
                             hintText: 'Mot de passe',
                             hintStyle: Theme.of(context).textTheme.headline3,
-                            prefixIcon: const Icon(Icons.lock,
-                                color: Color(0xFF37474F)),
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Color(0xFF37474F),
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  obscureMP = !obscureMP;
+                                });
+                              },
+                              child: Icon(
+                                obscureMP
+                                    ? Icons.remove_red_eye
+                                    : Icons.visibility_off_sharp,
+                              ),
+                            ),
                           ),
                           cursorColor: Colors.black,
                         ),
@@ -311,7 +359,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           style: GoogleFonts.poppins(
                             fontSize: 15,
                           ),
-                          obscureText: true,
+                          obscureText: obscureRMP ? true : false,
                           controller: retapepassword,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -334,8 +382,22 @@ class _RegisterScreenState extends State<RegisterScreen>
                             ),
                             hintText: 'Confirmer le mot de passe',
                             hintStyle: Theme.of(context).textTheme.headline3,
-                            prefixIcon: const Icon(Icons.lock,
-                                color: Color(0xFF37474F)),
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Color(0xFF37474F),
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  obscureRMP = !obscureRMP;
+                                });
+                              },
+                              child: Icon(
+                                obscureRMP
+                                    ? Icons.remove_red_eye
+                                    : Icons.visibility_off_sharp,
+                              ),
+                            ),
                           ),
                           cursorColor: Colors.black,
                         ),
@@ -346,11 +408,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                         margin: const EdgeInsets.symmetric(
                             horizontal: 40, vertical: 10),
                         child: RaisedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (formGlobalKey.currentState!.validate()) {
                               String firstname = nomComplet.text.split(" ")[0];
                               String lastname = nomComplet.text;
-                              // on doit trouver c'est quoi le nom et le prenom dans nomcoplet
+                              // // on doit trouver c'est quoi le nom et le prenom dans nomcoplet
                               CustomerModel model = CustomerModel(
                                 email.text,
                                 firstname,
@@ -360,37 +422,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 ville.text,
                                 numero.text,
                               );
-                              setState(() {
-                                load = true;
-                              });
-
-                              print(model.toJson());
-
-                              setState(() {
-                                isApiCallProcess = true;
-                              });
-                              APIService().createCustomer(model).then((ret) {
-                                setState(() {
-                                  isApiCallProcess = false;
-                                });
-                                // if ret[0] is true reussi
-                                if (ret![0]) {
-                                  Fluttertoast.showToast(
-                                      msg: "Inscription effectué avec succès");
-                                  if (widget.isdrawer!) {
-                                    Get.back();
-                                    Get.back();
-                                  } else {
-                                    Get.back();
-                                  }
-                                } else {
-                                  setState(() {
-                                    load = false;
-                                  });
-                                }
-                              });
+                              if (await sendOtp(email.text)) {
+                                Get.to(ConfirmEmailPage(model: model));
+                              }
                             } else {
-                              print("noo");
+                              print("noo valide");
                             }
                           },
                           shape: RoundedRectangleBorder(
@@ -486,41 +522,63 @@ class _RegisterScreenState extends State<RegisterScreen>
                   child: myLocation != null
                       ? Stack(
                           children: [
-                            MapboxMap(
-                              onMapCreated: (MapboxMapController c) async {
-                                controller = c;
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                              },
-                              accessToken:
-                                  "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
-                              styleString:
-                                  "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
-                              initialCameraPosition: CameraPosition(
-                                zoom: 14,
-                                target: LatLng(myLocation!.latitude!,
-                                    myLocation!.longitude!),
-                              ),
-                              myLocationEnabled: true,
-                              trackCameraPosition: true,
-                            ),
-                            Center(
-                              child: Container(
-                                height: 60,
+                            MapPicker(
+                              mapPickerController: mapPickerController,
+                              iconWidget: Image.asset(
+                                "assets/appassets/marker.png",
                                 width: 45,
-                                child: Image.asset(
-                                  "assets/appassets/marker.png",
-                                  frameBuilder: (context, child, frame,
-                                      wasSynchronouslyLoaded) {
-                                    return Transform.translate(
-                                      offset: const Offset(0, -17),
-                                      child: child,
-                                    );
-                                  },
+                                height: 50,
+                                frameBuilder: (context, child, frame,
+                                    wasSynchronouslyLoaded) {
+                                  return Transform.translate(
+                                    offset: const Offset(0, 1),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                              child: GoogleMap(
+                                minMaxZoomPreference:
+                                    MinMaxZoomPreference(15, 20),
+                                zoomControlsEnabled: false,
+                                myLocationEnabled: true,
+                                onCameraMoveStarted: () {
+                                  mapPickerController.mapMoving!();
+                                },
+                                onCameraIdle: () {
+                                  mapPickerController.mapFinishedMoving!();
+                                },
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(myLocation!.latitude!,
+                                      myLocation!.longitude!),
                                 ),
+                                onMapCreated:
+                                    (GoogleMapController ccontroller) {
+                                  controller = ccontroller;
+                                },
+                                onCameraMove: (newcameraPosition) {
+                                  cameraPosition = newcameraPosition;
+                                },
                               ),
                             ),
+                            // MapboxMap(
+                            //   onMapCreated: (MapboxMapController c) async {
+                            //     controller = c;
+                            //     if (mounted) {
+                            //       setState(() {});
+                            //     }
+                            //   },
+                            //   accessToken:
+                            //       "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
+                            //   styleString:
+                            //       "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
+                            //   initialCameraPosition: CameraPosition(
+                            //     zoom: 14,
+                            //     target: LatLng(myLocation!.latitude!,
+                            //         myLocation!.longitude!),
+                            //   ),
+                            //   myLocationEnabled: true,
+                            //   trackCameraPosition: true,
+                            // ),
                           ],
                         )
                       : Center(
@@ -531,7 +589,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               SizedBox(height: 30),
               InkWell(
                 onTap: () async {
-                  LatLng newpos = controller!.cameraPosition!.target;
+                  LatLng newpos = cameraPosition!.target;
                   var street = await Config()
                       .getNameOfStreet(newpos.latitude, newpos.longitude);
                   ville.text = await Config()

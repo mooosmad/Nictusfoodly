@@ -178,11 +178,13 @@ class APIService {
       });
       res.removeWhere(
           (element) => element.categoryName!.toUpperCase() == 'NON CLASSÉ');
+      print("---END GET CATEGORIES----");
+
       return res;
     } on DioError catch (e) {
       print(e.toString() + " error in get categorie");
       Fluttertoast.showToast(
-        msg: Config().parserHTMLTAG(e.response!.data["message"]),
+        msg: Config().parserHTMLTAG(e.toString()),
       );
       return [];
     }
@@ -263,7 +265,7 @@ class APIService {
         {
           "method_id": "flat_rate",
           "method_title": "Flat Rate",
-          "total": "10.00"
+          "total": "1000.00"
         }
       ]
     };

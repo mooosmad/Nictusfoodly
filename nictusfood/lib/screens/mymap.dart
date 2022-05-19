@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:map_picker/map_picker.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,7 +20,9 @@ class MyMap extends StatefulWidget {
 }
 
 class _MyMapState extends State<MyMap> {
-  MapboxMapController? controller;
+  GoogleMapController? controller;
+  MapPickerController mapPickerController = MapPickerController();
+  CameraPosition? cameraPosition;
   PermissionStatus? permissionGranted;
   LocationData? myLocation;
   Location location = Location();
@@ -40,6 +45,10 @@ class _MyMapState extends State<MyMap> {
     }
 
     myLocation = await location.getLocation();
+    cameraPosition = CameraPosition(
+      zoom: 14,
+      target: LatLng(myLocation!.latitude!, myLocation!.longitude!),
+    );
 
     setState(() {});
   }
@@ -48,6 +57,14 @@ class _MyMapState extends State<MyMap> {
   void initState() {
     checkPermission();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (controller != null) {
+      controller!.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -75,43 +92,58 @@ class _MyMapState extends State<MyMap> {
             child: myLocation != null
                 ? Stack(
                     children: [
-                      MapboxMap(
-                        onMapCreated: (MapboxMapController c) async {
-                          controller = c;
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                        accessToken:
-                            "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
-                        styleString:
-                            "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
-                        initialCameraPosition: CameraPosition(
-                          zoom: 14,
-                          target: LatLng(
-                            myLocation!.latitude!,
-                            myLocation!.longitude!,
-                          ),
-                        ),
-                        myLocationEnabled: true,
-                        trackCameraPosition: true,
-                      ),
-                      Center(
-                        child: Container(
-                          height: 60,
+                      MapPicker(
+                        mapPickerController: mapPickerController,
+                        iconWidget: Image.asset(
+                          "assets/appassets/marker.png",
                           width: 45,
-                          child: Image.asset(
-                            "assets/appassets/marker.png",
-                            frameBuilder: (context, child, frame,
-                                wasSynchronouslyLoaded) {
-                              return Transform.translate(
-                                offset: const Offset(0, -17),
-                                child: child,
-                              );
-                            },
+                          height: 50,
+                          frameBuilder:
+                              (context, child, frame, wasSynchronouslyLoaded) {
+                            return Transform.translate(
+                              offset: const Offset(0, 1),
+                              child: child,
+                            );
+                          },
+                        ),
+                        child: GoogleMap(
+                          minMaxZoomPreference: MinMaxZoomPreference(15, 20),
+                          zoomControlsEnabled: false,
+                          myLocationEnabled: true,
+                          onCameraMoveStarted: () {
+                            mapPickerController.mapMoving!();
+                          },
+                          onCameraIdle: () {
+                            mapPickerController.mapFinishedMoving!();
+                          },
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                                myLocation!.latitude!, myLocation!.longitude!),
                           ),
+                          onMapCreated: (GoogleMapController ccontroller) {
+                            controller = ccontroller;
+                          },
+                          onCameraMove: (newcameraPosition) {
+                            cameraPosition = newcameraPosition;
+                          },
                         ),
                       ),
+                      // Center(
+                      //   child: Container(
+                      //     height: 60,
+                      //     width: 45,
+                      //     child: Image.asset(
+                      //       "assets/appassets/marker.png",
+                      //       frameBuilder: (context, child, frame,
+                      //           wasSynchronouslyLoaded) {
+                      //         return Transform.translate(
+                      //           offset: const Offset(0, -17),
+                      //           child: child,
+                      //         );
+                      //       },
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   )
                 : Center(
@@ -154,15 +186,17 @@ class _MyMapState extends State<MyMap> {
           ),
           InkWell(
             onTap: () async {
+              print(cameraPosition!.target);
               lieuLivraison = await Config().getNameOfQuartier(
-                    controller!.cameraPosition!.target.latitude,
-                    controller!.cameraPosition!.target.longitude,
+                    cameraPosition!.target.latitude,
+                    cameraPosition!.target.longitude,
                   ) +
                   " " +
                   await Config().getNameOfStreet(
-                    controller!.cameraPosition!.target.latitude,
-                    controller!.cameraPosition!.target.longitude,
+                    cameraPosition!.target.latitude,
+                    cameraPosition!.target.longitude,
                   );
+              print(lieuLivraison);
               Get.back(result: lieuLivraison);
             },
             child: Container(

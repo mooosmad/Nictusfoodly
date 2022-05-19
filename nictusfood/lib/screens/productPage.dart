@@ -212,7 +212,8 @@ class _ProductPageState extends State<ProductPage> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           image: CachedNetworkImageProvider(
-                              product.images![0].srcPath!),
+                            product.images![0].srcPath!,
+                          ),
                           fit: BoxFit.cover,
                         ),
                         boxShadow: [

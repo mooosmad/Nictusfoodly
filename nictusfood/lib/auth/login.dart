@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController password = TextEditingController();
   bool load = false;
   final formGlobalKey = GlobalKey<FormState>();
+  bool obscureMP = true;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -114,9 +115,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintStyle: Theme.of(context).textTheme.headline3,
                             prefixIcon: const Icon(Icons.lock,
                                 color: Color(0xFF37474F)),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  obscureMP = !obscureMP;
+                                });
+                              },
+                              child: Icon(
+                                obscureMP
+                                    ? Icons.remove_red_eye
+                                    : Icons.visibility_off_sharp,
+                              ),
+                            ),
                           ),
                           cursorColor: Colors.black,
-                          obscureText: true,
+                          obscureText: obscureMP ? true : false,
                         ),
                       ),
                       Container(
