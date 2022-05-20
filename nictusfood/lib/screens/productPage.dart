@@ -6,6 +6,7 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/cartmodel.dart';
@@ -28,7 +29,7 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  List<Product>? products = [];
+  List<Product>? products;
   List<Map<String, dynamic>>? idSuggestion = [];
 
   bool load = false;
@@ -122,7 +123,6 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   // automaticallyImplyLeading: false,
                   expandedHeight: 200,
-
                   flexibleSpace: LayoutBuilder(builder: (context, constraints) {
                     top = constraints.biggest.height;
                     print(top); // if 80 c'est que c'est reduit
@@ -178,6 +178,31 @@ class _ProductPageState extends State<ProductPage> {
                             childCount: products!.length,
                           ),
                         ),
+                if (products!.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Lottie.asset(
+                          "assets/lotties/93134-not-found.json",
+                          repeat: false,
+                          height: 260,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            "Aucun produit trouvé dans cette catégorie . Veuillez essayer plus-tard",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 SliverPadding(
                   padding: EdgeInsets.only(bottom: 80),
                 ),

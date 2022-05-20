@@ -585,11 +585,44 @@ class _CartPageState extends State<CartPage> {
                           children: [
                             InkWell(
                               onTap: () async {
+                                if (cartItem.quantity == 1) {
+                                  Get.defaultDialog(
+                                    title: "Suppression",
+                                    titleStyle: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17,
+                                    ),
+                                    contentPadding: EdgeInsets.all(10),
+                                    content: Text(
+                                      "Voulez-vous vraiment supprimer cet element votre panier?",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    confirm: TextButton(
+                                      onPressed: () async {
+                                        suppressionInTheCart(cartItem);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        "Oui",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                    cancel: TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("Non"),
+                                    ),
+                                  );
+                                }
                                 if (cartItem.quantity! > 1) {
                                   // cartItem.quantity = cartItem.quantity! - 1;
                                   controller.decrement(cartItem);
                                 }
-                                
                               },
                               child: Container(
                                 width: 20,

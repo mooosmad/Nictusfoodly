@@ -8,6 +8,7 @@ import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/screens/loading.dart';
+import 'package:nictusfood/screens/remercimentpage.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -274,7 +275,7 @@ class _ValidationPageState extends State<ValidationPage> {
           if (r!) {
             controller.cart.clear();
             Fluttertoast.showToast(msg: "Commande effectué");
-            Get.offAllNamed("/home");
+            Get.offAll(RemercimentPage());
           }
           setState(() {
             load = false;

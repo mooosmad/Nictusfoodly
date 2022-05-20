@@ -1,17 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:animate_do/animate_do.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nictusfood/auth/confirmemail.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/screens/home.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/onboarding.dart';
+import 'package:nictusfood/screens/remercimentpage.dart';
 import 'package:nictusfood/services/utils.dart';
 import 'package:nictusfood/themes/nictustheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
