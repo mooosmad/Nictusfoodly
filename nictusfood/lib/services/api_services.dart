@@ -205,7 +205,6 @@ class APIService {
           },
         ),
       );
-      print(response.data);
 
       response.data.forEach((element) {
         res.add(Product.fromJson(element));
@@ -219,6 +218,34 @@ class APIService {
             "Une erreur est survenue veuillez verifier votre connection internet"),
       );
       return [];
+    }
+  }
+
+  Future<Product?> getProductById(int idProduct) async {
+    var authToken = base64.encode(
+      utf8.encode(Config.key + ":" + Config.secret),
+    );
+    try {
+      var response = await Dio().get(
+        "https://versamete.net/wp-json/wc/v3/products/$idProduct",
+        options: Options(
+          headers: {
+            HttpHeaders.authorizationHeader: 'Basic $authToken',
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+        ),
+      );
+
+      var res = Product.fromJson(response.data);
+      return res;
+    } on DioError catch (e) {
+      print(e.message);
+
+      Fluttertoast.showToast(
+        msg: Config().parserHTMLTAG(
+            "Une erreur est survenue veuillez verifier votre connection internet"),
+      );
+      return null;
     }
   }
 

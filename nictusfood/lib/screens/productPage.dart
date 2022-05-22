@@ -43,15 +43,6 @@ class _ProductPageState extends State<ProductPage> {
     products =
         await APIService().getProductByCategorie(widget.category!.categoryId!);
 
-    print("*******");
-    print(widget.category!.categoryId);
-    print("*******");
-    if (widget.category!.categoryName == "Nos Tcheps") {
-      idSuggestion = [
-        {"boissons": 19},
-        {"dessert": 31},
-      ];
-    }
     if (mounted) {
       setState(() {
         load = false;
@@ -219,7 +210,6 @@ class _ProductPageState extends State<ProductPage> {
               var res = await Get.to(
                 DetailPage(
                   product: product,
-                  idSuggestions: idSuggestion!,
                 ),
                 transition: Transition.rightToLeft,
               );
@@ -330,7 +320,6 @@ class _ProductPageState extends State<ProductPage> {
                       Get.to(
                           DetailPage(
                             product: product,
-                            idSuggestions: idSuggestion!,
                           ),
                           transition: Transition.rightToLeft);
                     },

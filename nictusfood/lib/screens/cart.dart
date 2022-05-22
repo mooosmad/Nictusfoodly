@@ -575,7 +575,10 @@ class _CartPageState extends State<CartPage> {
                             ],
                             image: DecorationImage(
                               image: CachedNetworkImageProvider(
-                                  cartItem.images![0].srcPath!),
+                                cartItem.images!.isNotEmpty
+                                    ? cartItem.images![0].srcPath!
+                                    : "https://bitsofco.de/content/images/2018/12/broken-1.png",
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),

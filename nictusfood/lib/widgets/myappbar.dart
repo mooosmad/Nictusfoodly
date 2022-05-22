@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyAppBar extends StatelessWidget {
@@ -14,10 +15,11 @@ class MyAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset(
-            "assets/appassets/Plan de travail 2 copie 13-8 1.png",
-            width: 80,
-            height: 120,
+          GestureDetector(
+            onTap: () {
+              Get.back();
+            },
+            child: Icon(Icons.arrow_back_rounded),
           ),
           Expanded(
             child: Container(

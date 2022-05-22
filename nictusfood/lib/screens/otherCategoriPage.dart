@@ -68,12 +68,33 @@ class _OtherCategoriePageState extends State<OtherCategoriePage> {
           }),
         ),
       ),
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Avez vous faim?",
+          style: GoogleFonts.poppins(
+            textStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: maincolor,
+        leading: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           Container(
-            margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
-            padding: EdgeInsets.only(top: 10, left: 5),
+            margin: EdgeInsets.only(top: 120),
+            padding: EdgeInsets.only(left: 5),
             child: SingleChildScrollView(
               child: Wrap(
                 runSpacing: runSpacing,
@@ -122,7 +143,7 @@ class _OtherCategoriePageState extends State<OtherCategoriePage> {
               ),
             ),
           ),
-          MyAppBar(),
+          // MyAppBar(),
         ],
       ),
     );

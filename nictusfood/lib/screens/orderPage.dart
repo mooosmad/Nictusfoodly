@@ -70,6 +70,7 @@ class _OrderPageState extends State<OrderPage> {
                       ),
                     )
                   : ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: orders.length,
                       itemBuilder: (context, i) {
                         return Stack(
@@ -81,6 +82,7 @@ class _OrderPageState extends State<OrderPage> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.5),
@@ -93,6 +95,7 @@ class _OrderPageState extends State<OrderPage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Text("Recu de la commande : "),
                                   Text(
                                     orders[i].keyOrder!,
                                     style: GoogleFonts.poppins(
@@ -102,6 +105,7 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                     ),
                                   ),
+                                  Text("Montant Total: "),
                                   Text(
                                     orders[i].priceTotal! + ' FCFA',
                                     style: GoogleFonts.poppins(
@@ -119,15 +123,17 @@ class _OrderPageState extends State<OrderPage> {
                               right: 20,
                               child: Container(
                                 padding: EdgeInsets.all(5),
-                                color: orders[i].status == "completed"
-                                    ? Colors.green.withOpacity(0.6)
-                                    : Colors.yellow.withOpacity(0.6),
+                                decoration: BoxDecoration(
+                                    color: orders[i].status == "completed"
+                                        ? Colors.green.withOpacity(0.6)
+                                        : Colors.yellow.withOpacity(0.6),
+                                    borderRadius: BorderRadius.circular(15)),
                                 child: Text(
                                   orders[i].status!,
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w400,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),

@@ -1,22 +1,31 @@
 import 'package:equatable/equatable.dart';
+import 'package:nictusfood/services/api_services.dart';
 
 class Product extends Equatable {
+  // equatable est important ici pour distinguer les produits avec getx
   final int? productId;
   final String? productName;
   final String? productDesc;
   final String? status;
   final String? price;
   final String? regularPrice;
+  final List? produitSuggere;
+  final List? categories;
+  final String? categorieName;
   final List<Imageproduct>? images;
 
-  const Product(
-      {this.images,
-      this.price,
-      this.productDesc,
-      this.productId,
-      this.productName,
-      this.regularPrice,
-      this.status});
+  const Product({
+    this.images,
+    this.price,
+    this.productDesc,
+    this.productId,
+    this.productName,
+    this.regularPrice,
+    this.status,
+    this.produitSuggere,
+    this.categories,
+    this.categorieName,
+  });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
@@ -26,6 +35,15 @@ class Product extends Equatable {
       price: json["price"].toString(),
       regularPrice: json["regular_price"] ?? "",
       status: json["status"] ?? "",
+      produitSuggere: json["upsell_ids"] != null
+          ? json["upsell_ids"].map((e) async {
+              var r = await APIService().getProductById(e);
+              return r;
+            }).toList()
+          : [],
+      categories: json["categories"] ?? [],
+      categorieName:
+          json["categories"] != null ? json["categories"][0]["name"] : "",
       images: json["images"] != null
           ? json["images"]
               .map(
@@ -47,7 +65,7 @@ class Product extends Equatable {
         images!,
         price!,
         regularPrice!,
-        status!
+        status!,
       ];
 }
 
