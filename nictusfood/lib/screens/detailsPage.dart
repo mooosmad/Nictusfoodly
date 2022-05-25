@@ -11,7 +11,6 @@ import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/screens/cart.dart';
-import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -105,7 +104,7 @@ class _DetailPageState extends State<DetailPage> {
             initialChildSize: 0.65,
             minChildSize: 0.65,
             maxChildSize: 0.9,
-            snapSizes: [.7, .8, .9],
+            snapSizes: const [.7, .8, .9],
             snap: true,
             builder: ((context, scrollController) {
               return Container(
@@ -779,42 +778,40 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget loadShimer() {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+          ),
+          width: 100,
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+              ),
+              width: 200,
+              height: 10,
             ),
-            width: 100,
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                ),
-                width: 200,
-                height: 10,
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
               ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                width: 30,
-                height: 30,
-              ),
-            ],
-          ),
-        ],
-      ),
+              width: 30,
+              height: 30,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

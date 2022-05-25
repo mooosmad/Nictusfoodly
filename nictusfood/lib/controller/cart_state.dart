@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:nictusfood/models/cartmodel.dart';
 
@@ -12,10 +13,12 @@ class MyCartController extends GetxController {
 
   int getPrice() {
     var price = 0;
-    cart.forEach((element) {
+    for (var element in cart) {
       price += int.parse(element.price!) * element.quantity!.value;
-    });
-    print(price);
+    }
+    if (kDebugMode) {
+      print(price);
+    }
     return price;
   }
 

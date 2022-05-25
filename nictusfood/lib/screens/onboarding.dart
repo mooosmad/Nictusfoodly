@@ -1,12 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nictusfood/constant/colors.dart';
 
 class WithPages extends StatefulWidget {
   const WithPages({Key? key}) : super(key: key);

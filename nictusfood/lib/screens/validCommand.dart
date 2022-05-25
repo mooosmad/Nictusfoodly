@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names
 
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -35,7 +36,11 @@ class _ValidationPageState extends State<ValidationPage> {
   @override
   Widget build(BuildContext context) {
     return load
-        ? Loading()
+        ? WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Loading())
         : Scaffold(
             appBar: AppBar(
               backgroundColor: maincolor,
@@ -55,80 +60,78 @@ class _ValidationPageState extends State<ValidationPage> {
                 ),
               ),
             ),
-            body: Container(
-              child: ListView(
-                children: [
-                  myrecap(),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_rounded,
-                          color: maincolor,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          widget.lieuxLivraison!,
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.monetization_on_sharp,
-                          color: maincolor,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          "Moyen de payement : " + widget.moyentPayement!,
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Shimmer.fromColors(
-                      baseColor: Colors.black,
-                      highlightColor: Colors.grey,
-                      child: Text(
-                        "Veuillez Bien lire avant de valider votre commande",
-                        textAlign: TextAlign.center,
+            body: ListView(
+              children: [
+                myrecap(),
+                SizedBox(height: 20),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_rounded,
+                        color: maincolor,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        widget.lieuxLivraison!,
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
                           ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.monetization_on_sharp,
+                        color: maincolor,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "Moyen de payement : " + widget.moyentPayement!,
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.black,
+                    highlightColor: Colors.grey,
+                    child: Text(
+                      "Veuillez Bien lire avant de valider votre commande",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  myButton(),
-                ],
-              ),
+                ),
+                SizedBox(height: 20),
+                myButton(),
+              ],
             ),
           );
   }
@@ -251,7 +254,9 @@ class _ValidationPageState extends State<ValidationPage> {
           var customer = await APIService().getUser(
             int.parse(widget.idUser!),
           );
-          print("UTILISATEUR PRESENT$customer");
+          if (kDebugMode) {
+            print("UTILISATEUR PRESENT $customer");
+          }
           List<Map<String, dynamic>> products = controller.cart
               .map((element) {
                 return {

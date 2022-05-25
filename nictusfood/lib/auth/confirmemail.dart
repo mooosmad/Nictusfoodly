@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:email_auth/email_auth.dart';
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/customermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
@@ -112,7 +112,9 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                             load = true;
                           });
 
-                          print(widget.model!.toJson());
+                          if (kDebugMode) {
+                            print(widget.model!.toJson());
+                          }
 
                           setState(() {
                             isApiCallProcess = true;
@@ -133,7 +135,9 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                             }
                           });
                         } else {
-                          print("CODE OTP NOT VALIDE");
+                          if (kDebugMode) {
+                            print("CODE OTP NOT VALIDE");
+                          }
                           Get.defaultDialog(
                             title: "Invalide",
                             titleStyle: GoogleFonts.poppins(

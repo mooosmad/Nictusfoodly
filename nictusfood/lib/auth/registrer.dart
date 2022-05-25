@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print
 
 import 'dart:async';
-
 import 'package:email_auth/email_auth.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:location/location.dart';
@@ -17,7 +15,6 @@ import 'package:nictusfood/constant/colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nictusfood/models/customermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
-import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -513,7 +510,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               SizedBox(height: 30),
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Container(
+                child: SizedBox(
                   height: 310,
                   width: double.infinity,
                   // decoration: BoxDecoration(

@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_function_literals_in_foreach_calls, avoid_print
 
 import 'dart:async';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,6 +17,7 @@ import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/cart.dart';
+import 'package:nictusfood/screens/errorPage.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/orderPage.dart';
 import 'package:nictusfood/screens/otherCategoriPage.dart';
@@ -36,7 +36,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Customer? customer;
-  List<Category> category = [];
+  List<Category>? category = [];
   List<Map<String, List<Category>>> maincategory = [];
   Location location = Location();
   bool? serviceEnabled;
@@ -80,23 +80,23 @@ class _HomeState extends State<Home> {
 
   getCategory() async {
     category = await APIService().getCategorie();
-    List<Category> othercategory = [];
-    category.forEach((element) {
-      if (element.categoryName == "Nos Tcheps" ||
-          element.categoryName == "Boutique" ||
-          element.categoryName == "Menu du jour" ||
-          element.categoryName == "Promos") {
-        maincategory.add({
-          element.categoryName!: [element]
-        });
-      } else {
-        othercategory.add(element);
-      }
-    });
-    maincategory.add({"La carte": othercategory});
-    // print("--------------------------");
-    // print(maincategory);
-    // print("--------------------------");
+    if (category != null) {
+      List<Category> othercategory = [];
+
+      category!.forEach((element) {
+        if (element.categoryName == "Nos Tcheps" ||
+            element.categoryName == "Boutique" ||
+            element.categoryName == "Menu du jour" ||
+            element.categoryName == "Promos") {
+          maincategory.add({
+            element.categoryName!: [element]
+          });
+        } else {
+          othercategory.add(element);
+        }
+      });
+      maincategory.add({"La carte": othercategory});
+    }
 
     load = false;
 
@@ -158,330 +158,349 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_advancedDrawerController.value == AdvancedDrawerValue.visible()) {
-          _advancedDrawerController.hideDrawer();
-          return false;
-        } else {
-          return true;
-        }
-      },
-      child: AdvancedDrawer(
-        drawer: StreamBuilder<Customer?>(
-            stream: streamController.stream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.waiting) {
-                if (snapshot.hasData) {
-                  final res = snapshot.data;
+    return category == null
+        ? ErrorPage()
+        : WillPopScope(
+            onWillPop: () async {
+              if (_advancedDrawerController.value ==
+                  AdvancedDrawerValue.visible()) {
+                _advancedDrawerController.hideDrawer();
+                return false;
+              } else {
+                return true;
+              }
+            },
+            child: AdvancedDrawer(
+              drawer: StreamBuilder<Customer?>(
+                  stream: streamController.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.waiting) {
+                      if (snapshot.hasData) {
+                        final res = snapshot.data;
 
-                  return res == null
-                      ? Container(
-                          child: Text("Null"),
-                        )
-                      : res.id != -1
-                          ? SafeArea(
-                              child: Container(
-                                child: ListTileTheme(
-                                  textColor: Colors.white,
-                                  iconColor: Colors.white,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Container(
-                                        width: 128.0,
-                                        height: 128.0,
-                                        margin: const EdgeInsets.only(
-                                          top: 24.0,
-                                          bottom: 64.0,
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black26,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: idUser != null
-                                            ? Container(
-                                                child: CachedNetworkImage(
-                                                  imageUrl: res.urlPic!,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              )
-                                            : Center(
-                                                child:
-                                                    CircularProgressIndicator(),
+                        return res == null
+                            ? Container(
+                                child: Text("Null"),
+                              )
+                            : res.id != -1
+                                ? SafeArea(
+                                    child: Container(
+                                      child: ListTileTheme(
+                                        textColor: Colors.white,
+                                        iconColor: Colors.white,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Container(
+                                              width: 128.0,
+                                              height: 128.0,
+                                              margin: const EdgeInsets.only(
+                                                top: 24.0,
+                                                bottom: 64.0,
                                               ),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          Get.to(
-                                              UpdapteScreen(
-                                                customer: res,
-                                                idUser: idUser,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black26,
+                                                shape: BoxShape.circle,
                                               ),
-                                              transition: Transition.downToUp);
-                                        },
-                                        leading:
-                                            Icon(Icons.account_circle_rounded),
-                                        title: Text('Profile'),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          Get.to(
-                                              OrderPage(
-                                                idUser: idUser,
-                                              ),
-                                              transition: Transition.downToUp);
-                                        },
-                                        leading: Icon(Icons.apps_sharp),
-                                        title: Text('Mes commandes'),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          Get.defaultDialog(
-                                            title: "Deconnexion",
-                                            titleStyle: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 17,
+                                              child: idUser != null
+                                                  ? Container(
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: res.urlPic!,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    )
+                                                  : Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
                                             ),
-                                            contentPadding: EdgeInsets.all(10),
-                                            content: Text(
-                                              "Voulez-vous vraiment vous deconnectez? vous predrez votre panier.",
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            confirm: TextButton(
-                                              onPressed: () async {
-                                                _advancedDrawerController
-                                                    .hideDrawer();
-                                                await APIService().logout();
-
-                                                setState(() {
-                                                  load = true;
-                                                });
-                                                Future.delayed(
-                                                    Duration(seconds: 1));
-                                                setState(() {
-                                                  load = false;
-                                                });
-
-                                                Get.back();
+                                            ListTile(
+                                              onTap: () {
+                                                Get.to(
+                                                    UpdapteScreen(
+                                                      customer: res,
+                                                      idUser: idUser,
+                                                    ),
+                                                    transition:
+                                                        Transition.downToUp);
                                               },
-                                              child: Text(
-                                                "Oui",
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              ),
+                                              leading: Icon(
+                                                  Icons.account_circle_rounded),
+                                              title: Text('Profile'),
                                             ),
-                                            cancel: TextButton(
-                                              onPressed: () {
-                                                Get.back();
+                                            ListTile(
+                                              onTap: () {
+                                                Get.to(
+                                                    OrderPage(
+                                                      idUser: idUser,
+                                                    ),
+                                                    transition:
+                                                        Transition.downToUp);
                                               },
-                                              child: Text("Non"),
+                                              leading: Icon(Icons.apps_sharp),
+                                              title: Text('Mes commandes'),
                                             ),
-                                          );
-                                        },
-                                        leading: Icon(Icons.settings),
-                                        title: Text('Deconnexion'),
-                                      ),
-                                      Spacer(),
-                                      DefaultTextStyle(
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white54,
-                                        ),
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 16.0,
-                                          ),
-                                          child: Text(
-                                              'Terms of Service | Privacy Policy'),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          : SafeArea(
-                              child: Container(
-                                child: ListTileTheme(
-                                  textColor: Colors.white,
-                                  iconColor: Colors.white,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Container(
-                                        width: 128.0,
-                                        height: 128.0,
-                                        margin: const EdgeInsets.only(
-                                          top: 24.0,
-                                          bottom: 64.0,
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black26,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: idUser != null
-                                            ? Center(
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5),
-                                                  child: Text(
-                                                    "Veuillez Vous Conntecter",
+                                            ListTile(
+                                              onTap: () {
+                                                Get.defaultDialog(
+                                                  title: "Deconnexion",
+                                                  titleStyle:
+                                                      GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 17,
+                                                  ),
+                                                  contentPadding:
+                                                      EdgeInsets.all(10),
+                                                  content: Text(
+                                                    "Voulez-vous vraiment vous deconnectez? vous predrez votre panier.",
                                                     textAlign: TextAlign.center,
                                                     style: GoogleFonts.poppins(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 14,
-                                                        color: Colors.white),
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 14,
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            : Center(
-                                                child:
-                                                    CircularProgressIndicator(),
+                                                  confirm: TextButton(
+                                                    onPressed: () async {
+                                                      _advancedDrawerController
+                                                          .hideDrawer();
+                                                      await APIService()
+                                                          .logout();
+
+                                                      setState(() {
+                                                        load = true;
+                                                      });
+                                                      Future.delayed(
+                                                          Duration(seconds: 1));
+                                                      setState(() {
+                                                        load = false;
+                                                      });
+
+                                                      Get.back();
+                                                    },
+                                                    child: Text(
+                                                      "Oui",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
+                                                  ),
+                                                  cancel: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: Text("Non"),
+                                                  ),
+                                                );
+                                              },
+                                              leading: Icon(Icons.settings),
+                                              title: Text('Deconnexion'),
+                                            ),
+                                            Spacer(),
+                                            DefaultTextStyle(
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white54,
                                               ),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          Get.to(
-                                            LoginScreen(
-                                              isdrawer: true,
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 16.0,
+                                                ),
+                                                child: Text(
+                                                    'Terms of Service | Privacy Policy'),
+                                              ),
                                             ),
-                                            transition: Transition.downToUp,
-                                          );
-                                        },
-                                        leading: Icon(Icons.home),
-                                        title: Text('Connexion'),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          Get.to(
-                                            RegisterScreen(
-                                              isdrawer: true,
-                                            ),
-                                            transition: Transition.downToUp,
-                                          );
-                                        },
-                                        leading:
-                                            Icon(Icons.account_circle_rounded),
-                                        title: Text('Inscription'),
-                                      ),
-                                      Spacer(),
-                                      DefaultTextStyle(
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white54,
-                                        ),
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 16.0,
-                                          ),
-                                          child: Text(
-                                              'Terms of Service | Privacy Policy'),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                } else {
-                  return Container();
-                }
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                );
-              }
-            }),
-        backdropColor: Colors.blueGrey.shade400,
-        controller: _advancedDrawerController,
-        animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 300),
-        animateChildDecoration: true,
-        rtlOpening: true,
-        disabledGestures: true,
-        child: Scaffold(
-          key: _key,
-          resizeToAvoidBottomInset: false,
-          backgroundColor: maincolor,
-          floatingActionButton: load!
-              ? null
-              : FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  onPressed: () {
-                    Get.bottomSheet(
-                      CartPage(),
-                      enableDrag: true,
-                      isScrollControlled: true,
-                    );
-                  },
-                  child: Center(
-                    child: Obx(() {
-                      return controller.cart.isNotEmpty
-                          ? Badge(
-                              toAnimate: false,
-                              badgeContent: Text(
-                                controller.cart.length > 9
-                                    ? "9+"
-                                    : controller.cart.length.toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/appassets/shopping-cart 1.png",
-                                width: 30,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/appassets/shopping-cart 1.png",
-                              width: 30,
-                            );
-                    }),
-                  ),
-                ),
-          body: load!
-              ? Loading()
-              : Stack(
-                  children: [
-                    Container(
-                      child: Center(
-                        child: FittedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              myCard(false, maincategory.last),
-                              Container(
-                                child: Column(
+                                    ),
+                                  )
+                                : SafeArea(
+                                    child: Container(
+                                      child: ListTileTheme(
+                                        textColor: Colors.white,
+                                        iconColor: Colors.white,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Container(
+                                              width: 128.0,
+                                              height: 128.0,
+                                              margin: const EdgeInsets.only(
+                                                top: 24.0,
+                                                bottom: 64.0,
+                                              ),
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black26,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: idUser != null
+                                                  ? Center(
+                                                      child: Padding(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 5),
+                                                        child: Text(
+                                                          "Veuillez Vous Conntecter",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                            ),
+                                            ListTile(
+                                              onTap: () {
+                                                Get.to(
+                                                  LoginScreen(
+                                                    isdrawer: true,
+                                                  ),
+                                                  transition:
+                                                      Transition.downToUp,
+                                                );
+                                              },
+                                              leading: Icon(Icons.home),
+                                              title: Text('Connexion'),
+                                            ),
+                                            ListTile(
+                                              onTap: () {
+                                                Get.to(
+                                                  RegisterScreen(
+                                                    isdrawer: true,
+                                                  ),
+                                                  transition:
+                                                      Transition.downToUp,
+                                                );
+                                              },
+                                              leading: Icon(
+                                                  Icons.account_circle_rounded),
+                                              title: Text('Inscription'),
+                                            ),
+                                            Spacer(),
+                                            DefaultTextStyle(
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white54,
+                                              ),
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 16.0,
+                                                ),
+                                                child: Text(
+                                                    'Terms of Service | Privacy Policy'),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                      } else {
+                        return Container();
+                      }
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+                  }),
+              backdropColor: Colors.blueGrey.shade400,
+              controller: _advancedDrawerController,
+              animationCurve: Curves.easeInOut,
+              animationDuration: const Duration(milliseconds: 300),
+              animateChildDecoration: true,
+              rtlOpening: true,
+              disabledGestures: true,
+              child: Scaffold(
+                key: _key,
+                resizeToAvoidBottomInset: false,
+                backgroundColor: maincolor,
+                floatingActionButton: load!
+                    ? null
+                    : FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        onPressed: () async {
+                          Get.bottomSheet(
+                            CartPage(),
+                            enableDrag: true,
+                            isScrollControlled: true,
+                          );
+                        },
+                        child: Center(
+                          child: Obx(() {
+                            return controller.cart.isNotEmpty
+                                ? Badge(
+                                    toAnimate: false,
+                                    badgeContent: Text(
+                                      controller.cart.length > 9
+                                          ? "9+"
+                                          : controller.cart.length.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/appassets/shopping-cart 1.png",
+                                      width: 30,
+                                    ),
+                                  )
+                                : Image.asset(
+                                    "assets/appassets/shopping-cart 1.png",
+                                    width: 30,
+                                  );
+                          }),
+                        ),
+                      ),
+                body: load!
+                    ? Loading()
+                    : Stack(
+                        children: [
+                          Container(
+                            child: Center(
+                              child: FittedBox(
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    myCard(false, maincategory[3]),
-                                    myCard(true, maincategory[2]),
-                                    myCard(false, maincategory[0]),
+                                    myCard(false, maincategory.last),
+                                    Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          myCard(false, maincategory[3]),
+                                          myCard(true, maincategory[2]),
+                                          myCard(false, maincategory[0]),
+                                        ],
+                                      ),
+                                    ),
+                                    myCard(false, maincategory[1]),
                                   ],
                                 ),
                               ),
-                              myCard(false, maincategory[1]),
-                            ],
+                            ),
                           ),
-                        ),
+                          myAppBar(),
+                        ],
                       ),
-                    ),
-                    myAppBar(),
-                  ],
-                ),
-        ),
-      ),
-    );
+              ),
+            ),
+          );
   }
 
   Widget myAppBar() {

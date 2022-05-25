@@ -4,13 +4,11 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
+import 'package:nictusfood/screens/errorPage.dart';
 import 'package:nictusfood/screens/home.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/onboarding.dart';
-import 'package:nictusfood/screens/remercimentpage.dart';
 import 'package:nictusfood/services/utils.dart';
 import 'package:nictusfood/themes/nictustheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,6 +73,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
       backgroundColor: maincolor,
       nextScreen: isFirst != null
           ? false //isFirst!
+              // ignore: dead_code
               ? WithPages()
               : isConnect != null
                   ? isConnect!
@@ -86,58 +85,6 @@ class _MySplashScreenState extends State<MySplashScreen> {
                     )
           : Loading(),
       splashTransition: SplashTransition.slideTransition,
-    );
-  }
-}
-
-class ErrorPage extends StatelessWidget {
-  const ErrorPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: maincolor,
-        padding: EdgeInsets.all(10),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Lottie.asset("assets/lotties/64788-no-internet.json",
-                  height: MediaQuery.of(context).size.height / 2),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                  padding: MaterialStateProperty.all(
-                    EdgeInsets.symmetric(vertical: 12, horizontal: 40),
-                  ),
-                ),
-                child: Text(
-                  "REESAYER",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17,
-                    color: Colors.black,
-                  ),
-                ),
-                onPressed: () {
-                  Get.offAll(MySplashScreen());
-                },
-              ),
-              SizedBox(height: 20),
-              Text(
-                "Veuillez verifier votre connexion internet puis Réesayer",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 17,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

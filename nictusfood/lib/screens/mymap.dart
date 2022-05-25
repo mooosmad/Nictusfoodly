@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -186,7 +185,9 @@ class _MyMapState extends State<MyMap> {
           ),
           InkWell(
             onTap: () async {
-              print(cameraPosition!.target);
+              if (kDebugMode) {
+                print(cameraPosition!.target);
+              }
               lieuLivraison = await Config().getNameOfQuartier(
                     cameraPosition!.target.latitude,
                     cameraPosition!.target.longitude,
@@ -196,7 +197,9 @@ class _MyMapState extends State<MyMap> {
                     cameraPosition!.target.latitude,
                     cameraPosition!.target.longitude,
                   );
-              print(lieuLivraison);
+              if (kDebugMode) {
+                print(lieuLivraison);
+              }
               Get.back(result: lieuLivraison);
             },
             child: Container(

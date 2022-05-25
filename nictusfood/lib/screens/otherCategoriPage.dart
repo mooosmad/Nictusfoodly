@@ -10,7 +10,6 @@ import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/screens/cart.dart';
 import 'package:nictusfood/screens/productPage.dart';
-import 'package:nictusfood/widgets/myappbar.dart';
 
 class OtherCategoriePage extends StatefulWidget {
   final List<Category>? categories;

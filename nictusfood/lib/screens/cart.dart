@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, prefer_const_literals_to_create_immutables, must_be_immutable
+// ignore_for_file: prefer_const_constructors, avoid_print, prefer_const_literals_to_create_immutables, must_be_immutable, unrelated_type_equality_checks
 
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
@@ -15,12 +15,11 @@ import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/mymap.dart';
 import 'package:nictusfood/screens/validCommand.dart';
-import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartPage extends StatefulWidget {
-  CartPage({Key? key}) : super(key: key);
+  const CartPage({Key? key}) : super(key: key);
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -749,7 +748,7 @@ class _CartPageState extends State<CartPage> {
 
   Future<bool> dialogDismmisse() async {
     late bool res;
-    var e = await Get.defaultDialog(
+    await Get.defaultDialog(
       title: "Suppression",
       titleStyle: GoogleFonts.poppins(
         fontWeight: FontWeight.w500,

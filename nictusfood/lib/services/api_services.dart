@@ -156,7 +156,7 @@ class APIService {
     }
   }
 
-  Future<List<Category>> getCategorie() async {
+  Future<List<Category>?> getCategorie() async {
     List<Category> res = [];
     var authToken = base64.encode(
       utf8.encode(Config.key + ":" + Config.secret),
@@ -182,11 +182,20 @@ class APIService {
 
       return res;
     } on DioError catch (e) {
-      print(e.toString() + " error in get categorie");
-      Fluttertoast.showToast(
-        msg: Config().parserHTMLTAG(e.toString()),
-      );
-      return [];
+      if (e.type == DioErrorType.other) {
+        print(e.toString() + " error in get categorie");
+        Fluttertoast.showToast(
+          msg: "Une erreur c'est produite veuillez réessayer",
+        );
+      } else {
+        print(e.toString() + " error in get categorie");
+
+        Fluttertoast.showToast(
+          msg: Config().parserHTMLTAG(e.toString()),
+        );
+      }
+
+      return null;
     }
   }
 
