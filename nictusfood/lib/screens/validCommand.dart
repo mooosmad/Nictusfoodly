@@ -5,9 +5,11 @@ import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/cartmodel.dart';
+import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/remercimentpage.dart';
 import 'package:nictusfood/services/api_services.dart';
@@ -251,9 +253,9 @@ class _ValidationPageState extends State<ValidationPage> {
           setState(() {
             load = true;
           });
-          var customer = await APIService().getUser(
-            int.parse(widget.idUser!),
-          );
+          var box = await Hive.openBox<Customer>('boxCustomer');
+          var customer = box.get("customer");
+
           if (kDebugMode) {
             print("UTILISATEUR PRESENT $customer");
           }

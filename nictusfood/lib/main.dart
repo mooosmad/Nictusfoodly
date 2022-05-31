@@ -4,7 +4,9 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nictusfood/constant/colors.dart';
+import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/errorPage.dart';
 import 'package:nictusfood/screens/home.dart';
 import 'package:nictusfood/screens/loading.dart';
@@ -13,8 +15,13 @@ import 'package:nictusfood/services/utils.dart';
 import 'package:nictusfood/themes/nictustheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+late Box box;
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(CustomerAdapter());
+  box = await Hive.openBox<Customer>('boxCustomer');
   runApp(MyApp());
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitUp]);
 }

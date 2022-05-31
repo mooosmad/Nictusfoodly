@@ -8,6 +8,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:location/location.dart';
 import 'package:nictusfood/auth/login.dart';
 import 'package:nictusfood/auth/registrer.dart';
@@ -24,8 +25,9 @@ import 'package:nictusfood/screens/otherCategoriPage.dart';
 import 'package:nictusfood/screens/productPage.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
-import 'package:nictusfood/services/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+late Box box;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -48,7 +50,6 @@ class _HomeState extends State<Home> {
   String? idUser;
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   final _advancedDrawerController = AdvancedDrawerController();
-  StreamController<Customer?> streamController = StreamController();
   final controller = Get.put(MyCartController());
 
   checkPermission() async {
@@ -118,41 +119,24 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Future<Customer?> returnCustomer() async {
-    if (await Util().isConnected()) {
-      final prefs = await SharedPreferences.getInstance();
-      idUser = prefs.getString("idUser") ?? "-1";
-      if (idUser != "-1") {
-        customer = await APIService().getUser(
-          int.parse(idUser!),
-        );
-        return customer;
-      } else {
-        return Customer(id: -1);
-      }
-    } else {
-      print("NOT CONNECTED");
-      return null;
-    }
-  }
-
   @override
   void dispose() {
     _advancedDrawerController.dispose();
+    Hive.box<Customer>("boxCustomer").close();
     super.dispose();
   }
 
-  updateSink() async {
-    streamController.sink.add(await returnCustomer());
+  Future<bool> initBox() async {
+    box = await Hive.openBox<Customer>('boxCustomer');
+    return true;
   }
 
   @override
   void initState() {
+    initBox();
     getCategory();
     checkPermission();
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      updateSink();
-    });
+    getCustomer();
     super.initState();
   }
 
@@ -171,252 +155,264 @@ class _HomeState extends State<Home> {
               }
             },
             child: AdvancedDrawer(
-              drawer: StreamBuilder<Customer?>(
-                  stream: streamController.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.waiting) {
-                      if (snapshot.hasData) {
-                        final res = snapshot.data;
-
-                        return res == null
-                            ? Container(
-                                child: Text("Null"),
-                              )
-                            : res.id != -1
-                                ? SafeArea(
-                                    child: Container(
-                                      child: ListTileTheme(
-                                        textColor: Colors.white,
-                                        iconColor: Colors.white,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Container(
-                                              width: 128.0,
-                                              height: 128.0,
-                                              margin: const EdgeInsets.only(
-                                                top: 24.0,
-                                                bottom: 64.0,
-                                              ),
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black26,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: idUser != null
-                                                  ? Container(
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: res.urlPic!,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    )
-                                                  : Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    ),
-                                            ),
-                                            ListTile(
-                                              onTap: () {
-                                                Get.to(
-                                                    UpdapteScreen(
-                                                      customer: res,
-                                                      idUser: idUser,
-                                                    ),
-                                                    transition:
-                                                        Transition.downToUp);
-                                              },
-                                              leading: Icon(
-                                                  Icons.account_circle_rounded),
-                                              title: Text('Profile'),
-                                            ),
-                                            ListTile(
-                                              onTap: () {
-                                                Get.to(
-                                                    OrderPage(
-                                                      idUser: idUser,
-                                                    ),
-                                                    transition:
-                                                        Transition.downToUp);
-                                              },
-                                              leading: Icon(Icons.apps_sharp),
-                                              title: Text('Mes commandes'),
-                                            ),
-                                            ListTile(
-                                              onTap: () {
-                                                Get.defaultDialog(
-                                                  title: "Deconnexion",
-                                                  titleStyle:
-                                                      GoogleFonts.poppins(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 17,
+              drawer: FutureBuilder<bool>(
+                  future: initBox(),
+                  builder: (context, asyncR) {
+                    if (asyncR.hasData) {
+                      return asyncR.data!
+                          ? ValueListenableBuilder<Box<Customer>>(
+                              valueListenable: Hive.box<Customer>("boxCustomer")
+                                  .listenable(keys: ["customer"]),
+                              builder: (context, box, child) {
+                                final result =
+                                    box.values.toList().cast<Customer>();
+                                Customer? res;
+                                if (result.isNotEmpty) {
+                                  res = result[0];
+                                }
+                                print(" le result $result");
+                                return result.isEmpty
+                                    ? SafeArea(
+                                        child: Container(
+                                          child: ListTileTheme(
+                                            textColor: Colors.white,
+                                            iconColor: Colors.white,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Container(
+                                                  width: 128.0,
+                                                  height: 128.0,
+                                                  margin: const EdgeInsets.only(
+                                                    top: 24.0,
+                                                    bottom: 64.0,
                                                   ),
-                                                  contentPadding:
-                                                      EdgeInsets.all(10),
-                                                  content: Text(
-                                                    "Voulez-vous vraiment vous deconnectez? vous predrez votre panier.",
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.poppins(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 14,
-                                                    ),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.black26,
+                                                    shape: BoxShape.circle,
                                                   ),
-                                                  confirm: TextButton(
-                                                    onPressed: () async {
-                                                      _advancedDrawerController
-                                                          .hideDrawer();
-                                                      await APIService()
-                                                          .logout();
-
-                                                      setState(() {
-                                                        load = true;
-                                                      });
-                                                      Future.delayed(
-                                                          Duration(seconds: 1));
-                                                      setState(() {
-                                                        load = false;
-                                                      });
-
-                                                      Get.back();
-                                                    },
-                                                    child: Text(
-                                                      "Oui",
-                                                      style: TextStyle(
-                                                          color: Colors.red),
-                                                    ),
-                                                  ),
-                                                  cancel: TextButton(
-                                                    onPressed: () {
-                                                      Get.back();
-                                                    },
-                                                    child: Text("Non"),
-                                                  ),
-                                                );
-                                              },
-                                              leading: Icon(Icons.settings),
-                                              title: Text('Deconnexion'),
-                                            ),
-                                            Spacer(),
-                                            DefaultTextStyle(
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white54,
-                                              ),
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 16.0,
-                                                ),
-                                                child: Text(
-                                                    'Terms of Service | Privacy Policy'),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : SafeArea(
-                                    child: Container(
-                                      child: ListTileTheme(
-                                        textColor: Colors.white,
-                                        iconColor: Colors.white,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Container(
-                                              width: 128.0,
-                                              height: 128.0,
-                                              margin: const EdgeInsets.only(
-                                                top: 24.0,
-                                                bottom: 64.0,
-                                              ),
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black26,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: idUser != null
-                                                  ? Center(
-                                                      child: Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 5),
-                                                        child: Text(
-                                                          "Veuillez Vous Conntecter",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: GoogleFonts
-                                                              .poppins(
+                                                  child: idUser != null
+                                                      ? Center(
+                                                          child: Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        5),
+                                                            child: Text(
+                                                              "Veuillez Vous Conntecter",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: GoogleFonts.poppins(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
                                                                   fontSize: 14,
                                                                   color: Colors
                                                                       .white),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        ),
+                                                ),
+                                                ListTile(
+                                                  onTap: () {
+                                                    Get.to(
+                                                      LoginScreen(
+                                                        isdrawer: true,
+                                                      ),
+                                                      transition:
+                                                          Transition.downToUp,
+                                                    );
+                                                  },
+                                                  leading: Icon(Icons.home),
+                                                  title: Text('Connexion'),
+                                                ),
+                                                ListTile(
+                                                  onTap: () {
+                                                    Get.to(
+                                                      RegisterScreen(
+                                                        isdrawer: true,
+                                                      ),
+                                                      transition:
+                                                          Transition.downToUp,
+                                                    );
+                                                  },
+                                                  leading: Icon(Icons
+                                                      .account_circle_rounded),
+                                                  title: Text('Inscription'),
+                                                ),
+                                                Spacer(),
+                                                DefaultTextStyle(
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white54,
+                                                  ),
+                                                  child: Container(
+                                                    margin: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 16.0,
+                                                    ),
+                                                    child: Text(
+                                                        'Terms of Service | Privacy Policy'),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : SafeArea(
+                                        child: Container(
+                                          child: ListTileTheme(
+                                            textColor: Colors.white,
+                                            iconColor: Colors.white,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Container(
+                                                  width: 128.0,
+                                                  height: 128.0,
+                                                  margin: const EdgeInsets.only(
+                                                    top: 24.0,
+                                                    bottom: 64.0,
+                                                  ),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.black26,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: idUser != null
+                                                      ? Container(
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl:
+                                                                res!.urlPic!,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        )
+                                                      : Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        ),
+                                                ),
+                                                ListTile(
+                                                  onTap: () {
+                                                    print(idUser);
+                                                    Get.to(
+                                                        UpdapteScreen(
+                                                          customer: res,
+                                                          idUser: idUser,
+                                                        ),
+                                                        transition: Transition
+                                                            .downToUp);
+                                                  },
+                                                  leading: Icon(Icons
+                                                      .account_circle_rounded),
+                                                  title: Text('Profile'),
+                                                ),
+                                                ListTile(
+                                                  onTap: () {
+                                                    Get.to(
+                                                        OrderPage(
+                                                          idUser: idUser,
+                                                        ),
+                                                        transition: Transition
+                                                            .downToUp);
+                                                  },
+                                                  leading:
+                                                      Icon(Icons.apps_sharp),
+                                                  title: Text('Mes commandes'),
+                                                ),
+                                                ListTile(
+                                                  onTap: () {
+                                                    Get.defaultDialog(
+                                                      title: "Deconnexion",
+                                                      titleStyle:
+                                                          GoogleFonts.poppins(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 17,
+                                                      ),
+                                                      contentPadding:
+                                                          EdgeInsets.all(10),
+                                                      content: Text(
+                                                        "Voulez-vous vraiment vous deconnectez? vous predrez votre panier.",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 14,
                                                         ),
                                                       ),
-                                                    )
-                                                  : Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    ),
-                                            ),
-                                            ListTile(
-                                              onTap: () {
-                                                Get.to(
-                                                  LoginScreen(
-                                                    isdrawer: true,
-                                                  ),
-                                                  transition:
-                                                      Transition.downToUp,
-                                                );
-                                              },
-                                              leading: Icon(Icons.home),
-                                              title: Text('Connexion'),
-                                            ),
-                                            ListTile(
-                                              onTap: () {
-                                                Get.to(
-                                                  RegisterScreen(
-                                                    isdrawer: true,
-                                                  ),
-                                                  transition:
-                                                      Transition.downToUp,
-                                                );
-                                              },
-                                              leading: Icon(
-                                                  Icons.account_circle_rounded),
-                                              title: Text('Inscription'),
-                                            ),
-                                            Spacer(),
-                                            DefaultTextStyle(
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white54,
-                                              ),
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 16.0,
+                                                      confirm: TextButton(
+                                                        onPressed: () async {
+                                                          _advancedDrawerController
+                                                              .hideDrawer();
+                                                          await APIService()
+                                                              .logout();
+
+                                                          setState(() {
+                                                            load = true;
+                                                          });
+                                                          Future.delayed(
+                                                              Duration(
+                                                                  seconds: 1));
+                                                          setState(() {
+                                                            load = false;
+                                                          });
+
+                                                          Get.back();
+                                                        },
+                                                        child: Text(
+                                                          "Oui",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red),
+                                                        ),
+                                                      ),
+                                                      cancel: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: Text("Non"),
+                                                      ),
+                                                    );
+                                                  },
+                                                  leading: Icon(Icons.settings),
+                                                  title: Text('Deconnexion'),
                                                 ),
-                                                child: Text(
-                                                    'Terms of Service | Privacy Policy'),
-                                              ),
+                                                Spacer(),
+                                                DefaultTextStyle(
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white54,
+                                                  ),
+                                                  child: Container(
+                                                    margin: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 16.0,
+                                                    ),
+                                                    child: Text(
+                                                        'Terms of Service | Privacy Policy'),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  );
-                      } else {
-                        return Container();
-                      }
+                                      );
+                              })
+                          : CircularProgressIndicator();
                     } else {
                       return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
+                        child: CircularProgressIndicator(),
                       );
                     }
                   }),

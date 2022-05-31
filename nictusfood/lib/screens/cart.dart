@@ -303,41 +303,7 @@ class _CartPageState extends State<CartPage> {
                 transition: Transition.rightToLeft,
                 popGesture: true,
               );
-              // setState(() {
-              //   load = true;
-              // });
-              // var customer = await APIService().getUser(
-              //   int.parse(idUser),
-              // );
-              // print("UTILISATEUR PRESENT$customer");
-              // List<Map<String, dynamic>> products = controller.cart
-              //     .map((element) {
-              //       return {
-              //         "product_id": element.productId,
-              //         "quantity": element.quantity!.value,
-              //       };
-              //     })
-              //     .toList()
-              //     .cast<Map<String, dynamic>>();
-
-              // // test api create commande ok
-              // var r = await APIService().createCommande(
-              //   customer!.nom!,
-              //   adresseDeLivraison.value,
-              //   customer.ville!,
-              //   customer.email!,
-              //   customer.phone!,
-              //   products,
-              //   int.parse(idUser),
-              // );
-              // if (r!) {
-              //   controller.cart.clear();
-              //   Fluttertoast.showToast(msg: "Commande effectué");
-              //   Get.back();
-              // }
-              // setState(() {
-              //   load = false;
-              // });
+              
             } else {
               myDialog();
             }

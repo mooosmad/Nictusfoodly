@@ -398,6 +398,7 @@ class _DetailPageState extends State<DetailPage> {
                                   regularPrice: widget.product!.regularPrice,
                                   status: widget.product!.status,
                                 );
+                                // ignore: unused_local_variable
                                 var res = "exist";
                                 if (Config()
                                     .isExistscart(controller.cart, cartItem)) {

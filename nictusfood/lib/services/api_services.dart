@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
@@ -62,6 +63,11 @@ class APIService {
       print("UPDATE USER  : ${response.statusCode}");
 
       if (response.statusCode == 200) {
+        //get customer and update in box
+        var customer = await APIService().getUser(idUser);
+        var box = await Hive.openBox<Customer>('boxCustomer');
+        box.put("customer", customer!);
+        //end
         print("--------------");
         print(response.data);
         Fluttertoast.showToast(msg: "Information modifier avec succes");
@@ -102,6 +108,10 @@ class APIService {
       if (response.statusCode == 201) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("idUser", response.data["id"].toString());
+        var customer =
+            await APIService().getUser(int.parse(prefs.getString("idUser")!));
+        var box = await Hive.openBox<Customer>('boxCustomer');
+        box.put("customer", customer!);
         print("--------------");
         print(response.data);
         ret = [true, "reussi"];
@@ -122,6 +132,11 @@ class APIService {
     await prefs.setString("idUser", "-1");
     Fluttertoast.showToast(msg: "Deconnexion effectué");
     controller.cart.clear();
+
+    //delete in box
+    var box = await Hive.openBox<Customer>('boxCustomer');
+    box.delete("customer");
+    //end
   }
 
   Future<bool?> loginCustomer(String username, String password) async {
@@ -141,6 +156,12 @@ class APIService {
         print(response.data);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("idUser", res["data"]["id"].toString());
+        //get customer and add in box
+        var customer =
+            await APIService().getUser(int.parse(prefs.getString("idUser")!));
+        var box = await Hive.openBox<Customer>('boxCustomer');
+        box.put("customer", customer!);
+        //end
         Fluttertoast.showToast(msg: "Connexion effectué");
         return res["success"];
       } else {
@@ -328,7 +349,7 @@ class APIService {
     }
   }
 
-  Future<List<Order>> getOrder(int idUser) async {
+  Future<List<Order>?> getOrder(int idUser) async {
     //not work
     print(idUser);
     var authToken = base64.encode(
@@ -356,14 +377,21 @@ class APIService {
             .cast<Order>();
         return result;
       } else {
-        return [];
+        return null;
       }
     } on DioError catch (e) {
       print(e.response);
-      Fluttertoast.showToast(
-        msg: Config().parserHTMLTAG(e.response!.data["message"]),
-      );
-      return [];
+      if (e.type == DioErrorType.other) {
+        Fluttertoast.showToast(
+          msg: Config().parserHTMLTAG("Aucune connexion internet"),
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: Config().parserHTMLTAG(e.response.toString()),
+        );
+      }
+
+      return null;
     }
   }
 }

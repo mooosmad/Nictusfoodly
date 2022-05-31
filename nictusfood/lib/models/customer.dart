@@ -1,12 +1,33 @@
+import "package:hive/hive.dart";
+part "customer.g.dart";
+
+@HiveType(typeId: 0)
 class Customer {
+  @HiveField(0)
   final int? id;
+
+  @HiveField(1)
   final String? dateCreated;
+
+  @HiveField(2)
   final String? email;
+
+  @HiveField(3)
   final String? nom;
+
+  @HiveField(4)
   final String? prenom;
+
+  @HiveField(5)
   final String? urlPic;
+
+  @HiveField(6)
   final String? adresse;
+
+  @HiveField(7)
   final String? ville;
+
+  @HiveField(8)
   final String? phone;
 
   const Customer({
