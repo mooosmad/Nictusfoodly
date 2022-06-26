@@ -77,7 +77,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
     return AnimatedSplashScreen(
       splash: 'assets/appassets/logo.png',
       splashIconSize: 300,
-      backgroundColor: maincolor,
+      backgroundColor: Colors.white,
       nextScreen: isFirst != null
           ? false //isFirst!
               // ignore: dead_code

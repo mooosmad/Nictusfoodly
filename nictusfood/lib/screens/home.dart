@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_function_literals_in_foreach_calls, avoid_print
+// ignore_for_file: avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_function_literals_in_foreach_calls, avoid_print, deprecated_member_use
 
 import 'dart:async';
 import 'package:animate_do/animate_do.dart';
@@ -26,6 +26,7 @@ import 'package:nictusfood/screens/productPage.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 late Box box;
 
@@ -516,14 +517,28 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.only(right: 5, left: 3),
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width - 150),
-            child: Text(
-              "7/7 ouvert de 11h à 21h et “Pour les pros“ ",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                textStyle: TextStyle(),
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
+            child: TextButton(
+              onPressed: () async {
+                const url = 'https://versamete.net';
+                if (await canLaunch(url)) {
+                  await launch(
+                    url,
+                    forceWebView: true,
+                    forceSafariVC: true,
+                  );
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: Text(
+                "7/7 ouvert de 11h à 21h et “Pour les pros“ ",
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(),
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -597,7 +612,7 @@ class _HomeState extends State<Home> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          ElasticIn(
+          ElasticInDown(
             child: Container(
               width: iscenter ? 140 : 120,
               height: iscenter ? 140 : 120,
@@ -613,6 +628,13 @@ class _HomeState extends State<Home> {
                           categories.values.toList()[0][0].image!,
                         ),
                       ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 4,
+                    offset: Offset(4, 8), // Shadow position
+                  ),
+                ],
               ),
             ),
           ),

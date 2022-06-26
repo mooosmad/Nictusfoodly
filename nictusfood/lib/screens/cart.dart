@@ -303,7 +303,6 @@ class _CartPageState extends State<CartPage> {
                 transition: Transition.rightToLeft,
                 popGesture: true,
               );
-              
             } else {
               myDialog();
             }
@@ -325,7 +324,7 @@ class _CartPageState extends State<CartPage> {
           ),
           child: Center(
             child: Text(
-              "Valider ma commande",
+              "Je valide ma commande",
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(
                   fontSize: 17,

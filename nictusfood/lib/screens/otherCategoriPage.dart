@@ -121,6 +121,13 @@ class _OtherCategoriePageState extends State<OtherCategoriePage> {
                                 image: NetworkImage(
                                     widget.categories![index].image!),
                               ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 4,
+                                  offset: Offset(4, 8), // Shadow position
+                                ),
+                              ],
                             ),
                           ),
                         ),

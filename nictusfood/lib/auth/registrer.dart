@@ -100,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   @override
   void initState() {
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     checkPermission();
     super.initState();
   }

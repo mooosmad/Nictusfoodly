@@ -48,7 +48,7 @@ class _ValidationPageState extends State<ValidationPage> {
               backgroundColor: maincolor,
               elevation: 0,
               title: Text(
-                "Valider votre commande",
+                "Je valide votre commande",
                 style: TextStyle(color: Colors.white),
               ),
               centerTitle: true,
@@ -297,7 +297,7 @@ class _ValidationPageState extends State<ValidationPage> {
           ),
           child: Center(
             child: Text(
-              "Valider ma commande",
+              "Je valide ma commande",
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(
                   fontSize: 17,
