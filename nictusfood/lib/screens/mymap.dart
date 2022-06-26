@@ -48,8 +48,9 @@ class _MyMapState extends State<MyMap> {
       zoom: 14,
       target: LatLng(myLocation!.latitude!, myLocation!.longitude!),
     );
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
