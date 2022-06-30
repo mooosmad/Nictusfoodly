@@ -255,7 +255,7 @@ class _ProductPageState extends State<ProductPage> {
                   children: [
                     FittedBox(
                       child: Text(
-                        product.price! + 'FCFA',
+                        '${product.price!}FCFA',
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(fontWeight: FontWeight.w600),
                         ),
@@ -298,12 +298,12 @@ class _ProductPageState extends State<ProductPage> {
                       },
                       child: SizedBox(
                         width: 30,
+                        height: 30,
                         child: Image.asset(
                           "assets/appassets/shopping-cart 1.png",
                           cacheHeight: 25,
                           cacheWidth: 25,
                         ),
-                        height: 30,
                       ),
                     ),
                   ],
@@ -370,7 +370,7 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       FittedBox(
                                         child: Text(
-                                          product.price! + 'FCFA',
+                                          '${product.price!}FCFA',
                                           style: GoogleFonts.poppins(
                                             textStyle: TextStyle(
                                                 fontWeight: FontWeight.w600),
@@ -437,12 +437,12 @@ class _ProductPageState extends State<ProductPage> {
                       },
                       child: Container(
                         width: 30,
+                        height: 30,
                         child: Image.asset(
                           "assets/appassets/shopping-cart 1.png",
                           cacheHeight: 25,
                           cacheWidth: 25,
                         ),
-                        height: 30,
                       ),
                     ),
                   ),

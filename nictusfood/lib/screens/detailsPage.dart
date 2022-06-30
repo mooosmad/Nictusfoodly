@@ -164,7 +164,7 @@ class _DetailPageState extends State<DetailPage> {
                           Center(
                             child: Text(
                               Config().parserHTMLTAG(
-                                  widget.product!.price! + " FCFA"),
+                                  "${widget.product!.price!} FCFA"),
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                     fontSize: 25, fontWeight: FontWeight.bold),
@@ -296,9 +296,8 @@ class _DetailPageState extends State<DetailPage> {
                                                   ),
                                                   children: [
                                                     TextSpan(
-                                                      text: "  + " +
-                                                          produit.price! +
-                                                          " FCFA",
+                                                      text:
+                                                          "  + ${produit.price!} FCFA",
                                                       style:
                                                           GoogleFonts.poppins(
                                                         textStyle: TextStyle(
@@ -358,12 +357,12 @@ class _DetailPageState extends State<DetailPage> {
                                               },
                                               child: SizedBox(
                                                 width: 30,
+                                                height: 30,
                                                 child: Image.asset(
                                                   "assets/appassets/shopping-cart 1.png",
                                                   cacheHeight: 25,
                                                   cacheWidth: 25,
                                                 ),
-                                                height: 30,
                                               ),
                                             ),
                                           ],

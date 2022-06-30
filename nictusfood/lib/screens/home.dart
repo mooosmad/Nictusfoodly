@@ -123,21 +123,27 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     _advancedDrawerController.dispose();
-    Hive.box<Customer>("boxCustomer").close();
+    closeBox();
     super.dispose();
   }
 
-  Future<bool> initBox() async {
-    box = await Hive.openBox<Customer>('boxCustomer');
-    return true;
+  closeBox() async {
+    // await Hive.openBox<Customer>('boxCustomer');
+    box.close();
   }
 
   @override
   void initState() {
-    initBox();
-    getCategory();
-    checkPermission();
-    getCustomer();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      box = await Hive.openBox<Customer>('boxCustomer');
+      await getCategory();
+      await checkPermission();
+      await getCustomer();
+      if (mounted) {
+        setState(() {});
+      }
+    });
+
     super.initState();
   }
 
@@ -156,11 +162,11 @@ class _HomeState extends State<Home> {
               }
             },
             child: AdvancedDrawer(
-              drawer: FutureBuilder<bool>(
-                  future: initBox(),
+              drawer: FutureBuilder(
+                  future: Hive.openBox<Customer>('boxCustomer'),
                   builder: (context, asyncR) {
                     if (asyncR.hasData) {
-                      return asyncR.data!
+                      return asyncR.data != null
                           ? ValueListenableBuilder<Box<Customer>>(
                               valueListenable: Hive.box<Customer>("boxCustomer")
                                   .listenable(keys: ["customer"]),
@@ -570,15 +576,15 @@ class _HomeState extends State<Home> {
               _advancedDrawerController.showDrawer();
             },
             child: Container(
-              child: Icon(
-                Icons.person,
-                color: maincolor,
-              ),
               width: 30,
               height: 30,
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.person,
+                color: maincolor,
               ),
             ),
           )

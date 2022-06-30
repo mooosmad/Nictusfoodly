@@ -19,11 +19,11 @@ class APIService {
   final controller = Get.put(MyCartController());
   Future<Customer?> getUser(int id) async {
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     try {
       var response = await Dio().get(
-        Config.url + "customers/$id",
+        "${Config.url}customers/$id",
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -46,11 +46,11 @@ class APIService {
 
   Future<bool> updateUser(Map<String, dynamic> newmodel, int idUser) async {
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     try {
       var response = await Dio().post(
-        Config.url + "customers/$idUser",
+        "${Config.url}customers/$idUser",
         data: newmodel,
         options: Options(
           headers: {
@@ -88,7 +88,7 @@ class APIService {
 
   Future<List<dynamic>?> createCustomer(CustomerModel model) async {
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
 
     List<dynamic>? ret;
@@ -180,7 +180,7 @@ class APIService {
   Future<List<Category>?> getCategorie() async {
     List<Category> res = [];
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     print("---GET CATEGORIES----");
     try {
@@ -204,12 +204,12 @@ class APIService {
       return res;
     } on DioError catch (e) {
       if (e.type == DioErrorType.other) {
-        print(e.toString() + " error in get categorie");
+        print("$e error in get categorie");
         Fluttertoast.showToast(
           msg: "Une erreur c'est produite veuillez réessayer",
         );
       } else {
-        print(e.toString() + " error in get categorie");
+        print("$e error in get categorie");
 
         Fluttertoast.showToast(
           msg: Config().parserHTMLTAG(e.toString()),
@@ -223,7 +223,7 @@ class APIService {
   Future<List<Product>>? getProductByCategorie(int idCategory) async {
     List<Product>? res = [];
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     try {
       var response = await Dio().get(
@@ -253,7 +253,7 @@ class APIService {
 
   Future<Product?> getProductById(int idProduct) async {
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     try {
       var response = await Dio().get(
@@ -288,7 +288,7 @@ class APIService {
       List<Map<String, dynamic>> products,
       int idUser) async {
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     var data = {
       "payment_method": "",
@@ -353,7 +353,7 @@ class APIService {
     //not work
     print(idUser);
     var authToken = base64.encode(
-      utf8.encode(Config.key + ":" + Config.secret),
+      utf8.encode("${Config.key}:${Config.secret}"),
     );
     try {
       var response = await Dio().get(

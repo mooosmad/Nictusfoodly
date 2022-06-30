@@ -27,6 +27,24 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
+  String getStatut(String statusReturned) {
+    switch (statusReturned) {
+      case "progress-shipment":
+        return "Commande en cours de livraison";
+      case "arrival-shipment":
+        return "Commande arrivée";
+      case "shipped":
+        return "Commande à proximité";
+      case "processing":
+        return "En cours de préparation";
+      case "completed":
+        return "Terminé";
+
+      default:
+        return "";
+    }
+  }
+
   @override
   void initState() {
     getOrder();
@@ -36,7 +54,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return load
-        ? Container(child: Loading(), color: Colors.white)
+        ? Container(color: Colors.white, child: Loading())
         : Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -108,7 +126,7 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                       Text("Montant Total: "),
                                       Text(
-                                        orders![i].priceTotal! + ' FCFA',
+                                        '${orders![i].priceTotal!} FCFA',
                                         style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
                                             fontSize: 17,
@@ -127,15 +145,16 @@ class _OrderPageState extends State<OrderPage> {
                                     decoration: BoxDecoration(
                                         color: orders![i].status == "completed"
                                             ? Colors.green.withOpacity(0.6)
-                                            : Colors.yellow.withOpacity(0.6),
+                                            : Colors.white,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     child: Text(
-                                      orders![i].status!,
+                                      // orders![i].status!,
+                                      getStatut(orders![i].status!),
                                       style: GoogleFonts.poppins(
                                         textStyle: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          // fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),

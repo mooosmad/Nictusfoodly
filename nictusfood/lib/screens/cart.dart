@@ -344,10 +344,10 @@ class _CartPageState extends State<CartPage> {
       value: "espece",
       items: [
         DropdownMenuItem(
+          value: "espece",
           child: Text(
             "Espèce",
           ),
-          value: "espece",
         ),
       ],
       hint: Text("Espèce"),
@@ -439,7 +439,7 @@ class _CartPageState extends State<CartPage> {
               ),
               Obx(() {
                 return Text(
-                  controller.getPrice().toString() + " FCFA",
+                  "${controller.getPrice()} FCFA",
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                       fontSize: 17,
@@ -486,7 +486,7 @@ class _CartPageState extends State<CartPage> {
               ),
               Obx(() {
                 return Text(
-                  (controller.getPrice() + 1000).toString() + " FCFA",
+                  "${controller.getPrice() + 1000} FCFA",
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                       fontSize: 17,
@@ -666,7 +666,7 @@ class _CartPageState extends State<CartPage> {
                                 ),
                                 SizedBox(width: 10),
                                 Text(
-                                  cartItem.price! + 'FCFA',
+                                  '${cartItem.price!}FCFA',
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.poppins(
                                     textStyle:

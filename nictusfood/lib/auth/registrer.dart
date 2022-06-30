@@ -1,20 +1,21 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, avoid_print, use_build_context_synchronously
 
 import 'dart:async';
 import 'package:email_auth/email_auth.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:location/location.dart';
 import 'package:map_picker/map_picker.dart';
 import 'package:nictusfood/Components/background.dart';
-import 'package:nictusfood/auth/confirmemail.dart';
 import 'package:nictusfood/auth/login.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nictusfood/models/customermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
+import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -407,6 +408,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                         child: RaisedButton(
                           onPressed: () async {
                             if (formGlobalKey.currentState!.validate()) {
+                              setState(() {
+                                load = true;
+                              });
                               String firstname = nomComplet.text.split(" ")[0];
                               String lastname = nomComplet.text;
                               // // on doit trouver c'est quoi le nom et le prenom dans nomcoplet
@@ -419,9 +423,20 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 ville.text,
                                 numero.text,
                               );
-                              if (await sendOtp(email.text)) {
-                                Get.to(ConfirmEmailPage(model: model));
-                              }
+
+                              APIService().createCustomer(model).then((ret) {
+                                setState(() {
+                                  isApiCallProcess = false;
+                                });
+                                // if ret[0] is true reussi
+                                if (ret![0]) {
+                                  Fluttertoast.showToast(
+                                      msg: "Inscription effectué avec succès");
+                                  Get.offAllNamed("/home");
+                                } else {
+                                  Get.offAllNamed("/home");
+                                }
+                              });
                             } else {
                               print("noo valide");
                             }

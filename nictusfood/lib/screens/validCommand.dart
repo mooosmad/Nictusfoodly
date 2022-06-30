@@ -100,7 +100,7 @@ class _ValidationPageState extends State<ValidationPage> {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        "Moyen de payement : " + widget.moyentPayement!,
+                        "Moyen de payement : ${widget.moyentPayement!}",
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                             fontSize: 18,
@@ -162,6 +162,9 @@ class _ValidationPageState extends State<ValidationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width / 2,
+                  ),
                   child: Text(
                     item.productName!,
                     style: GoogleFonts.poppins(
@@ -170,25 +173,19 @@ class _ValidationPageState extends State<ValidationPage> {
                       ),
                     ),
                   ),
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width / 2,
-                  ),
                 ),
                 Container(
                   padding: EdgeInsets.only(right: 5),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width / 2,
+                  ),
                   child: Text(
-                    item.price.toString() +
-                        " FCFA" +
-                        " x " +
-                        item.quantity.toString(),
+                    "${item.price} FCFA x ${item.quantity}",
                     style: GoogleFonts.poppins(
                       textStyle: TextStyle(
                         fontSize: 17,
                       ),
                     ),
-                  ),
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width / 2,
                   ),
                 ),
               ],
@@ -232,7 +229,7 @@ class _ValidationPageState extends State<ValidationPage> {
                 ),
               ),
               Text(
-                (controller.getPrice() + 1000).toString() + " FCFA",
+                "${controller.getPrice() + 1000} FCFA",
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
                     fontSize: 17,

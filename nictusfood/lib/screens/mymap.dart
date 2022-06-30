@@ -189,15 +189,13 @@ class _MyMapState extends State<MyMap> {
               if (kDebugMode) {
                 print(cameraPosition!.target);
               }
-              lieuLivraison = await Config().getNameOfQuartier(
-                    cameraPosition!.target.latitude,
-                    cameraPosition!.target.longitude,
-                  ) +
-                  " " +
-                  await Config().getNameOfStreet(
-                    cameraPosition!.target.latitude,
-                    cameraPosition!.target.longitude,
-                  );
+              lieuLivraison = "${await Config().getNameOfQuartier(
+                cameraPosition!.target.latitude,
+                cameraPosition!.target.longitude,
+              )} ${await Config().getNameOfStreet(
+                cameraPosition!.target.latitude,
+                cameraPosition!.target.longitude,
+              )}";
               if (kDebugMode) {
                 print(lieuLivraison);
               }
