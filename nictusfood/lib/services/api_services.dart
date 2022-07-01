@@ -279,7 +279,7 @@ class APIService {
     }
   }
 
-  Future<bool>? createCommande(
+  Future<List<dynamic>>? createCommande(
       String name,
       String adresseDeLivraison,
       String city,
@@ -339,13 +339,13 @@ class APIService {
       );
 
       if (response.statusCode == 201) {
-        print(response.data.toString());
-        return true;
+        final res = Order.fromJson(response.data);
+        return [true, res];
       }
-      return false;
+      return [false];
     } on DioError catch (e) {
       print(e.toString());
-      return false;
+      return [false];
     }
   }
 

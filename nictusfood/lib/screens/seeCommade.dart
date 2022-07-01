@@ -1,44 +1,69 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
-import 'package:nictusfood/screens/orderPage.dart';
-import 'package:nictusfood/screens/seeCommade.dart';
 
-class RemercimentPage extends StatefulWidget {
-  final String? idUser;
+import '../constant/colors.dart';
+
+class SeeCommande extends StatefulWidget {
   final Order? order;
-  const RemercimentPage({Key? key, required this.idUser, required this.order})
-      : super(key: key);
+  const SeeCommande({Key? key, required this.order}) : super(key: key);
 
   @override
-  State<RemercimentPage> createState() => _RemercimentPageState();
+  State<SeeCommande> createState() => _SeeCommandeState();
 }
 
-class _RemercimentPageState extends State<RemercimentPage> {
+class _SeeCommandeState extends State<SeeCommande> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Statut de la commande"),
+      ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Center(
           child: ListView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
             children: [
               Lottie.asset(
-                "assets/lotties/delivered.json",
+                "assets/lotties/107669-cooking.json",
                 fit: BoxFit.cover,
+              ),
+              Column(
+                children: [
+                  Text(
+                    "Etat de la commande : ",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    getStatut("${widget.order!.status}"),
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
               Center(
                 child: Text(
-                  "Succès",
+                  "Recu de la commande : ",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              Center(
+                child: Text(
+                  "${widget.order!.keyOrder}",
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 17,
                   ),
                 ),
               ),
@@ -49,14 +74,6 @@ class _RemercimentPageState extends State<RemercimentPage> {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 17,
-                ),
-              ),
-              Text(
-                "Votre commande sera livré dans quelques minutes",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 15,
                 ),
               ),
               const SizedBox(height: 20),
@@ -72,13 +89,7 @@ class _RemercimentPageState extends State<RemercimentPage> {
     return Center(
       child: InkWell(
         onTap: () async {
-          // Get.offAllNamed("/home");
-          Get.to(
-            SeeCommande(
-              order: widget.order,
-            ),
-            transition: Transition.rightToLeft,
-          );
+          Get.offAllNamed("/home");
         },
         child: Container(
           height: 50,
@@ -89,7 +100,7 @@ class _RemercimentPageState extends State<RemercimentPage> {
           ),
           child: Center(
             child: Text(
-              "Je suis ma commande",
+              "Retouner au menu",
               style: GoogleFonts.poppins(
                 textStyle: const TextStyle(
                   fontSize: 17,
@@ -102,5 +113,23 @@ class _RemercimentPageState extends State<RemercimentPage> {
         ),
       ),
     );
+  }
+
+  String getStatut(String statusReturned) {
+    switch (statusReturned) {
+      case "progress-shipment":
+        return "Commande en cours de livraison";
+      case "arrival-shipment":
+        return "Commande arrivée";
+      case "shipped":
+        return "Commande à proximité";
+      case "processing":
+        return "En cours de préparation";
+      case "completed":
+        return "Terminé";
+
+      default:
+        return "";
+    }
   }
 }

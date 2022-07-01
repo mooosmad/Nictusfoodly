@@ -47,7 +47,9 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   void initState() {
-    getOrder();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getOrder();
+    });
     super.initState();
   }
 

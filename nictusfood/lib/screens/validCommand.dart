@@ -267,7 +267,7 @@ class _ValidationPageState extends State<ValidationPage> {
               .cast<Map<String, dynamic>>();
 
           // test api create commande ok
-          var r = await APIService().createCommande(
+          final r = await APIService().createCommande(
             customer!.nom!,
             widget.lieuxLivraison!,
             customer.ville!,
@@ -276,14 +276,20 @@ class _ValidationPageState extends State<ValidationPage> {
             products,
             int.parse(widget.idUser!),
           );
-          if (r!) {
+          if (r![0] == true) {
             controller.cart.clear();
             Fluttertoast.showToast(msg: "Commande effectué");
-            Get.offAll(RemercimentPage());
+            Get.offAll(
+              RemercimentPage(
+                idUser: widget.idUser!,
+                order: r[1],
+              ),
+            );
+          } else {
+            setState(() {
+              load = false;
+            });
           }
-          setState(() {
-            load = false;
-          });
         },
         child: Container(
           height: 50,
