@@ -19,7 +19,7 @@ class _SeeCommandeState extends State<SeeCommande> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Statut de la commande"),
+        title: const Text("Statut de la commande"),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

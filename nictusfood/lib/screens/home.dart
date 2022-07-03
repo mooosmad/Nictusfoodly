@@ -237,7 +237,7 @@ class _HomeState extends State<Home> {
                                                     );
                                                   },
                                                   leading: Icon(Icons.home),
-                                                  title: Text('Connexion'),
+                                                  title: Text('Je me connecte'),
                                                 ),
                                                 ListTile(
                                                   onTap: () {

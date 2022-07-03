@@ -349,6 +349,12 @@ class _CartPageState extends State<CartPage> {
             "Espèce",
           ),
         ),
+        DropdownMenuItem(
+          value: "OrangeMoney",
+          child: Text(
+            "OrangeMoney(0769418743)",
+          ),
+        ),
       ],
       hint: Text("Espèce"),
       style: GoogleFonts.poppins(
@@ -430,7 +436,7 @@ class _CartPageState extends State<CartPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "plats:",
+                "Sous-Total:",
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
                     fontSize: 17,

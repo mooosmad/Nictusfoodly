@@ -80,7 +80,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: 'assets/appassets/logo.png',
-      splashIconSize: 300,
+      splashIconSize: 250,
       backgroundColor: Colors.white,
       nextScreen: isFirst != null
           ? false //isFirst!

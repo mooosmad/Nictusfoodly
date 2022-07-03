@@ -481,7 +481,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             );
                           },
                           child: Text(
-                            "J'ai déjà un compte? Connectez-vous",
+                            "J'ai déjà un compte? Je me connecte",
                             style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,

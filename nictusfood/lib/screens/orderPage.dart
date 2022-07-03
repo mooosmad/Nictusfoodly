@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/services/api_services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderPage extends StatefulWidget {
   final String? idUser;
@@ -159,6 +160,18 @@ class _OrderPageState extends State<OrderPage> {
                                           // fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 20,
+                                  left: 20,
+                                  child: Container(
+                                    padding: EdgeInsets.all(5),
+                                    child: IconButton(
+                                      onPressed: () =>
+                                          launch("tel:+2250769418743"),
+                                      icon: Icon(Icons.call),
                                     ),
                                   ),
                                 ),
