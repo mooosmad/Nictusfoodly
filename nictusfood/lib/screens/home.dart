@@ -222,8 +222,8 @@ class _HomeState extends State<Home> {
                                                           ),
                                                         )
                                                       : Center(
-                                                          child:
-                                                              CircularProgressIndicator(),
+                                                          child: Image.asset(
+                                                              "assets/appassets/Mon compte.png"),
                                                         ),
                                                 ),
                                                 ListTile(
@@ -525,7 +525,7 @@ class _HomeState extends State<Home> {
                 maxWidth: MediaQuery.of(context).size.width - 150),
             child: TextButton(
               onPressed: () async {
-                const url = 'https://versamete.net';
+                const url = 'https://tchepexpress.com';
                 if (await canLaunch(url)) {
                   await launch(
                     url,
@@ -628,7 +628,7 @@ class _HomeState extends State<Home> {
                 color: Colors.white,
                 image: categories.keys.toList()[0] == "La carte"
                     ? DecorationImage(
-                        image: AssetImage("assets/appassets/menu 1.png"))
+                        image: AssetImage("assets/appassets/Menucarte.png"))
                     : DecorationImage(
                         image: NetworkImage(
                           categories.values.toList()[0][0].image!,
