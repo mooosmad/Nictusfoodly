@@ -92,7 +92,7 @@ class _ValidationPageState extends State<ValidationPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
+                  child: Wrap(
                     children: [
                       Icon(
                         Icons.monetization_on_sharp,
@@ -101,6 +101,7 @@ class _ValidationPageState extends State<ValidationPage> {
                       SizedBox(width: 10),
                       Text(
                         "Moyen de payement : ${widget.moyentPayement!}",
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                             fontSize: 18,

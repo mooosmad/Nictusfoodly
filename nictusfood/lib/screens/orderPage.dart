@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, file_names
 
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
+import 'package:nictusfood/screens/seeCommade.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -97,47 +99,59 @@ class _OrderPageState extends State<OrderPage> {
                           itemBuilder: (context, i) {
                             return Stack(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  height: 170,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        offset: Offset(0.5, 1),
-                                        blurRadius: 2.0,
-                                        spreadRadius: .5,
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(
+                                      SeeCommande(
+                                        order: orders![i],
+                                        showBtn: false,
                                       ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Recu de la commande : "),
-                                      Text(
-                                        orders![i].keyOrder!,
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w600,
+                                      transition: Transition.cupertino,
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    height: 170,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          offset: Offset(0.5, 1),
+                                          blurRadius: 2.0,
+                                          spreadRadius: .5,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text("Reçu de la commande : "),
+                                        Text(
+                                          orders![i].keyOrder!,
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Text("Montant Total: "),
-                                      Text(
-                                        '${orders![i].priceTotal!} FCFA',
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500,
+                                        Text("Montant Total: "),
+                                        Text(
+                                          '${orders![i].priceTotal!} FCFA',
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Positioned(
@@ -169,8 +183,8 @@ class _OrderPageState extends State<OrderPage> {
                                   child: Container(
                                     padding: EdgeInsets.all(5),
                                     child: IconButton(
-                                      onPressed: () =>
-                                          launch("tel:+2250769418743"),
+                                      onPressed: () => launchUrl(
+                                          Uri.parse("tel:+2250769418743")),
                                       icon: Icon(Icons.call),
                                     ),
                                   ),

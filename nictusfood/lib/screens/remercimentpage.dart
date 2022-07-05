@@ -44,7 +44,7 @@ class _RemercimentPageState extends State<RemercimentPage> {
               ),
               const SizedBox(height: 10),
               Text(
-                "TchepExpress vous remercie et votre commande est en cours de préparation",
+                "TchêpExpress vous remercie et votre commande est en cours de préparation",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
@@ -52,7 +52,7 @@ class _RemercimentPageState extends State<RemercimentPage> {
                 ),
               ),
               Text(
-                "Votre commande sera livré dans quelques minutes",
+                "Votre commande sera livrée dans quelques minutes",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,

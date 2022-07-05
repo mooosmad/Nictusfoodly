@@ -1,14 +1,19 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nictusfood/models/ordermodel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constant/colors.dart';
 
 class SeeCommande extends StatefulWidget {
   final Order? order;
-  const SeeCommande({Key? key, required this.order}) : super(key: key);
+  final bool? showBtn;
+  const SeeCommande({Key? key, required this.order, this.showBtn = true})
+      : super(key: key);
 
   @override
   State<SeeCommande> createState() => _SeeCommandeState();
@@ -22,14 +27,16 @@ class _SeeCommandeState extends State<SeeCommande> {
         title: const Text("Statut de la commande"),
       ),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Center(
           child: ListView(
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
             children: [
               Lottie.asset(
-                "assets/lotties/107669-cooking.json",
+                widget.order!.status == "completed"
+                    ? "assets/lotties/success.json"
+                    : "assets/lotties/107669-cooking.json",
                 fit: BoxFit.cover,
               ),
               Column(
@@ -52,7 +59,7 @@ class _SeeCommandeState extends State<SeeCommande> {
               const SizedBox(height: 10),
               Center(
                 child: Text(
-                  "Recu de la commande : ",
+                  "Reçu de la commande : ",
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                   ),
@@ -69,7 +76,9 @@ class _SeeCommandeState extends State<SeeCommande> {
               ),
               const SizedBox(height: 10),
               Text(
-                "TchepExpress vous remercie et votre commande est en cours de préparation",
+                widget.order!.status == "completed"
+                    ? "Votre commande a bien été livrés avec succès. Merci de nous avoir fait confiance"
+                    : "TchêpExpress vous remercie et votre commande sera livré d'ici peu",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
@@ -77,7 +86,39 @@ class _SeeCommandeState extends State<SeeCommande> {
                 ),
               ),
               const SizedBox(height: 20),
-              myButton(),
+              if (widget.order!.status != "completed")
+                Center(
+                  child: GestureDetector(
+                    onTap: () => launchUrl(Uri.parse("tel:+2250769418743")),
+                    child: Container(
+                      height: 50,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade200,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.call,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Appeler",
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Colors.white,
+                              ),
+                            )
+                          ]),
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 20),
+              if (widget.showBtn!) myButton(),
             ],
           ),
         ),
