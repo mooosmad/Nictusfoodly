@@ -33,6 +33,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  # rename_app: ^1.1.0
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
   dio: ^4.0.6

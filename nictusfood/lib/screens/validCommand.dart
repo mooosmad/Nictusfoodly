@@ -48,7 +48,8 @@ class _ValidationPageState extends State<ValidationPage> {
               backgroundColor: maincolor,
               elevation: 0,
               title: Text(
-                "Je valide votre commande",
+                // "Je valide votre commande",
+                "Validation",
                 style: TextStyle(color: Colors.white),
               ),
               centerTitle: true,
@@ -75,12 +76,16 @@ class _ValidationPageState extends State<ValidationPage> {
                         color: maincolor,
                       ),
                       SizedBox(width: 10),
-                      Text(
-                        widget.lieuxLivraison!,
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: FittedBox(
+                          child: Text(
+                            widget.lieuxLivraison!,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ),
                       )
@@ -92,20 +97,24 @@ class _ValidationPageState extends State<ValidationPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Wrap(
+                  child: Row(
                     children: [
                       Icon(
                         Icons.monetization_on_sharp,
                         color: maincolor,
                       ),
                       SizedBox(width: 10),
-                      Text(
-                        "Moyen de payement : ${widget.moyentPayement!}",
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: FittedBox(
+                          child: Text(
+                            "Moyen de payement : ${widget.moyentPayement!}",
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ),
                       )
