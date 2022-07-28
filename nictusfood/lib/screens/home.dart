@@ -606,6 +606,7 @@ class _HomeState extends State<Home> {
         } else {
           Get.to(
             () {
+              // print(categories.values.toList()[0][0].image!);
               return ProductPage(
                 category: categories.values.toList()[0][0],
                 isGrid: false,
