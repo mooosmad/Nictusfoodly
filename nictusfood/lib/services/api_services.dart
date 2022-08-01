@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
@@ -17,6 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class APIService {
   final controller = Get.put(MyCartController());
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   Future<Customer?> getUser(int id) async {
     var authToken = base64.encode(
       utf8.encode("${Config.key}:${Config.secret}"),
@@ -127,9 +130,49 @@ class APIService {
     return ret;
   }
 
+  Future<bool?> socialLogin(String username, urlPicToAccount) async {
+    try {
+      var response = await Dio().post(
+        Config.tokenUrl,
+        data: {"username": username, "social_login": "true"},
+        options: Options(
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        var res = response.data;
+        print(res);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("idUser", res["data"]["id"].toString());
+        var customer =
+            await APIService().getUser(int.parse(prefs.getString("idUser")!));
+        customer!.urlPic = urlPicToAccount;
+        var box = await Hive.openBox<Customer>('boxCustomer');
+        box.put("customer", customer);
+
+        print("--------------");
+        return true;
+      } else {
+        return false;
+      }
+    } on DioError catch (e) {
+      print(e.response);
+
+      Fluttertoast.showToast(
+        msg: e.response!.data["message"],
+      );
+      return false;
+    }
+  }
+
   logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("idUser", "-1");
+    if (await _googleSignIn.isSignedIn()) {
+      await _googleSignIn.signOut();
+    }
     Fluttertoast.showToast(msg: "Deconnexion effectué");
     controller.cart.clear();
 

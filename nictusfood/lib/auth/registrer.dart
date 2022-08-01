@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
 import 'package:map_picker/map_picker.dart';
 import 'package:nictusfood/Components/background.dart';
@@ -53,6 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   String quartier = "";
   String myStreet = "";
   EmailAuth emailAuth = EmailAuth(sessionName: "nictusfood");
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   checkPermission() async {
     serviceEnabled = await location.serviceEnabled();
@@ -401,6 +403,54 @@ class _RegisterScreenState extends State<RegisterScreen>
                         ),
                       ),
                       SizedBox(height: size.height * 0.05),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 10),
+                        child: RaisedButton(
+                          onPressed: () async {
+                            if (await _googleSignIn.isSignedIn()) {
+                              await _googleSignIn.signOut();
+                            } else {
+                              var user = await _googleSignIn.signIn();
+
+                              if (user != null) {
+                                setState(() {
+                                  load = true;
+                                });
+                                bool? res = await APIService()
+                                    .socialLogin(user.email, user.photoUrl);
+                                if (res!) {
+                                  Get.offAllNamed("/home");
+                                } else {
+                                  Get.offAllNamed("/home");
+                                }
+                              }
+                            }
+                          },
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(80.0),
+                          ),
+                          textColor: Colors.black,
+                          padding: const EdgeInsets.all(0),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50.0,
+                            width: size.width * 1.5,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              color: Colors.white,
+                            ),
+                            padding: const EdgeInsets.all(0),
+                            child: const Text(
+                              "continuer avec google",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
                       Container(
                         alignment: Alignment.centerRight,
                         margin: const EdgeInsets.symmetric(

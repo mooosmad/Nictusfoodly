@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "514077199983",
+    "project_id": "tchep-express",
+    "storage_bucket": "tchep-express.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514077199983:android:9b3e174aa56f1d82f1c79a",
+        "android_client_info": {
+          "package_name": "com.example.nictusfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514077199983-tt4uk86fghdc47f8cc8nd6q2h8gr3pem.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZttmj6RU-GmDM5S7YEQuR15KY6yH49UU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514077199983-tt4uk86fghdc47f8cc8nd6q2h8gr3pem.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "514077199983-5p1j9bkhp91qntuoi329j7b9rg6nn470.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.nictusfood"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

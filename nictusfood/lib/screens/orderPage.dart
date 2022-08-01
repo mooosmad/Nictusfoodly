@@ -97,98 +97,105 @@ class _OrderPageState extends State<OrderPage> {
                           physics: BouncingScrollPhysics(),
                           itemCount: orders!.length,
                           itemBuilder: (context, i) {
-                            return Stack(
+                            return Column(
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    Get.to(
-                                      SeeCommande(
-                                        order: orders![i],
-                                        showBtn: false,
-                                      ),
-                                      transition: Transition.cupertino,
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                    height: 170,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          offset: Offset(0.5, 1),
-                                          blurRadius: 2.0,
-                                          spreadRadius: .5,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text("Reçu de la commande : "),
-                                        Text(
-                                          orders![i].keyOrder!,
-                                          style: GoogleFonts.poppins(
-                                            textStyle: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                Stack(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Get.to(
+                                          SeeCommande(
+                                            order: orders![i],
+                                            showBtn: false,
                                           ),
-                                        ),
-                                        Text("Montant Total: "),
-                                        Text(
-                                          '${orders![i].priceTotal!} FCFA',
-                                          style: GoogleFonts.poppins(
-                                            textStyle: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w500,
+                                          transition: Transition.cupertino,
+                                        );
+                                      },
+                                      child: Container(
+                                        // margin: EdgeInsets.symmetric(
+                                        //     horizontal: 10, vertical: 10),
+                                        height: 170,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            // color: Colors.white,
+                                            // borderRadius: BorderRadius.circular(20),
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //     color:
+                                            //         Colors.grey.withOpacity(0.5),
+                                            //     offset: Offset(0.5, 1),
+                                            //     blurRadius: 2.0,
+                                            //     spreadRadius: .5,
+                                            //   ),
+                                            // ],
                                             ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 20,
-                                  right: 20,
-                                  child: Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: orders![i].status == "completed"
-                                            ? Colors.green.withOpacity(0.6)
-                                            : Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Text(
-                                      // orders![i].status!,
-                                      getStatut(orders![i].status!),
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                          fontSize: 12,
-                                          // fontWeight: FontWeight.bold,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text("Reçu de la commande : "),
+                                            Text(
+                                              orders![i].keyOrder!,
+                                              style: GoogleFonts.poppins(
+                                                textStyle: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            Text("Montant Total: "),
+                                            Text(
+                                              '${orders![i].priceTotal!} FCFA',
+                                              style: GoogleFonts.poppins(
+                                                textStyle: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 20,
-                                  left: 20,
-                                  child: Container(
-                                    padding: EdgeInsets.all(5),
-                                    child: IconButton(
-                                      onPressed: () => launchUrl(
-                                          Uri.parse("tel:+2250769418743")),
-                                      icon: Icon(Icons.call),
+                                    Positioned(
+                                      bottom: 10,
+                                      right: 20,
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            color: orders![i].status ==
+                                                    "completed"
+                                                ? Colors.green.withOpacity(0.6)
+                                                : Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Text(
+                                          // orders![i].status!,
+                                          getStatut(orders![i].status!),
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                              fontSize: 12,
+                                              // fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    Positioned(
+                                      bottom: 20,
+                                      left: 20,
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        child: IconButton(
+                                          onPressed: () => launchUrl(
+                                              Uri.parse("tel:+2250769418743")),
+                                          icon: Icon(Icons.call),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                Divider()
                               ],
                             );
                           },

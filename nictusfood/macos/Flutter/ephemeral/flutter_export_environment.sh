@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/mo/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/mo/Projet/client/Nictusfoodly/nictusfood"
+export "FLUTTER_ROOT=C:\Users\angep\fvm\versions\3.0.1"
+export "FLUTTER_APPLICATION_PATH=D:\application flutter\Nictusfoodly\nictusfood"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

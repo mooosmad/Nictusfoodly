@@ -15,9 +15,15 @@ import 'package:nictusfood/screens/orderPage.dart';
 import 'package:nictusfood/services/utils.dart';
 import 'package:nictusfood/themes/nictustheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import "package:firebase_core/firebase_core.dart";
+import 'firebase_options.dart';
 
 late Box box;
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Hive.initFlutter();
   Hive.registerAdapter(CustomerAdapter());
   box = await Hive.openBox<Customer>('boxCustomer');
