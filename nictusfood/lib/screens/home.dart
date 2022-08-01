@@ -328,7 +328,8 @@ class _HomeState extends State<Home> {
                                                   onTap: () {
                                                     Get.to(
                                                         OrderPage(
-                                                          idUser: idUser,
+                                                          idUser: res!.id
+                                                              .toString(),
                                                         ),
                                                         transition: Transition
                                                             .downToUp);
