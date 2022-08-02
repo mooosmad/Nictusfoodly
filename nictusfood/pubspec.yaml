@@ -72,6 +72,8 @@ dependencies:
   url_launcher: ^6.1.4
   google_sign_in: ^5.4.0
   firebase_core: ^1.20.0
+  timeline_tile: ^2.0.0
+
 
 
 dev_dependencies:
