@@ -326,6 +326,10 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 ListTile(
                                                   onTap: () {
+                                                    setState(() {
+                                                      idUser =
+                                                          res!.id.toString();
+                                                    });
                                                     Get.to(
                                                         OrderPage(
                                                           idUser: res!.id
