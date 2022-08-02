@@ -70,6 +70,8 @@ dependencies:
   hive: ^2.2.1
   hive_flutter: any
   url_launcher: ^6.1.4
+  timeline_tile: ^2.0.0
+
 
 
 dev_dependencies:

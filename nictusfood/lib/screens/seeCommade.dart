@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 import '../constant/colors.dart';
 
@@ -19,7 +20,8 @@ class SeeCommande extends StatefulWidget {
   State<SeeCommande> createState() => _SeeCommandeState();
 }
 
-class _SeeCommandeState extends State<SeeCommande> {
+class _SeeCommandeState extends State<SeeCommande>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,102 +29,113 @@ class _SeeCommandeState extends State<SeeCommande> {
         title: const Text("Statut de la commande"),
       ),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: Center(
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-              Lottie.asset(
-                widget.order!.status == "completed"
-                    ? "assets/lotties/success.json"
-                    : "assets/lotties/107669-cooking.json",
-                fit: BoxFit.cover,
-              ),
-              Column(
-                children: [
-                  Text(
-                    "Etat de la commande : ",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                    ),
-                  ),
-                  Text(
-                    getStatut("${widget.order!.status}"),
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Center(
-                child: Text(
-                  "Reçu de la commande : ",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              Center(
-                child: Text(
-                  "${widget.order!.keyOrder}",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                widget.order!.status == "completed"
-                    ? "Votre commande a bien été livrés avec succès. Merci de nous avoir fait confiance"
-                    : "TchêpExpress vous remercie et votre commande sera livré d'ici peu",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 17,
-                ),
-              ),
-              const SizedBox(height: 20),
-              if (widget.order!.status != "completed")
-                Center(
-                  child: GestureDetector(
-                    onTap: () => launchUrl(Uri.parse("tel:+2250769418743")),
-                    child: Container(
-                      height: 50,
-                      width: 160,
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade200,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.call,
-                              color: Colors.white,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              "Appeler",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.white,
-                              ),
-                            )
-                          ]),
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 20),
-              if (widget.showBtn!) myButton(),
-            ],
-          ),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            if (widget.order!.status == 'progress-shipment') ...[
+              TimelineTile(),
+            ] else if (widget.order!.status == 'arrival-shipment') ...[
+              TimelineTile(),
+            ] else if (widget.order!.status == 'shipped') ...[
+              TimelineTile(),
+            ] else if (widget.order!.status == 'processing') ...[
+              TimelineTile(),
+            ] else if (widget.order!.status == 'completed') ...[
+              TimelineTile()
+            ]
+          ],
         ),
       ),
+      // children: [
+      //   Lottie.asset(
+      //     widget.order!.status == "completed"
+      //         ? "assets/lotties/success.json"
+      //         : "assets/lotties/107669-cooking.json",
+      //     fit: BoxFit.cover,
+      //   ),
+      //   Column(
+      //     children: [
+      //       Text(
+      //         "Etat de la commande : ",
+      //         style: GoogleFonts.poppins(
+      //           fontSize: 14,
+      //         ),
+      //       ),
+      //       Text(
+      //         getStatut("${widget.order!.status}"),
+      //         style: GoogleFonts.poppins(
+      //           fontWeight: FontWeight.bold,
+      //           fontSize: 17,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      //   const SizedBox(height: 10),
+      //   Center(
+      //     child: Text(
+      //       "Reçu de la commande : ",
+      //       style: GoogleFonts.poppins(
+      //         fontSize: 14,
+      //       ),
+      //     ),
+      //   ),
+      //   Center(
+      //     child: Text(
+      //       "${widget.order!.keyOrder}",
+      //       style: GoogleFonts.poppins(
+      //         fontWeight: FontWeight.bold,
+      //         fontSize: 17,
+      //       ),
+      //     ),
+      //   ),
+      //   const SizedBox(height: 10),
+      //   Text(
+      //     widget.order!.status == "completed"
+      //         ? "Votre commande a bien été livrés avec succès. Merci de nous avoir fait confiance"
+      //         : "TchêpExpress vous remercie et votre commande sera livré d'ici peu",
+      //     textAlign: TextAlign.center,
+      //     style: GoogleFonts.poppins(
+      //       fontWeight: FontWeight.w400,
+      //       fontSize: 17,
+      //     ),
+      //   ),
+      //   const SizedBox(height: 20),
+      //   if (widget.order!.status != "completed")
+      //     Center(
+      //       child: GestureDetector(
+      //         onTap: () => launchUrl(Uri.parse("tel:+2250769418743")),
+      //         child: Container(
+      //           height: 50,
+      //           width: 160,
+      //           decoration: BoxDecoration(
+      //             color: Colors.green.shade200,
+      //             borderRadius: BorderRadius.circular(15),
+      //           ),
+      //           child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.center,
+      //               children: [
+      //                 Icon(
+      //                   Icons.call,
+      //                   color: Colors.white,
+      //                 ),
+      //                 SizedBox(width: 10),
+      //                 Text(
+      //                   "Appeler",
+      //                   style: GoogleFonts.poppins(
+      //                     fontWeight: FontWeight.bold,
+      //                     fontSize: 17,
+      //                     color: Colors.white,
+      //                   ),
+      //                 )
+      //               ]),
+      //         ),
+      //       ),
+      //     ),
+      //   const SizedBox(height: 20),
+      //   if (widget.showBtn!) myButton(),
+      // ],
     );
   }
 

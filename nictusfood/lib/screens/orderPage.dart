@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/seeCommade.dart';
+import 'package:nictusfood/screens/timeline.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -102,7 +103,11 @@ class _OrderPageState extends State<OrderPage> {
                                 InkWell(
                                   onTap: () {
                                     Get.to(
-                                      SeeCommande(
+                                      // SeeCommande(
+                                      //   order: orders![i],
+                                      //   showBtn: false,
+                                      // ),
+                                      TimelineTacer(
                                         order: orders![i],
                                         showBtn: false,
                                       ),
