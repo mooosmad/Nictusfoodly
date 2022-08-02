@@ -70,6 +70,8 @@ dependencies:
   hive: ^2.2.1
   hive_flutter: any
   url_launcher: ^6.1.4
+  google_sign_in: ^5.4.0
+  firebase_core: ^1.20.0
   timeline_tile: ^2.0.0
 
 

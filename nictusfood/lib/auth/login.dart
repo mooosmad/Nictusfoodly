@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nictusfood/Components/background.dart';
 import 'package:nictusfood/auth/registrer.dart';
 import 'package:nictusfood/constant/colors.dart';
@@ -21,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool load = false;
   final formGlobalKey = GlobalKey<FormState>();
   bool obscureMP = true;
@@ -182,14 +184,66 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 50.0,
                             width: size.width * 1.5,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                gradient: const LinearGradient(colors: [
-                                  Color.fromARGB(255, 255, 136, 34),
-                                  Color.fromARGB(255, 255, 177, 41)
-                                ])),
+                              borderRadius: BorderRadius.circular(10.0),
+                              gradient: const LinearGradient(colors: [
+                                Color.fromARGB(255, 255, 136, 34),
+                                Color.fromARGB(255, 255, 177, 41)
+                              ]),
+                            ),
                             padding: const EdgeInsets.all(0),
                             child: const Text(
                               "Se Connecter",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 10),
+                        child: RaisedButton(
+                          onPressed: () async {
+                            if (await _googleSignIn.isSignedIn()) {
+                              await _googleSignIn.signOut();
+                            } else {
+                              var user = await _googleSignIn.signIn();
+
+                              if (user != null) {
+                                setState(() {
+                                  load = true;
+                                });
+                                bool? res = await APIService()
+                                    .socialLogin(user.email, user.photoUrl);
+                                if (res!) {
+                                  if (widget.isdrawer!) {
+                                    Get.back();
+                                    Get.back();
+                                  } else {
+                                    Get.back();
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(80.0),
+                          ),
+                          textColor: Colors.black,
+                          padding: const EdgeInsets.all(0),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50.0,
+                            width: size.width * 1.5,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              color: Colors.white,
+                            ),
+                            padding: const EdgeInsets.all(0),
+                            child: const Text(
+                              "continuer avec google",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),

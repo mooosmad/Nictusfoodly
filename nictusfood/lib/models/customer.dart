@@ -19,7 +19,7 @@ class Customer {
   final String? prenom;
 
   @HiveField(5)
-  final String? urlPic;
+  String? urlPic;
 
   @HiveField(6)
   final String? adresse;
@@ -30,7 +30,7 @@ class Customer {
   @HiveField(8)
   final String? phone;
 
-  const Customer({
+  Customer({
     this.dateCreated,
     this.email,
     this.id,

@@ -8,6 +8,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:location/location.dart';
 import 'package:nictusfood/auth/login.dart';
@@ -49,6 +50,7 @@ class _HomeState extends State<Home> {
   String quartier = "";
   String myStreet = "";
   String? idUser;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   final _advancedDrawerController = AdvancedDrawerController();
   final controller = Get.put(MyCartController());
@@ -324,9 +326,14 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 ListTile(
                                                   onTap: () {
+                                                    setState(() {
+                                                      idUser =
+                                                          res!.id.toString();
+                                                    });
                                                     Get.to(
                                                         OrderPage(
-                                                          idUser: idUser,
+                                                          idUser: res!.id
+                                                              .toString(),
                                                         ),
                                                         transition: Transition
                                                             .downToUp);
