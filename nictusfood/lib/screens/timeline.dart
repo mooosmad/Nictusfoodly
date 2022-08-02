@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -18,7 +21,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Text('Flutter Timeline Tile  Example'),
+        title: const Text('Statut de la commande'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -29,7 +32,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
               TimelineTile(
                 axis: TimelineAxis.vertical,
                 indicatorStyle: IndicatorStyle(
-                  color: index == 0 ? Colors.pink : Colors.pink.shade200,
+                  color: index == 0 ? Colors.orange : Colors.green.shade200,
                   height: 40,
                   width: 40,
                   iconStyle: IconStyle(
@@ -50,16 +53,18 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 80,
+                      height: 90,
                       width: 280,
                       decoration: const BoxDecoration(
                         boxShadow: [
                           BoxShadow(blurRadius: 6, color: Colors.grey),
                         ],
 
-                        //borderRadius: BorderRadius.all(Radius.circular(24)),
-                        border: Border(
-                            top: BorderSide(color: Colors.pink, width: 5)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                        // border: Border(
+                        //     top: BorderSide(color: Colors.pink, width: 5)),
                         color: Colors.white,
                       ),
                       child: Column(
@@ -68,7 +73,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                           Padding(
                             padding: EdgeInsets.only(left: 8.0, top: 8.0),
                             child: Text(
-                              'Ordered Received',
+                              "En cours de préparation",
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
@@ -76,7 +81,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'We\'ve received your order',
+                              'Nous avons reçu votre commande',
                               style: TextStyle(fontSize: 16),
                             ),
                           )
@@ -89,12 +94,12 @@ class _TimelineTacerState extends State<TimelineTacer> {
               TimelineTile(
                 axis: TimelineAxis.vertical,
                 indicatorStyle: IndicatorStyle(
-                  color: index == 1 ? Colors.pink : Colors.pink.shade200,
+                  color: index == 1 ? Colors.orange : Colors.green.shade200,
                   height: 40,
                   width: 40,
                   iconStyle: IconStyle(
                     color: Colors.white,
-                    iconData: index == 1 ? Icons.fastfood_rounded : Icons.check,
+                    iconData: index == 1 ? Icons.delivery_dining : Icons.check,
                   ),
                 ),
                 beforeLineStyle:
@@ -109,14 +114,18 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 80,
+                      height: 90,
                       width: 280,
                       decoration: const BoxDecoration(
                         boxShadow: [
                           BoxShadow(blurRadius: 6, color: Colors.grey),
                         ],
-                        border: Border(
-                            top: BorderSide(color: Colors.pink, width: 5)),
+                        // border: Border(
+                        //   top: BorderSide(color: Colors.pink, width: 5),
+                        // ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
                         color: Colors.white,
                       ),
                       child: Column(
@@ -125,7 +134,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                           Padding(
                             padding: EdgeInsets.only(left: 8.0, top: 8.0),
                             child: Text(
-                              'Order in Process',
+                              'En cours de livraison',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
@@ -133,7 +142,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'Your order is being prepared',
+                              'Dans 20min vous receverez votre commande',
                               style: TextStyle(fontSize: 16),
                             ),
                           )
@@ -146,12 +155,75 @@ class _TimelineTacerState extends State<TimelineTacer> {
               TimelineTile(
                 axis: TimelineAxis.vertical,
                 indicatorStyle: IndicatorStyle(
-                  color: index == 2 ? Colors.pink : Colors.pink.shade200,
+                  color: index == 2 ? Colors.orange : Colors.green.shade200,
                   height: 40,
                   width: 40,
                   iconStyle: IconStyle(
                     color: Colors.white,
                     iconData: index == 2
+                        ? Icons.delivery_dining_outlined
+                        : Icons.check,
+                  ),
+                ),
+                isLast: false,
+                beforeLineStyle: LineStyle(
+                  color: index > 1 ? Colors.green : Colors.grey,
+                ),
+                alignment: TimelineAlign.start,
+                endChild: Row(
+                  children: [
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10, bottom: 30),
+                      height: 90,
+                      width: 280,
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(blurRadius: 6, color: Colors.grey),
+                        ],
+                        // border: Border(
+                        //   top: BorderSide(color: Colors.pink, width: 5),
+                        // ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                            child: Text(
+                              'Commande à proximité',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Dans quelques instant 😁!',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              TimelineTile(
+                axis: TimelineAxis.vertical,
+                indicatorStyle: IndicatorStyle(
+                  color: index == 3 ? Colors.orange : Colors.green.shade200,
+                  height: 40,
+                  width: 40,
+                  iconStyle: IconStyle(
+                    color: Colors.white,
+                    iconData: index == 3
                         ? Icons.delivery_dining_outlined
                         : Icons.check,
                   ),
@@ -168,14 +240,18 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 80,
+                      height: 90,
                       width: 280,
                       decoration: const BoxDecoration(
                         boxShadow: [
                           BoxShadow(blurRadius: 6, color: Colors.grey),
                         ],
-                        border: Border(
-                            top: BorderSide(color: Colors.pink, width: 5)),
+                        // border: Border(
+                        //   top: BorderSide(color: Colors.pink, width: 5),
+                        // ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
                         color: Colors.white,
                       ),
                       child: Column(
@@ -184,7 +260,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                           Padding(
                             padding: EdgeInsets.only(left: 8.0, top: 8.0),
                             child: Text(
-                              'Order in Delivery',
+                              'Commande arrivée',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
@@ -192,7 +268,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'Your order is on its way to you!',
+                              'Votre livreur est arrivé ✅',
                               style: TextStyle(fontSize: 16),
                             ),
                           )
@@ -202,6 +278,8 @@ class _TimelineTacerState extends State<TimelineTacer> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              if (widget.showBtn!) myButton(),
             ],
           ),
         ),
@@ -214,6 +292,36 @@ class _TimelineTacerState extends State<TimelineTacer> {
           });
         },
         child: Icon(index < 3 ? Icons.navigate_next : Icons.done),
+      ),
+    );
+  }
+
+  Widget myButton() {
+    return Center(
+      child: InkWell(
+        onTap: () async {
+          Get.offAllNamed("/home");
+        },
+        child: Container(
+          height: 50,
+          width: 250,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(17),
+            color: maincolor,
+          ),
+          child: Center(
+            child: Text(
+              "Retouner au menu",
+              style: GoogleFonts.poppins(
+                textStyle: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
