@@ -51,41 +51,42 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     const SizedBox(
                       width: 30,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 90,
-                      width: 280,
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(blurRadius: 6, color: Colors.grey),
-                        ],
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10, bottom: 30),
+                        height: 90,
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 6, color: Colors.grey),
+                          ],
 
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                        // border: Border(
-                        //     top: BorderSide(color: Colors.pink, width: 5)),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 8.0),
-                            child: Text(
-                              "En cours de préparation",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Nous avons reçu votre commande',
-                              style: TextStyle(fontSize: 16),
+                          // border: Border(
+                          //     top: BorderSide(color: Colors.pink, width: 5)),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                              child: Text(
+                                "En cours de préparation",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Nous avons reçu votre commande',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -112,41 +113,42 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     const SizedBox(
                       width: 30,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 90,
-                      width: 280,
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(blurRadius: 6, color: Colors.grey),
-                        ],
-                        // border: Border(
-                        //   top: BorderSide(color: Colors.pink, width: 5),
-                        // ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 8.0),
-                            child: Text(
-                              'En cours de livraison',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10, bottom: 30),
+                        height: 90,
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 6, color: Colors.grey),
+                          ],
+                          // border: Border(
+                          //   top: BorderSide(color: Colors.pink, width: 5),
+                          // ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Dans 20min vous receverez votre commande',
-                              style: TextStyle(fontSize: 16),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                              child: Text(
+                                'En cours de livraison',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Dans 20min vous receverez votre commande',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -175,41 +177,43 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     const SizedBox(
                       width: 30,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 90,
-                      width: 280,
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(blurRadius: 6, color: Colors.grey),
-                        ],
-                        // border: Border(
-                        //   top: BorderSide(color: Colors.pink, width: 5),
-                        // ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 8.0),
-                            child: Text(
-                              'Commande à proximité',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10, bottom: 30),
+                        height: 90,
+                        
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 6, color: Colors.grey),
+                          ],
+                          // border: Border(
+                          //   top: BorderSide(color: Colors.pink, width: 5),
+                          // ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Dans quelques instant 😁!',
-                              style: TextStyle(fontSize: 16),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                              child: Text(
+                                'Commande à proximité',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Dans quelques instant 😁!',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -238,41 +242,43 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     const SizedBox(
                       width: 30,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 30),
-                      height: 90,
-                      width: 280,
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(blurRadius: 6, color: Colors.grey),
-                        ],
-                        // border: Border(
-                        //   top: BorderSide(color: Colors.pink, width: 5),
-                        // ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 8.0),
-                            child: Text(
-                              'Commande arrivée',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10, bottom: 30),
+                        height: 90,
+                       
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 6, color: Colors.grey),
+                          ],
+                          // border: Border(
+                          //   top: BorderSide(color: Colors.pink, width: 5),
+                          // ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Votre livreur est arrivé ✅',
-                              style: TextStyle(fontSize: 16),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                              child: Text(
+                                'Commande arrivée',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Votre livreur est arrivé ✅',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],

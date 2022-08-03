@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/screens/loading.dart';
-import 'package:nictusfood/screens/seeCommade.dart';
 import 'package:nictusfood/screens/timeline.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:url_launcher/url_launcher.dart';
