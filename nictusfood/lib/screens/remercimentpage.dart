@@ -4,13 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
-import 'package:nictusfood/screens/orderPage.dart';
-import 'package:nictusfood/screens/seeCommade.dart';
+import 'package:nictusfood/screens/timeline.dart';
 
 class RemercimentPage extends StatefulWidget {
   final String? idUser;
   final Order? order;
-  const RemercimentPage({Key? key, required this.idUser, required this.order})
+  final bool? showBtn;
+  const RemercimentPage(
+      {Key? key, required this.idUser, required this.order, this.showBtn})
       : super(key: key);
 
   @override
@@ -18,6 +19,7 @@ class RemercimentPage extends StatefulWidget {
 }
 
 class _RemercimentPageState extends State<RemercimentPage> {
+  bool showBtn = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,7 @@ class _RemercimentPageState extends State<RemercimentPage> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Center(
           child: ListView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
             children: [
               Lottie.asset(
@@ -74,8 +76,9 @@ class _RemercimentPageState extends State<RemercimentPage> {
         onTap: () async {
           // Get.offAllNamed("/home");
           Get.to(
-            SeeCommande(
+            TimelineTacer(
               order: widget.order,
+              showBtn: widget.showBtn,
             ),
             transition: Transition.rightToLeft,
           );

@@ -188,7 +188,8 @@ class _OrderPageState extends State<OrderPage> {
                                     padding: EdgeInsets.all(5),
                                     child: IconButton(
                                       onPressed: () => launchUrl(
-                                          Uri.parse("tel:+2250769418743")),
+                                        Uri.parse("tel:+2250769418743"),
+                                      ),
                                       icon: Icon(Icons.call),
                                     ),
                                   ),
