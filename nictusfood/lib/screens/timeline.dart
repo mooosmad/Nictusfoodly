@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
+import 'package:nictusfood/widgets/timedone.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
@@ -1151,6 +1152,8 @@ class _TimelineTacerState extends State<TimelineTacer> {
                         ],
                       ),
                     ),
+                  ] else if (widget.order!.status == "completed") ...[
+                    const Lot(),
                   ],
                   const SizedBox(height: 40),
                   Container(
