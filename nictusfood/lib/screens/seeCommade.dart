@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nictusfood/models/ordermodel.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../constant/colors.dart';
