@@ -35,6 +35,7 @@ class _ProductPageState extends State<ProductPage> {
   bool load = false;
   final controller = Get.put(MyCartController());
   var top = 0.0;
+  String? assetbackground;
 
   getProductByCategorie() async {
     setState(() {
@@ -50,8 +51,32 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  getAssetBackground(String categorieName) {
+    switch (categorieName) {
+      case "Nos Tcheps":
+        assetbackground = "assets/appassets/TCHEP1.jpg";
+        break;
+      case "Boutique":
+        assetbackground = "assets/appassets/backgroundAppBar/boutique2.png";
+        break;
+      case "Boissons":
+        assetbackground = "assets/appassets/backgroundAppBar/B1.jpg";
+        break;
+      case "Desserts":
+        assetbackground = "assets/appassets/backgroundAppBar/B2.jpg";
+        break;
+      default:
+        assetbackground = "assets/appassets/TCHEP1.jpg";
+    }
+  }
+
   @override
   void initState() {
+    print("**************");
+    getAssetBackground(widget.category!.categoryName!);
+    print(widget.category!.categoryName);
+    print("**************");
+
     getProductByCategorie();
     super.initState();
   }
@@ -132,10 +157,12 @@ class _ProductPageState extends State<ProductPage> {
                           ],
                         ),
                       ),
-                      background: Image.asset(
-                        'assets/appassets/TCHEP1.jpg',
-                        fit: BoxFit.cover,
-                      ),
+                      background: assetbackground != null
+                          ? Image.asset(
+                              assetbackground!,
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     );
                   }),
                 ),
