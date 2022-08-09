@@ -133,7 +133,7 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ),
                       background: Image.asset(
-                        'assets/appassets/image 2.png',
+                        'assets/appassets/TCHEP1.jpg',
                         fit: BoxFit.cover,
                       ),
                     );
