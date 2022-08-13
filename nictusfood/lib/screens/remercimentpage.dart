@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/screens/timeline.dart';
+import 'package:nictusfood/widgets/myappbar.dart';
 
 class RemercimentPage extends StatefulWidget {
   final String? idUser;
@@ -74,14 +75,14 @@ class _RemercimentPageState extends State<RemercimentPage> {
     return Center(
       child: InkWell(
         onTap: () async {
-          // Get.offAllNamed("/home");
-          Get.to(
-            TimelineTacer(
-              order: widget.order,
-              showBtn: widget.showBtn,
-            ),
-            transition: Transition.rightToLeft,
-          );
+          Get.offAllNamed("/home");
+          // Get.to(
+          //   const MyAppBar(
+          //       // order: widget.order,
+          //       // showBtn: widget.showBtn,
+          //       ),
+          //   transition: Transition.rightToLeft,
+          // );
         },
         child: Container(
           height: 50,

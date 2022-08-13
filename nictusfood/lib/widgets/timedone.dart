@@ -20,7 +20,7 @@ class _Lotstate extends State<Lot> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Lottie.asset(
-              'assets/images/lotties/91597-validacion.json',
+              'assets/images/lotties/validacion.json',
               width: 200.0,
               height: 200.0,
             ),
