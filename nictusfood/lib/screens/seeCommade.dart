@@ -26,7 +26,7 @@ class _SeeCommandeState extends State<SeeCommande>
       appBar: AppBar(
         title: const Text("Statut de la commande"),
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

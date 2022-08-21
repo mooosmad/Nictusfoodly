@@ -48,6 +48,12 @@ class _TimelineTacerState extends State<TimelineTacer> {
         title: const Text('Statut de la commande'),
         centerTitle: true,
         elevation: 0,
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: Icon(Icons.cancel_outlined),
+        //   )
+        // ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -1135,7 +1141,9 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       ),
                     ),
                   ] else if (widget.order!.status == "completed") ...[
-                    const Lot(),
+                    const Center(
+                      child: Lot(),
+                    )
                   ],
                   const SizedBox(height: 40),
                   Container(
