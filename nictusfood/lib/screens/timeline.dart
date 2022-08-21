@@ -51,28 +51,10 @@ class _TimelineTacerState extends State<TimelineTacer> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.only(left: 8, right: 8),
+          padding: const EdgeInsets.only(left: 8, right: 15),
           child: Column(
             children: [
-              SizedBox(
-                height: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "livré à",
-                      style: GoogleFonts.poppins(
-                        textStyle: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    // heure de livraison
-                    // Text(formattedDate),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 30),
               Column(
                 children: [
                   if (widget.order!.status == "processing") ...[
