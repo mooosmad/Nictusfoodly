@@ -11,29 +11,28 @@ class Lot extends StatefulWidget {
 class _Lotstate extends State<Lot> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.amber,
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Lottie.asset(
-              'assets/images/lotties/validacion.json',
-              width: 200.0,
-              height: 200.0,
-            ),
-            const Text(
-              'Commande Livrée avec success',
-              style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold),
-            )
-          ],
-        ),
-      ),
-    );
+    return const Scaffold(
+        //Container(
+        // color: Colors.amber,
+        // child: Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: [
+        //     Lottie.asset(
+        //       'assets/images/lotties/validacion.json',
+        //       width: 200.0,
+        //       height: 200.0,
+        //     ),
+        //     const Text(
+        //       'Commande Livrée avec success',
+        //       style: TextStyle(
+        //           fontFamily: 'Poppins',
+        //           fontSize: 20.0,
+        //           fontWeight: FontWeight.bold),
+        //     )
+        //   ],
+        // ),
+
+        );
   }
 }

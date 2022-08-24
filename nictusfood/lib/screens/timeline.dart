@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/widgets/timedone.dart';
@@ -1154,8 +1155,27 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       ),
                     ),
                   ] else if (widget.order!.status == "completed") ...[
-                    const Center(
-                      child: Lot(),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 80),
+                          Lottie.asset(
+                            'assets/lotties/validacion.json',
+                            width: 200.0,
+                            height: 200.0,
+                          ),
+                          const Text(
+                            'Commande Livrée avec success',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 120),
+                        ],
+                      ),
                     )
                   ],
                   const SizedBox(height: 40),
