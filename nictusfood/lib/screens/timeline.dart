@@ -60,25 +60,26 @@ class _TimelineTacerState extends State<TimelineTacer> {
           padding: const EdgeInsets.only(left: 8, right: 8),
           child: Column(
             children: [
-              SizedBox(
-                height: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "livré à",
-                      style: GoogleFonts.poppins(
-                        textStyle: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    // heure de livraison
-                    // Text(formattedDate),
-                  ],
-                ),
-              ),
+              // SizedBox(
+              //   height: 100,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Text(
+              //         "livré à",
+              //         style: GoogleFonts.poppins(
+              //           textStyle: const TextStyle(
+              //             fontSize: 17,
+              //             fontWeight: FontWeight.w600,
+              //           ),
+              //         ),
+              //       ),
+              //       // heure de livraison
+              //       // Text(formattedDate),
+              //     ],
+              //   ),
+              // ),
+              const SizedBox(height: 80),
               Column(
                 children: [
                   if (widget.order!.status == "processing") ...[
@@ -86,7 +87,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 0 ? Colors.orange : Colors.green.shade200,
+                            index == 0 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -95,6 +96,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                               ? Icons.emoji_emotions_outlined
                               : Icons.check,
                         ),
+                        drawGap: true,
                       ),
                       isFirst: true,
                       afterLineStyle: LineStyle(
@@ -149,7 +151,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 1 ? Colors.orange : Colors.green.shade200,
+                            index == 1 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -213,7 +215,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 2 ? Colors.orange : Colors.green.shade200,
+                            index == 2 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -281,7 +283,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 3 ? Colors.orange : Colors.green.shade200,
+                            index == 3 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -349,8 +351,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 0 ? Colors.orange : Colors.green.shade200,
+                        color: index == 0 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -417,7 +418,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 1 ? Colors.orange : Colors.green.shade200,
+                            index == 1 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -484,7 +485,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 2 ? Colors.orange : Colors.green.shade200,
+                            index == 2 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -552,7 +553,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 3 ? Colors.orange : Colors.green.shade200,
+                            index == 3 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -620,8 +621,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 0 ? Colors.orange : Colors.green.shade200,
+                        color: index == 0 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -687,8 +687,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 1 ? Colors.orange : Colors.green.shade200,
+                        color: index == 1 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -754,8 +753,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 2 ? Colors.orange : Colors.green.shade200,
+                        color: index == 2 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -823,7 +821,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 3 ? Colors.orange : Colors.green.shade200,
+                            index == 3 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -891,8 +889,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 0 ? Colors.orange : Colors.green.shade200,
+                        color: index == 0 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -958,8 +955,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 1 ? Colors.orange : Colors.green.shade200,
+                        color: index == 1 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -1025,8 +1021,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                     TimelineTile(
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
-                        color:
-                            index == 2 ? Colors.orange : Colors.green.shade200,
+                        color: index == 2 ? Colors.orange : Colors.green,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
@@ -1094,7 +1089,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
                       axis: TimelineAxis.vertical,
                       indicatorStyle: IndicatorStyle(
                         color:
-                            index == 3 ? Colors.orange : Colors.green.shade200,
+                            index == 3 ? Colors.orange : Colors.grey.shade200,
                         height: 40,
                         width: 40,
                         iconStyle: IconStyle(
