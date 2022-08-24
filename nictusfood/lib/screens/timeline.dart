@@ -1248,8 +1248,8 @@ class _TimelineTacerState extends State<TimelineTacer> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      getIndexStatus();
-    });
+    // setState(() {
+    getIndexStatus();
+    // });
   }
 }
