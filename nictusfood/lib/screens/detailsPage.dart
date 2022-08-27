@@ -385,25 +385,25 @@ class _DetailPageState extends State<DetailPage> {
                                                     )
                                                   ]),
                                             ),
-                                            InkWell(
-                                              onTap: () {
+                                            Builder(builder: (context) {
+                                              var cartItem = CartModel(
+                                                quantity: 1.obs,
+                                                price: produit.price,
+                                                productDesc:
+                                                    produit.productDesc,
+                                                productName:
+                                                    produit.productName,
+                                                images: produit.images,
+                                                productId: produit.productId,
+                                                regularPrice:
+                                                    produit.regularPrice,
+                                                status: produit.status,
+                                              );
+                                              return InkWell(onTap: () {
                                                 HapticFeedback.vibrate();
 
                                                 print("object");
                                                 //create new CartModel
-                                                var cartItem = CartModel(
-                                                  quantity: 1.obs,
-                                                  price: produit.price,
-                                                  productDesc:
-                                                      produit.productDesc,
-                                                  productName:
-                                                      produit.productName,
-                                                  images: produit.images,
-                                                  productId: produit.productId,
-                                                  regularPrice:
-                                                      produit.regularPrice,
-                                                  status: produit.status,
-                                                );
 
                                                 if (Config().isExistscart(
                                                     controller.cart,
@@ -431,17 +431,31 @@ class _DetailPageState extends State<DetailPage> {
                                                       backgroundColor:
                                                           Colors.white);
                                                 }
-                                              },
-                                              child: SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child: Image.asset(
-                                                  "assets/appassets/shopping-cart 1.png",
-                                                  cacheHeight: 25,
-                                                  cacheWidth: 25,
-                                                ),
-                                              ),
-                                            ),
+                                              }, child: Obx(() {
+                                                return Container(
+                                                  width: 20,
+                                                  height: 20,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Config()
+                                                            .isExistscart(
+                                                                controller.cart,
+                                                                cartItem)
+                                                        ? Colors.green
+                                                        : maincolor,
+                                                  ),
+                                                  child: Center(
+                                                      child: Icon(
+                                                    Config().isExistscart(
+                                                            controller.cart,
+                                                            cartItem)
+                                                        ? Icons.check
+                                                        : Icons.add,
+                                                    size: 15,
+                                                  )),
+                                                );
+                                              }));
+                                            }),
                                           ],
                                         )
                                   ],

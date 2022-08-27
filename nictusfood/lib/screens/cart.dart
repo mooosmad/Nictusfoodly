@@ -495,6 +495,7 @@ class _CartPageState extends State<CartPage> {
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                       fontSize: 17,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 );

@@ -248,7 +248,7 @@ class _HomeState extends State<Home> {
                                                   },
                                                   leading: Icon(Icons
                                                       .account_circle_rounded),
-                                                  title: Text('Inscription'),
+                                                  title: Text("Je m'inscris"),
                                                 ),
                                                 Spacer(),
                                                 DefaultTextStyle(
@@ -292,8 +292,10 @@ class _HomeState extends State<Home> {
                                                   ),
                                                   child: idUser != null
                                                       ? Container(
-                                                          child: Image.network(
-                                                            res!.urlPic!,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl:
+                                                                res!.urlPic!,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         )
