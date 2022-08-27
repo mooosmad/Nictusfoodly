@@ -57,7 +57,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
         //     icon: Icon(Icons.cancel_outlined),
         //   )
         // ],
-        leading: const SizedBox(height: 0),
+        // leading: const SizedBox(height: 0),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),

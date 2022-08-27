@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,12 +10,9 @@ class RemercimentPage extends StatefulWidget {
   final String? idUser;
   final Order? order;
   final bool? showBtn;
-  RemercimentPage({
-    Key? key,
-    required this.idUser,
-    required this.order,
-    this.showBtn,
-  }) : super(key: key);
+  const RemercimentPage(
+      {Key? key, required this.idUser, required this.order, this.showBtn})
+      : super(key: key);
 
   @override
   State<RemercimentPage> createState() => _RemercimentPageState();
@@ -71,10 +66,12 @@ class _RemercimentPageState extends State<RemercimentPage> {
     return Center(
       child: InkWell(
         onTap: () async {
-          Get.to(const TimelineTacer());
+          Get.to(TimelineTacer(
+            order: widget.order,
+          ));
           // Get.to(
           //   const MyAppBar(
-          //       // order: widget.order,
+          //       //
           //       // showBtn: widget.showBtn,
           //       ),
           //   transition: Transition.rightToLeft,

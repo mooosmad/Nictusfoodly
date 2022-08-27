@@ -12,6 +12,7 @@ import 'package:nictusfood/screens/home.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/onboarding.dart';
 import 'package:nictusfood/screens/orderPage.dart';
+import 'package:nictusfood/screens/timeline.dart';
 import 'package:nictusfood/services/utils.dart';
 import 'package:nictusfood/themes/nictustheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,9 @@ class MyApp extends StatelessWidget {
         },
         "/orderPage": (context) {
           return OrderPage();
+        },
+        "/timelineTracer": (context) {
+          return TimelineTacer();
         }
       },
       theme: theme,
