@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/ordermodel.dart';
+import 'package:nictusfood/screens/home.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
@@ -45,8 +46,10 @@ class _TimelineTacerState extends State<TimelineTacer> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        titleSpacing: 6.0,
         title: const Text('Statut de la commande'),
-        centerTitle: true,
+
+        // centerTitle: false,
         elevation: 0,
         // actions: [
         //   IconButton(
@@ -54,6 +57,18 @@ class _TimelineTacerState extends State<TimelineTacer> {
         //     icon: Icon(Icons.cancel_outlined),
         //   )
         // ],
+        leading: const SizedBox(height: 0),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const Icon(Icons.cancel_rounded),
+              onPressed: () {
+                Get.to(const Home());
+              },
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(

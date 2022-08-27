@@ -85,7 +85,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xffF0F1F2),
         onPressed: () {
           Get.bottomSheet(
             CartPage(),

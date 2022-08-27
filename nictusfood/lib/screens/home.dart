@@ -436,7 +436,7 @@ class _HomeState extends State<Home> {
                 floatingActionButton: load!
                     ? null
                     : FloatingActionButton(
-                        backgroundColor: Colors.white,
+                        backgroundColor: Color(0xfff0f1f2),
                         onPressed: () async {
                           Get.bottomSheet(
                             CartPage(),
@@ -563,7 +563,7 @@ class _HomeState extends State<Home> {
     return Container(
       width: double.infinity,
       // color: Colors.red,
-      height: 90,
+      // height: 90,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
