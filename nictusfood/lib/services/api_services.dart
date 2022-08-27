@@ -231,7 +231,6 @@ class APIService {
     var authToken = base64.encode(
       utf8.encode("${Config.key}:${Config.secret}"),
     );
-    print(authToken);
     print("---GET CATEGORIES----");
     try {
       var response = await Dio().get(

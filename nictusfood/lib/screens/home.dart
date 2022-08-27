@@ -479,7 +479,7 @@ class _HomeState extends State<Home> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 15),
                             margin: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
+                                horizontal: 15, vertical: 10),
                             height: 50,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
@@ -500,7 +500,7 @@ class _HomeState extends State<Home> {
                               physics: BouncingScrollPhysics(),
                               // shrinkWrap: true,
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
+                                  horizontal: 15, vertical: 10),
                               itemCount: maincategory.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(

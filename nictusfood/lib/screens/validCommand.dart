@@ -243,6 +243,7 @@ class _ValidationPageState extends State<ValidationPage> {
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
                     fontSize: 17,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

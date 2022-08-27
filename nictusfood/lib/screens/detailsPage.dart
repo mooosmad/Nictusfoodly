@@ -123,7 +123,7 @@ class _DetailPageState extends State<DetailPage> {
               );
             },
             child: Text(
-              "Je commande ${nbr.obs} à ${widget.product!.regularPrice}",
+              "Je commande ${nbr.obs} à ${int.parse(widget.product!.regularPrice!) * nbr.obs.toInt()}",
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
