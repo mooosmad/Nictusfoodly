@@ -1,12 +1,16 @@
 // ignore_for_file: deprecated_member_use, prefer_const_constructors, avoid_unnecessary_containers
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+import 'package:map_picker/map_picker.dart';
+import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/services/api_services.dart';
+import 'package:nictusfood/services/config.dart';
 
 class UpdapteScreen extends StatefulWidget {
   final Customer? customer;
@@ -24,6 +28,12 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
   TextEditingController adresse = TextEditingController();
   TextEditingController numero = TextEditingController();
   final formGlobalKey = GlobalKey<FormState>();
+  CameraPosition? cameraPosition;
+  GoogleMapController? controller;
+  MapPickerController mapPickerController = MapPickerController();
+  LocationData? myLocation;
+  TextEditingController ville = TextEditingController();
+  Location location = Location();
 
   bool load = false;
   getOldValue() {
@@ -35,6 +45,17 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      myLocation = await location.getLocation();
+
+      cameraPosition = CameraPosition(
+        zoom: 14,
+        target: LatLng(myLocation!.latitude!, myLocation!.longitude!),
+      );
+      if (mounted) {
+        setState(() {});
+      }
+    });
     getOldValue();
     super.initState();
   }
@@ -83,8 +104,8 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                       ),
                       child: widget.idUser != null
                           ? Container(
-                              child: CachedNetworkImage(
-                                imageUrl: widget.customer!.urlPic!,
+                              child: Image.network(
+                                widget.customer!.urlPic!,
                                 fit: BoxFit.cover,
                               ),
                             )
@@ -164,38 +185,48 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                     ),
                   ),
                   SizedBox(height: size.height * 0.03),
-                  Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.symmetric(horizontal: 40),
-                    child: TextFormField(
-                      enabled: false,
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Champ vide";
-                        }
-                        return null;
-                      },
-                      controller: adresse,
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey[200],
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xFFfd9204),
-                          ),
+                  GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      Get.bottomSheet(
+                        myMaps(),
+                        enableDrag: false,
+                        isScrollControlled: true,
+                      );
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.symmetric(horizontal: 40),
+                      child: TextFormField(
+                        enabled: false,
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
                         ),
-                        hintText: 'Adresse',
-                        hintStyle: Theme.of(context).textTheme.headline3,
-                        prefixIcon: const Icon(Icons.location_on_rounded,
-                            color: Color(0xFF37474F)),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Champ vide";
+                          }
+                          return null;
+                        },
+                        controller: adresse,
+                        decoration: InputDecoration(
+                          fillColor: Colors.grey[200],
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xFFfd9204),
+                            ),
+                          ),
+                          hintText: 'Adresse',
+                          hintStyle: Theme.of(context).textTheme.headline3,
+                          prefixIcon: const Icon(Icons.location_on_rounded,
+                              color: Color(0xFF37474F)),
+                        ),
+                        cursorColor: Colors.black,
                       ),
-                      cursorColor: Colors.black,
                     ),
                   ),
                   SizedBox(height: 25),
@@ -230,6 +261,8 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                               load = false;
                             });
                           }
+                        } else {
+                          print("not valide");
                         }
                       },
                       shape: RoundedRectangleBorder(
@@ -261,6 +294,157 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                 ],
               ),
             ),
+    );
+  }
+
+  Widget myMaps() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height - 100,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  "votre adresse",
+                  style: GoogleFonts.poppins(
+                    textStyle:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  height: 310,
+                  width: double.infinity,
+                  // decoration: BoxDecoration(
+                  //   borderRadius: BorderRadius.circular(20),
+                  // ),
+                  child: myLocation != null
+                      ? Stack(
+                          children: [
+                            MapPicker(
+                              mapPickerController: mapPickerController,
+                              iconWidget: Image.asset(
+                                "assets/appassets/marker.png",
+                                width: 45,
+                                height: 50,
+                                frameBuilder: (context, child, frame,
+                                    wasSynchronouslyLoaded) {
+                                  return Transform.translate(
+                                    offset: const Offset(0, 1),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                              child: GoogleMap(
+                                minMaxZoomPreference:
+                                    MinMaxZoomPreference(15, 20),
+                                zoomControlsEnabled: false,
+                                myLocationEnabled: true,
+                                onCameraMoveStarted: () {
+                                  mapPickerController.mapMoving!();
+                                },
+                                onCameraIdle: () {
+                                  mapPickerController.mapFinishedMoving!();
+                                },
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(myLocation!.latitude!,
+                                      myLocation!.longitude!),
+                                ),
+                                onMapCreated:
+                                    (GoogleMapController ccontroller) {
+                                  controller = ccontroller;
+                                },
+                                onCameraMove: (newcameraPosition) {
+                                  cameraPosition = newcameraPosition;
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                ),
+              ),
+              SizedBox(height: 30),
+              InkWell(
+                onTap: () async {
+                  LatLng newpos = cameraPosition!.target;
+                  var street = await Config()
+                      .getNameOfStreet(newpos.latitude, newpos.longitude);
+                  ville.text = await Config()
+                      .getNameOfQuartier(newpos.latitude, newpos.longitude);
+                  adresse.text = street;
+
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 50,
+                  width: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    color: maincolor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Valider",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          right: 10,
+          top: 10,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              // Get.back();
+            },
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: maincolor),
+              child: Center(
+                child: Icon(Icons.clear, color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: -12,
+          left: (MediaQuery.of(context).size.width / 2) - 25,
+          child: Container(
+            width: 50,
+            height: 5,
+            decoration: BoxDecoration(
+                color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+          ),
+        ),
+      ],
     );
   }
 }

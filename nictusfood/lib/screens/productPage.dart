@@ -230,6 +230,17 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget myContainer(Product product) {
+    //create new CartModel
+    var cartItem = CartModel(
+      quantity: 1.obs,
+      price: product.price,
+      productDesc: product.productDesc,
+      productName: product.productName,
+      images: product.images,
+      productId: product.productId,
+      regularPrice: product.regularPrice,
+      status: product.status,
+    );
     return widget.isGrid!
         ? InkWell(
             onTap: () async {
@@ -293,17 +304,6 @@ class _ProductPageState extends State<ProductPage> {
                         HapticFeedback.vibrate();
 
                         print("object");
-                        //create new CartModel
-                        var cartItem = CartModel(
-                          quantity: 1.obs,
-                          price: product.price,
-                          productDesc: product.productDesc,
-                          productName: product.productName,
-                          images: product.images,
-                          productId: product.productId,
-                          regularPrice: product.regularPrice,
-                          status: product.status,
-                        );
 
                         if (Config().isExistscart(controller.cart, cartItem)) {
                           print("EXISTE DEJA DANS MON PANIER");
@@ -323,15 +323,27 @@ class _ProductPageState extends State<ProductPage> {
                               backgroundColor: Colors.white);
                         }
                       },
-                      child: SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset(
-                          "assets/appassets/shopping-cart 1.png",
-                          cacheHeight: 25,
-                          cacheWidth: 25,
-                        ),
-                      ),
+                      child: Obx(() {
+                        return Container(
+                          width: 20,
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          height: 20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                Config().isExistscart(controller.cart, cartItem)
+                                    ? Colors.green
+                                    : maincolor,
+                          ),
+                          child: Center(
+                              child: Icon(
+                            Config().isExistscart(controller.cart, cartItem)
+                                ? Icons.check
+                                : Icons.add,
+                            size: 15,
+                          )),
+                        );
+                      }),
                     ),
                   ],
                 )
@@ -370,8 +382,8 @@ class _ProductPageState extends State<ProductPage> {
                                 ),
                               ],
                               image: DecorationImage(
-                                image: CachedNetworkImageProvider(
-                                    product.images![0].srcPath!),
+                                image:
+                                    NetworkImage(product.images![0].srcPath!),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -379,6 +391,7 @@ class _ProductPageState extends State<ProductPage> {
                           Expanded(
                             child: Container(
                               height: 100,
+                              // color: Colors.red,
                               padding:
                                   EdgeInsets.only(top: 5, right: 5, left: 5),
                               child: Column(
@@ -388,11 +401,13 @@ class _ProductPageState extends State<ProductPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        product.productName!,
-                                        style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                              fontWeight: FontWeight.w600),
+                                      Expanded(
+                                        child: Text(
+                                          product.productName!,
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                         ),
                                       ),
                                       FittedBox(
@@ -426,7 +441,7 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   Positioned(
                     bottom: 2,
-                    right: 8,
+                    right: 10,
                     child: InkWell(
                       onTap: () {
                         print("object");
@@ -462,15 +477,26 @@ class _ProductPageState extends State<ProductPage> {
                           );
                         }
                       },
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset(
-                          "assets/appassets/shopping-cart 1.png",
-                          cacheHeight: 25,
-                          cacheWidth: 25,
-                        ),
-                      ),
+                      child: Obx(() {
+                        return Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                Config().isExistscart(controller.cart, cartItem)
+                                    ? Colors.green
+                                    : maincolor,
+                          ),
+                          child: Center(
+                              child: Icon(
+                            Config().isExistscart(controller.cart, cartItem)
+                                ? Icons.check
+                                : Icons.add,
+                            size: 15,
+                          )),
+                        );
+                      }),
                     ),
                   ),
                 ],

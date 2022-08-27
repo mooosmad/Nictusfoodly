@@ -214,8 +214,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 setState(() {
                                   load = true;
                                 });
-                                bool? res = await APIService()
-                                    .socialLogin(user.email, user.photoUrl);
+                                bool? res = await APIService().socialLogin(
+                                  user.email,
+                                  user.photoUrl!,
+                                );
                                 if (res!) {
                                   if (widget.isdrawer!) {
                                     Get.back();

@@ -421,8 +421,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                                   setState(() {
                                     load = true;
                                   });
-                                  bool? res = await APIService()
-                                      .socialLogin(user.email, user.photoUrl);
+                                  bool? res = await APIService().socialLogin(
+                                    user.email,
+                                    user.photoUrl!,
+                                  );
                                   if (res!) {
                                     Get.offAllNamed("/home");
                                   } else {
@@ -628,25 +630,6 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 },
                               ),
                             ),
-                            // MapboxMap(
-                            //   onMapCreated: (MapboxMapController c) async {
-                            //     controller = c;
-                            //     if (mounted) {
-                            //       setState(() {});
-                            //     }
-                            //   },
-                            //   accessToken:
-                            //       "sk.eyJ1IjoicGlvdXBpb3VkZXYiLCJhIjoiY2wzM2llYzhvMHVsbjNjcDlpeWx3azl2byJ9.SGXRi8GH5w_Oser89rhLnA",
-                            //   styleString:
-                            //       "mapbox://styles/pioupioudev/cl33ha6ch001l14qctquv6799",
-                            //   initialCameraPosition: CameraPosition(
-                            //     zoom: 14,
-                            //     target: LatLng(myLocation!.latitude!,
-                            //         myLocation!.longitude!),
-                            //   ),
-                            //   myLocationEnabled: true,
-                            //   trackCameraPosition: true,
-                            // ),
                           ],
                         )
                       : Center(

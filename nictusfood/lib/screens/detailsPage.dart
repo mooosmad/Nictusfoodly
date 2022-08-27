@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, prefer_const_constructors, avoid_print
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,19 +55,96 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: Container(
+        color: Colors.white,
+        height: 100,
+        child: Center(
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(maincolor),
+              padding: MaterialStateProperty.all(
+                EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              ),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            onPressed: () {
+              var cartItem = CartModel(
+                quantity: nbr.obs,
+                price: widget.product!.price,
+                productDesc: widget.product!.productDesc,
+                productName: widget.product!.productName,
+                images: widget.product!.images,
+                productId: widget.product!.productId,
+                regularPrice: widget.product!.regularPrice,
+                status: widget.product!.status,
+              );
+              // ignore: unused_local_variable
+              var res = "exist";
+              if (Config().isExistscart(controller.cart, cartItem)) {
+                print("EXISTE DEJA DANS MON PANIER");
+                setState(() {
+                  res = "exist";
+                });
+                var productToUpdate = controller.cart.firstWhere((element) =>
+                    element.productId == widget.product!.productId);
+                productToUpdate.quantity = nbr.obs;
+                Get.snackbar(
+                  "Panier",
+                  "${widget.product!.productName} vient d'être modifié dans le panier",
+                  duration: Duration(
+                    milliseconds: 900,
+                  ),
+                  instantInit: false,
+                  backgroundColor: Colors.white,
+                );
+              } else {
+                print("VIENT  D'ETRE AJOUTER DANS MON PANIER");
+                res = "notexist";
+                controller.cart.add(cartItem);
+                Get.snackbar(
+                  "Panier",
+                  "${widget.product!.productName} ajouté dans le panier",
+                  duration: Duration(
+                    milliseconds: 900,
+                  ),
+                  backgroundColor: Colors.white,
+                  instantInit: false,
+                );
+              }
+              // print(res);
+              Get.bottomSheet(
+                CartPage(),
+                enableDrag: true,
+                isScrollControlled: true,
+              );
+            },
+            child: Text(
+              "Commander",
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height / 2.8,
+            height: MediaQuery.of(context).size.height / 2.6,
             child: Center(
               child: CarouselSlider(
                   items: List.generate(widget.product!.images!.length, (index) {
                     return Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: CachedNetworkImageProvider(
+                          image: NetworkImage(
                             widget.product!.images![index].srcPath!,
                           ),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     );
@@ -135,6 +211,7 @@ class _DetailPageState extends State<DetailPage> {
                     SizedBox(height: 20),
                     Expanded(
                       child: ListView(
+                        physics: BouncingScrollPhysics(),
                         controller: scrollController,
                         children: [
                           Center(
@@ -371,86 +448,6 @@ class _DetailPageState extends State<DetailPage> {
                                 ),
                               ),
                           SizedBox(height: 20),
-                          Center(
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(maincolor),
-                                padding: MaterialStateProperty.all(
-                                  EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 20),
-                                ),
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                var cartItem = CartModel(
-                                  quantity: nbr.obs,
-                                  price: widget.product!.price,
-                                  productDesc: widget.product!.productDesc,
-                                  productName: widget.product!.productName,
-                                  images: widget.product!.images,
-                                  productId: widget.product!.productId,
-                                  regularPrice: widget.product!.regularPrice,
-                                  status: widget.product!.status,
-                                );
-                                // ignore: unused_local_variable
-                                var res = "exist";
-                                if (Config()
-                                    .isExistscart(controller.cart, cartItem)) {
-                                  print("EXISTE DEJA DANS MON PANIER");
-                                  setState(() {
-                                    res = "exist";
-                                  });
-                                  var productToUpdate = controller.cart
-                                      .firstWhere((element) =>
-                                          element.productId ==
-                                          widget.product!.productId);
-                                  productToUpdate.quantity = nbr.obs;
-                                  Get.snackbar(
-                                    "Panier",
-                                    "${widget.product!.productName} vient d'être modifié dans le panier",
-                                    duration: Duration(
-                                      milliseconds: 900,
-                                    ),
-                                    instantInit: false,
-                                    backgroundColor: Colors.white,
-                                  );
-                                } else {
-                                  print(
-                                      "VIENT  D'ETRE AJOUTER DANS MON PANIER");
-                                  res = "notexist";
-                                  controller.cart.add(cartItem);
-                                  Get.snackbar(
-                                    "Panier",
-                                    "${widget.product!.productName} ajouté dans le panier",
-                                    duration: Duration(
-                                      milliseconds: 900,
-                                    ),
-                                    backgroundColor: Colors.white,
-                                    instantInit: false,
-                                  );
-                                }
-                                // print(res);
-                                Get.bottomSheet(
-                                  CartPage(),
-                                  enableDrag: true,
-                                  isScrollControlled: true,
-                                );
-                              },
-                              child: Text(
-                                "J'achète",
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),

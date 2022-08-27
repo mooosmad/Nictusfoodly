@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:get/get.dart';
@@ -41,7 +42,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Customer? customer;
   List<Category>? category = [];
-  List<Map<String, List<Category>>> maincategory = [];
+  List<Category> maincategory = [];
   Location location = Location();
   bool? serviceEnabled;
   bool? load = true;
@@ -84,22 +85,26 @@ class _HomeState extends State<Home> {
 
   getCategory() async {
     category = await APIService().getCategorie();
+
     if (category != null) {
       List<Category> othercategory = [];
 
       category!.forEach((element) {
+        print(element.categoryName);
         if (element.categoryName == "Nos Tcheps" ||
             element.categoryName == "Boutique" ||
             element.categoryName == "Menu du jour" ||
-            element.categoryName == "Promos") {
-          maincategory.add({
-            element.categoryName!: [element]
-          });
+            element.categoryName == "Promos" ||
+            element.categoryName == "Desserts" ||
+            element.categoryName == "Snacks" ||
+            element.categoryName == "Boissons") {
+          maincategory.add(element);
         } else {
           othercategory.add(element);
         }
       });
-      maincategory.add({"La carte": othercategory});
+      // maincategory.add({"La carte": othercategory});
+      // print(maincategory.length);
     }
 
     load = false;
@@ -140,6 +145,7 @@ class _HomeState extends State<Home> {
       box = await Hive.openBox<Customer>('boxCustomer');
       await getCategory();
       await checkPermission();
+
       await getCustomer();
       if (mounted) {
         setState(() {});
@@ -208,24 +214,13 @@ class _HomeState extends State<Home> {
                                                                 .symmetric(
                                                                     horizontal:
                                                                         5),
-                                                            child: Text(
-                                                              "Veuillez Vous Conntecter",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: GoogleFonts.poppins(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontSize: 14,
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
+                                                            child: Image.asset(
+                                                                "assets/appassets/Moncompte.png"),
                                                           ),
                                                         )
                                                       : Center(
                                                           child: Image.asset(
-                                                              "assets/appassets/Mon compte.png"),
+                                                              "assets/appassets/Moncompte.png"),
                                                         ),
                                                 ),
                                                 ListTile(
@@ -297,10 +292,8 @@ class _HomeState extends State<Home> {
                                                   ),
                                                   child: idUser != null
                                                       ? Container(
-                                                          child:
-                                                              CachedNetworkImage(
-                                                            imageUrl:
-                                                                res!.urlPic!,
+                                                          child: Image.network(
+                                                            res!.urlPic!,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         )
@@ -440,7 +433,7 @@ class _HomeState extends State<Home> {
               child: Scaffold(
                 key: _key,
                 resizeToAvoidBottomInset: false,
-                backgroundColor: maincolor,
+                backgroundColor: Color(0xffedcfa9),
                 floatingActionButton: load!
                     ? null
                     : FloatingActionButton(
@@ -479,33 +472,48 @@ class _HomeState extends State<Home> {
                       ),
                 body: load!
                     ? Loading()
-                    : Stack(
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          myAppBar(),
+                          // SizedBox(height: 60),
                           Container(
-                            child: Center(
-                              child: FittedBox(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    myCard(false, maincategory.last),
-                                    Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          myCard(false, maincategory[3]),
-                                          myCard(true, maincategory[2]),
-                                          myCard(false, maincategory[0]),
-                                        ],
-                                      ),
-                                    ),
-                                    myCard(false, maincategory[1]),
-                                  ],
-                                ),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white,
+                            ),
+                            child: TextFormField(
+                              style: GoogleFonts.poppins(),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Rechercher",
+                                hintStyle: GoogleFonts.poppins(),
                               ),
                             ),
                           ),
-                          myAppBar(),
+                          SizedBox(height: 10),
+                          Expanded(
+                            child: GridView.builder(
+                              physics: BouncingScrollPhysics(),
+                              // shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              itemCount: maincategory.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              itemBuilder: (context, i) {
+                                return containerCard(maincategory[i]);
+                              },
+                            ),
+                          ),
                         ],
                       ),
               ),
@@ -513,15 +521,56 @@ class _HomeState extends State<Home> {
           );
   }
 
+  Widget containerCard(Category category) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        Get.to(ProductPage(
+            category: category,
+            isGrid: category.categoryName == "Boissons" ||
+                category.categoryName == "Desserts"));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.white,
+        ),
+        width: double.infinity,
+        height: 200,
+        child: Column(
+          children: [
+            Expanded(
+              child: CachedNetworkImage(
+                imageUrl: category.image!,
+              ),
+            ),
+            SizedBox(
+              height: 30,
+              child: Text(
+                category.categoryName!,
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget myAppBar() {
     return Container(
       width: double.infinity,
+      // color: Colors.red,
+      height: 90,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset(
-            "assets/appassets/Plan de travail 2 copie 13-8 1.png",
+            "assets/appassets/logo.png",
             width: 80,
             height: 120,
           ),
@@ -547,9 +596,9 @@ class _HomeState extends State<Home> {
                 "7/7 ouvert de 11h à 21h et “Pour les pros“ ",
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(),
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 15,
-                  fontWeight: FontWeight.w700,
+                  // fontWeight: FontWeight.w700,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -591,7 +640,7 @@ class _HomeState extends State<Home> {
               ),
               child: Icon(
                 Icons.person,
-                color: maincolor,
+                // color: maincolor,
               ),
             ),
           )

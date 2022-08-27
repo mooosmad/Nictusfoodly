@@ -130,11 +130,17 @@ class APIService {
     return ret;
   }
 
-  Future<bool?> socialLogin(String username, urlPicToAccount) async {
+  Future<bool?> socialLogin(
+    String username,
+    String urlPicToAccount,
+  ) async {
     try {
       var response = await Dio().post(
         Config.tokenUrl,
-        data: {"username": username, "social_login": "true"},
+        data: {
+          "username": username,
+          "social_login": "true",
+        },
         options: Options(
           headers: {
             HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
@@ -225,10 +231,11 @@ class APIService {
     var authToken = base64.encode(
       utf8.encode("${Config.key}:${Config.secret}"),
     );
+    print(authToken);
     print("---GET CATEGORIES----");
     try {
       var response = await Dio().get(
-        "https://versamete.net/wp-json/wc/v2/products/categories",
+        "${Config.rootUrl}/wp-json/wc/v2/products/categories?per_page=100",
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -236,7 +243,7 @@ class APIService {
           },
         ),
       );
-
+      print(response.data);
       response.data.forEach((element) {
         res.add(Category.fromJson(element));
       });
@@ -270,7 +277,7 @@ class APIService {
     );
     try {
       var response = await Dio().get(
-        "https://versamete.net/wp-json/wc/v2/products?category=$idCategory",
+        "${Config.rootUrl}/wp-json/wc/v2/products?category=$idCategory",
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -278,6 +285,7 @@ class APIService {
           },
         ),
       );
+      print(response.data);
 
       response.data.forEach((element) {
         res.add(Product.fromJson(element));
@@ -300,7 +308,7 @@ class APIService {
     );
     try {
       var response = await Dio().get(
-        "https://versamete.net/wp-json/wc/v3/products/$idProduct",
+        "${Config.rootUrl}/wp-json/wc/v3/products/$idProduct",
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',
@@ -371,7 +379,7 @@ class APIService {
     };
     try {
       var response = await Dio().post(
-        "https://versamete.net/wp-json/wc/v3/orders",
+        "${Config.rootUrl}/wp-json/wc/v3/orders",
         data: data,
         options: Options(
           headers: {
@@ -400,7 +408,7 @@ class APIService {
     );
     try {
       var response = await Dio().get(
-        "https://versamete.net/wp-json/wc/v3/orders?customer=$idUser",
+        "${Config.rootUrl}/wp-json/wc/v3/orders?customer=$idUser",
         options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $authToken',

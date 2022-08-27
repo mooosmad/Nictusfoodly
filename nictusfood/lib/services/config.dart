@@ -5,11 +5,12 @@ import 'package:nictusfood/models/cartmodel.dart';
 import "package:geocoding/geocoding.dart" as geo;
 
 class Config {
-  static String key = "ck_1bb6774c3979efcfe1378a8d9d199f1870e00ede";
-  static String secret = "cs_9c89a8dbd8366786ac9d0cfcf937860a52bbff3d";
-  static String url = "https://versamete.net/wp-json/wc/v3/";
+  static String rootUrl = "https://tchepexpress.com";
+  static String key = "ck_629d70b2491f1ef60e1b4f5186d558717a18fe3f";
+  static String secret = "cs_2bdb4e6ba8c7e2f48cd8d3a6e61692621dbc7108";
+  static String url = "$rootUrl/wp-json/wc/v3/";
   static String customerUrl = "customers";
-  static String tokenUrl = "https://versamete.net/wp-json/jwt-auth/v1/token";
+  static String tokenUrl = "$rootUrl/wp-json/jwt-auth/v1/token";
 
   String parserHTMLTAG(String input) {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);

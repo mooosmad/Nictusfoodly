@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, prefer_const_literals_to_create_immutables, must_be_immutable, unrelated_type_equality_checks
 
-import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -544,7 +543,7 @@ class _CartPageState extends State<CartPage> {
                               ),
                             ],
                             image: DecorationImage(
-                              image: CachedNetworkImageProvider(
+                              image: NetworkImage(
                                 cartItem.images!.isNotEmpty
                                     ? cartItem.images![0].srcPath!
                                     : "https://bitsofco.de/content/images/2018/12/broken-1.png",
