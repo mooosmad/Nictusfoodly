@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class Lot extends StatefulWidget {
   const Lot({Key? key}) : super(key: key);
