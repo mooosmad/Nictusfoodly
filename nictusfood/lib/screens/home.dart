@@ -315,7 +315,7 @@ class _HomeState extends State<Home> {
                                                   },
                                                   leading: Icon(Icons
                                                       .account_circle_rounded),
-                                                  title: Text('Profile'),
+                                                  title: Text('Profil'),
                                                 ),
                                                 ListTile(
                                                   onTap: () {
@@ -332,7 +332,7 @@ class _HomeState extends State<Home> {
                                                             .downToUp);
                                                   },
                                                   leading:
-                                                      Icon(Icons.apps_sharp),
+                                                      Icon(Icons.menu_outlined),
                                                   title: Text('Mes commandes'),
                                                 ),
                                                 ListTile(
@@ -392,7 +392,8 @@ class _HomeState extends State<Home> {
                                                       ),
                                                     );
                                                   },
-                                                  leading: Icon(Icons.settings),
+                                                  leading: Icon(Icons
+                                                      .exit_to_app_rounded),
                                                   title: Text('Deconnexion'),
                                                 ),
                                                 Spacer(),
