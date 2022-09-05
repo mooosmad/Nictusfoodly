@@ -18,12 +18,14 @@ import 'package:nictusfood/auth/update.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
+import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/screens/cart.dart';
 import 'package:nictusfood/screens/errorPage.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/orderPage.dart';
 import 'package:nictusfood/screens/otherCategoriPage.dart';
 import 'package:nictusfood/screens/productPage.dart';
+import 'package:nictusfood/screens/searchPage.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,6 +52,7 @@ class _HomeState extends State<Home> {
   String quartier = "";
   String myStreet = "";
   String? idUser;
+  List<Product>? allProducts = [];
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   final _advancedDrawerController = AdvancedDrawerController();
   final controller = Get.put(MyCartController());
@@ -478,21 +481,50 @@ class _HomeState extends State<Home> {
                         children: [
                           myAppBar(),
                           // SizedBox(height: 60),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.white,
-                            ),
-                            child: TextFormField(
-                              style: GoogleFonts.poppins(),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Rechercher",
-                                hintStyle: GoogleFonts.poppins(),
+                          GestureDetector(
+                            onTap: () async {
+                              setState(() {
+                                load = true;
+                              });
+                              if (allProducts!.isEmpty) {
+                                allProducts =
+                                    await APIService().getAllProduct();
+                                print(allProducts!.length);
+                                showSearch(
+                                  context: context,
+                                  delegate: MySearch(products: allProducts!),
+                                );
+                              } else {
+                                print(allProducts!.length);
+                                showSearch(
+                                  context: context,
+                                  delegate: MySearch(products: allProducts!),
+                                );
+                              }
+
+                              setState(() {
+                                load = false;
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Rechercher",
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

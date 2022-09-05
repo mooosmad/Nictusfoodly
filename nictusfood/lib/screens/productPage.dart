@@ -157,12 +157,20 @@ class _ProductPageState extends State<ProductPage> {
                           ],
                         ),
                       ),
-                      background: assetbackground != null
-                          ? Image.asset(
-                              assetbackground!,
-                              fit: BoxFit.cover,
-                            )
-                          : null,
+                      background: Column(
+                        children: [
+                          Container(
+                            color: maincolor,
+                            child: SizedBox(
+                              height: 200,
+                              child: CachedNetworkImage(
+                                imageUrl: widget.category!.image!,
+                                height: 100,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }),
                 ),
