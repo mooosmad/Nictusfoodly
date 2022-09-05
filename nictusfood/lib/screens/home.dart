@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -422,9 +423,9 @@ class _HomeState extends State<Home> {
                       );
                     }
                   }),
-              backdropColor: Colors.blueGrey.shade400,
+              backdropColor: Color(0xffD9D9D9),
               controller: _advancedDrawerController,
-              animationCurve: Curves.easeInOut,
+              animationCurve: Curves.elasticIn,
               animationDuration: const Duration(milliseconds: 300),
               animateChildDecoration: true,
               rtlOpening: true,
@@ -496,21 +497,35 @@ class _HomeState extends State<Home> {
                           ),
                           SizedBox(height: 10),
                           Expanded(
-                            child: GridView.builder(
-                              physics: BouncingScrollPhysics(),
-                              // shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              itemCount: maincategory.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
+                            child: AnimationLimiter(
+                              child: GridView.builder(
+                                physics: BouncingScrollPhysics(),
+                                // shrinkWrap: true,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                itemCount: maincategory.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemBuilder: (context, i) {
+                                  return AnimationConfiguration.staggeredGrid(
+                                    position: i,
+                                    duration: const Duration(milliseconds: 475),
+                                    columnCount: 1,
+                                    child: ScaleAnimation(
+                                      curve: Curves.elasticIn,
+                                      child: FadeInAnimation(
+                                        child: containerCard(maincategory[i]),
+                                      ),
+                                    ),
+                                  );
+                                },
+
+                                // containerCard(maincategory[i]);
                               ),
-                              itemBuilder: (context, i) {
-                                return containerCard(maincategory[i]);
-                              },
                             ),
                           ),
                         ],

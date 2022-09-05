@@ -23,6 +23,7 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   final controller = Get.put(MyCartController());
+
   bool loadshimer = true;
   int nbr = 1;
 
@@ -44,6 +45,27 @@ class _DetailPageState extends State<DetailPage> {
         loadshimer = false;
       });
     }
+  }
+
+  void suppressionInTheCart(CartModel cartItem) {
+    controller.remove(cartItem);
+
+    Get.snackbar("Suppression",
+        "${cartItem.productName} à bien été supprimer dans le panier",
+        duration: Duration(
+          milliseconds: 900,
+        ),
+        instantInit: false,
+        backgroundColor: Colors.white);
+  }
+
+  void addIntTheCart(CartModel cartItem) {
+    controller.cart.add(cartItem);
+    Get.snackbar("Panier", "${cartItem.productName} ajouté dans le panier",
+        duration: Duration(
+          milliseconds: 900,
+        ),
+        backgroundColor: Colors.white);
   }
 
   @override
@@ -432,27 +454,40 @@ class _DetailPageState extends State<DetailPage> {
                                                           Colors.white);
                                                 }
                                               }, child: Obx(() {
-                                                return Container(
-                                                  width: 20,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Config()
-                                                            .isExistscart(
-                                                                controller.cart,
-                                                                cartItem)
-                                                        ? Colors.green
-                                                        : maincolor,
+                                                return InkWell(
+                                                  onTap: () {
+                                                    if (Config().isExistscart(
+                                                        controller.cart,
+                                                        cartItem)) {
+                                                      suppressionInTheCart(
+                                                          cartItem);
+                                                    } else {
+                                                      addIntTheCart(cartItem);
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Config()
+                                                              .isExistscart(
+                                                                  controller
+                                                                      .cart,
+                                                                  cartItem)
+                                                          ? Colors.green
+                                                          : maincolor,
+                                                    ),
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Config().isExistscart(
+                                                              controller.cart,
+                                                              cartItem)
+                                                          ? Icons.check
+                                                          : Icons.add,
+                                                      size: 15,
+                                                    )),
                                                   ),
-                                                  child: Center(
-                                                      child: Icon(
-                                                    Config().isExistscart(
-                                                            controller.cart,
-                                                            cartItem)
-                                                        ? Icons.check
-                                                        : Icons.add,
-                                                    size: 15,
-                                                  )),
                                                 );
                                               }));
                                             }),
