@@ -7,7 +7,7 @@ import 'package:nictusfood/models/ordermodel.dart';
 import 'package:nictusfood/screens/home.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
+import 'package:web_socket_channel/io.dart';
 
 class TimelineTacer extends StatefulWidget {
   final Order? order;
@@ -19,7 +19,17 @@ class TimelineTacer extends StatefulWidget {
 }
 
 class _TimelineTacerState extends State<TimelineTacer> {
-  String formattedDate = DateFormat('kk:mm').format(DateTime.now());
+  final channel =
+      IOWebSocketChannel.connect('ws://wp-json/wc/v3/orders/status');
+
+  streamListenner() {
+    channel.stream.listen((event) {
+      // channel.sink.add('received');
+      // channel.sink.close(status.goingAway);
+      print(event);
+    });
+  }
+
   int index = 0;
   getIndexStatus() {
     if (widget.order!.status == "processing") {
@@ -1264,6 +1274,7 @@ class _TimelineTacerState extends State<TimelineTacer> {
     super.initState();
     // setState(() {
     getIndexStatus();
+    streamListenner();
     // });
   }
 }
