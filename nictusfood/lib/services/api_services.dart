@@ -269,6 +269,38 @@ class APIService {
     }
   }
 
+  Future<List<Product>>? getAllProduct() async {
+    List<Product>? res = [];
+    var authToken = base64.encode(
+      utf8.encode("${Config.key}:${Config.secret}"),
+    );
+    try {
+      var response = await Dio().get(
+        "${Config.rootUrl}/wp-json/wc/v3/products?per_page=100",
+        options: Options(
+          headers: {
+            HttpHeaders.authorizationHeader: 'Basic $authToken',
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+        ),
+      );
+      print(response.data);
+
+      response.data.forEach((element) {
+        res.add(Product.fromJson(element));
+      });
+      return res;
+    } on DioError catch (e) {
+      print(e.message);
+
+      Fluttertoast.showToast(
+        msg: Config().parserHTMLTAG(
+            "Une erreur est survenue veuillez verifier votre connection internet"),
+      );
+      return [];
+    }
+  }
+
   Future<List<Product>>? getProductByCategorie(int idCategory) async {
     List<Product>? res = [];
     var authToken = base64.encode(

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors, avoid_unnecessary_containers
+// ignore_for_file: deprecated_member_use, prefer_const_constructors, avoid_unnecessary_containers, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -234,7 +234,7 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                     alignment: Alignment.centerRight,
                     margin:
                         const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
-                    child: RaisedButton(
+                    child: OutlinedButton(
                       onPressed: () async {
                         if (formGlobalKey.currentState!.validate()) {
                           setState(() {
@@ -265,10 +265,15 @@ class _UpdapteScreenState extends State<UpdapteScreen> {
                           print("not valide");
                         }
                       },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(80.0)),
-                      textColor: Colors.white,
-                      padding: const EdgeInsets.all(0),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(80.0),
+                        ),
+                        textStyle: TextStyle(
+                          color: Colors.white,
+                        ),
+                        padding: const EdgeInsets.all(0),
+                      ),
                       child: Container(
                         alignment: Alignment.center,
                         height: 50.0,

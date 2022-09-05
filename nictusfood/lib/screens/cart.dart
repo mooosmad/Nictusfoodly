@@ -110,8 +110,8 @@ class _CartPageState extends State<CartPage> {
                                                         thickness: 3,
                                                         color: Colors.black,
                                                       ),
-                                                      // SizedBox(height: 10),
-                                                      // radios(),
+                                                      SizedBox(height: 10),
+                                                      radios(),
                                                       SizedBox(height: 10),
                                                       Text(
                                                         "Lieu de Livraison",
@@ -128,9 +128,7 @@ class _CartPageState extends State<CartPage> {
                                                       ),
                                                       SizedBox(height: 10),
                                                       myMap(),
-
                                                       SizedBox(height: 10),
-
                                                       SizedBox(height: 10),
                                                       Text(
                                                         "Moyen de payement",

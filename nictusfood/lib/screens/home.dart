@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,12 +18,14 @@ import 'package:nictusfood/auth/update.dart';
 import 'package:nictusfood/controller/cart_state.dart';
 import 'package:nictusfood/models/categorie.dart';
 import 'package:nictusfood/models/customer.dart';
+import 'package:nictusfood/models/product.dart';
 import 'package:nictusfood/screens/cart.dart';
 import 'package:nictusfood/screens/errorPage.dart';
 import 'package:nictusfood/screens/loading.dart';
 import 'package:nictusfood/screens/orderPage.dart';
 import 'package:nictusfood/screens/otherCategoriPage.dart';
 import 'package:nictusfood/screens/productPage.dart';
+import 'package:nictusfood/screens/searchPage.dart';
 import 'package:nictusfood/services/api_services.dart';
 import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +52,7 @@ class _HomeState extends State<Home> {
   String quartier = "";
   String myStreet = "";
   String? idUser;
+  List<Product>? allProducts = [];
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   final _advancedDrawerController = AdvancedDrawerController();
   final controller = Get.put(MyCartController());
@@ -314,7 +318,7 @@ class _HomeState extends State<Home> {
                                                   },
                                                   leading: Icon(Icons
                                                       .account_circle_rounded),
-                                                  title: Text('Profile'),
+                                                  title: Text('Profil'),
                                                 ),
                                                 ListTile(
                                                   onTap: () {
@@ -331,7 +335,7 @@ class _HomeState extends State<Home> {
                                                             .downToUp);
                                                   },
                                                   leading:
-                                                      Icon(Icons.apps_sharp),
+                                                      Icon(Icons.menu_outlined),
                                                   title: Text('Mes commandes'),
                                                 ),
                                                 ListTile(
@@ -391,7 +395,8 @@ class _HomeState extends State<Home> {
                                                       ),
                                                     );
                                                   },
-                                                  leading: Icon(Icons.settings),
+                                                  leading: Icon(Icons
+                                                      .exit_to_app_rounded),
                                                   title: Text('Deconnexion'),
                                                 ),
                                                 Spacer(),
@@ -422,9 +427,9 @@ class _HomeState extends State<Home> {
                       );
                     }
                   }),
-              backdropColor: Colors.blueGrey.shade400,
+              backdropColor: Color(0xffD9D9D9),
               controller: _advancedDrawerController,
-              animationCurve: Curves.easeInOut,
+              animationCurve: Curves.elasticIn,
               animationDuration: const Duration(milliseconds: 300),
               animateChildDecoration: true,
               rtlOpening: true,
@@ -476,41 +481,84 @@ class _HomeState extends State<Home> {
                         children: [
                           myAppBar(),
                           // SizedBox(height: 60),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.white,
-                            ),
-                            child: TextFormField(
-                              style: GoogleFonts.poppins(),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Rechercher",
-                                hintStyle: GoogleFonts.poppins(),
+                          GestureDetector(
+                            onTap: () async {
+                              setState(() {
+                                load = true;
+                              });
+                              if (allProducts!.isEmpty) {
+                                allProducts =
+                                    await APIService().getAllProduct();
+                                print(allProducts!.length);
+                                showSearch(
+                                  context: context,
+                                  delegate: MySearch(products: allProducts!),
+                                );
+                              } else {
+                                print(allProducts!.length);
+                                showSearch(
+                                  context: context,
+                                  delegate: MySearch(products: allProducts!),
+                                );
+                              }
+
+                              setState(() {
+                                load = false;
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Rechercher",
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                           SizedBox(height: 10),
                           Expanded(
-                            child: GridView.builder(
-                              physics: BouncingScrollPhysics(),
-                              // shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              itemCount: maincategory.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
+                            child: AnimationLimiter(
+                              child: GridView.builder(
+                                physics: BouncingScrollPhysics(),
+                                // shrinkWrap: true,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                itemCount: maincategory.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemBuilder: (context, i) {
+                                  return AnimationConfiguration.staggeredGrid(
+                                    position: i,
+                                    duration: const Duration(milliseconds: 475),
+                                    columnCount: 1,
+                                    child: ScaleAnimation(
+                                      curve: Curves.elasticIn,
+                                      child: FadeInAnimation(
+                                        child: containerCard(maincategory[i]),
+                                      ),
+                                    ),
+                                  );
+                                },
+
+                                // containerCard(maincategory[i]);
                               ),
-                              itemBuilder: (context, i) {
-                                return containerCard(maincategory[i]);
-                              },
                             ),
                           ),
                         ],

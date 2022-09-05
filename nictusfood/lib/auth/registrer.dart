@@ -410,7 +410,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           alignment: Alignment.centerRight,
                           margin: const EdgeInsets.symmetric(
                               horizontal: 40, vertical: 10),
-                          child: RaisedButton(
+                          child: OutlinedButton(
                             onPressed: () async {
                               if (await _googleSignIn.isSignedIn()) {
                                 await _googleSignIn.signOut();
@@ -433,12 +433,16 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 }
                               }
                             },
-                            elevation: 1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(80.0),
+                            style: OutlinedButton.styleFrom(
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(80.0),
+                              ),
+                              textStyle: TextStyle(
+                                color: Colors.black,
+                              ),
+                              padding: const EdgeInsets.all(0),
                             ),
-                            textColor: Colors.black,
-                            padding: const EdgeInsets.all(0),
                             child: Container(
                               alignment: Alignment.center,
                               height: 50.0,
@@ -460,7 +464,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           alignment: Alignment.centerRight,
                           margin: const EdgeInsets.symmetric(
                               horizontal: 40, vertical: 10),
-                          child: RaisedButton(
+                          child: OutlinedButton(
                             onPressed: () async {
                               if (formGlobalKey.currentState!.validate()) {
                                 setState(() {
@@ -498,10 +502,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 print("noo valide");
                               }
                             },
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(80.0)),
-                            textColor: Colors.white,
-                            padding: const EdgeInsets.all(0),
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(80.0)),
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              padding: const EdgeInsets.all(0),
+                            ),
                             child: Container(
                               alignment: Alignment.center,
                               height: 50.0,

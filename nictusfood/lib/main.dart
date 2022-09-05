@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -105,7 +104,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
                       child: Loading(),
                     )
           : Loading(),
-      splashTransition: SplashTransition.slideTransition,
+      splashTransition: SplashTransition.fadeTransition,
     );
   }
 }
