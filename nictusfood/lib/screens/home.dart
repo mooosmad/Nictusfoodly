@@ -93,6 +93,7 @@ class _HomeState extends State<Home> {
       category!.forEach((element) {
         print(element.categoryName);
         if (element.categoryName == "Nos Tcheps" ||
+            element.categoryName == "Tcheps" ||
             element.categoryName == "Boutique" ||
             element.categoryName == "Menu du jour" ||
             element.categoryName == "Promos" ||
