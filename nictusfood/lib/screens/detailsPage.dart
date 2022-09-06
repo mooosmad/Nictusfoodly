@@ -26,7 +26,9 @@ class _DetailPageState extends State<DetailPage> {
 
   bool loadshimer = true;
   int nbr = 1;
-
+  int suggestionsCount = 0;
+  int suggestionNombre = 0;
+  int suggestionPrice = 0;
   List<Product> suggestions = [];
   List<String> categorieName = [];
 
@@ -40,6 +42,8 @@ class _DetailPageState extends State<DetailPage> {
       categorieName.add(element.categorieName!);
     }
     categorieName = categorieName.toSet().toList();
+    getLengthOnItemInSuggestion();
+
     if (mounted) {
       setState(() {
         loadshimer = false;
@@ -66,6 +70,35 @@ class _DetailPageState extends State<DetailPage> {
           milliseconds: 900,
         ),
         backgroundColor: Colors.white);
+  }
+
+  void getLengthOnItemInSuggestion() {
+    int nbr = 0;
+    int prix = 0;
+    for (var produit in suggestions) {
+      CartModel cartItem = CartModel(
+        quantity: 1.obs,
+        price: produit.price,
+        productDesc: produit.productDesc,
+        productName: produit.productName,
+        images: produit.images,
+        productId: produit.productId,
+        regularPrice: produit.regularPrice,
+        status: produit.status,
+      );
+      if (Config().isExistscart(controller.cart, cartItem)) {
+        nbr++;
+        prix += int.parse(cartItem.price!);
+      }
+    }
+    setState(() {
+      suggestionNombre = nbr;
+      suggestionPrice = prix;
+    });
+    print("***********************");
+    print(suggestionPrice);
+
+    // return {"nombreSuggestions": nbr, "prixSuggestion": prix};
   }
 
   @override
@@ -145,7 +178,7 @@ class _DetailPageState extends State<DetailPage> {
               );
             },
             child: Text(
-              "Je commande ${nbr.obs} à ${int.parse(widget.product!.regularPrice!) * nbr.obs.toInt()}",
+              "Je commande ${nbr.obs + suggestionNombre} à ${int.parse(widget.product!.regularPrice!) * nbr.obs.toInt() + suggestionPrice}",
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -360,6 +393,19 @@ class _DetailPageState extends State<DetailPage> {
                               ),
                             ),
                           if (!loadshimer)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: Text(
+                                "Suggestion à ajouter au panier",
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (!loadshimer)
                             for (var element in categorieName)
                               Container(
                                 width: double.infinity,
@@ -421,39 +467,7 @@ class _DetailPageState extends State<DetailPage> {
                                                     produit.regularPrice,
                                                 status: produit.status,
                                               );
-                                              return InkWell(onTap: () {
-                                                HapticFeedback.vibrate();
-
-                                                print("object");
-                                                //create new CartModel
-
-                                                if (Config().isExistscart(
-                                                    controller.cart,
-                                                    cartItem)) {
-                                                  print(
-                                                      "EXISTE DEJA DANS MON PANIER");
-                                                  var productToUpdate = controller
-                                                      .cart
-                                                      .firstWhere((element) =>
-                                                          element.productId ==
-                                                          produit.productId);
-                                                  productToUpdate.quantity =
-                                                      productToUpdate
-                                                              .quantity! +
-                                                          1;
-                                                } else {
-                                                  print(
-                                                      "VIENT  D'ETRE AJOUTER DANS MON PANIER");
-                                                  controller.cart.add(cartItem);
-                                                  Get.snackbar("Panier",
-                                                      "${produit.productName} ajouté dans le panier",
-                                                      duration: Duration(
-                                                        milliseconds: 900,
-                                                      ),
-                                                      backgroundColor:
-                                                          Colors.white);
-                                                }
-                                              }, child: Obx(() {
+                                              return Obx(() {
                                                 return InkWell(
                                                   onTap: () {
                                                     if (Config().isExistscart(
@@ -464,6 +478,8 @@ class _DetailPageState extends State<DetailPage> {
                                                     } else {
                                                       addIntTheCart(cartItem);
                                                     }
+
+                                                    getLengthOnItemInSuggestion();
                                                   },
                                                   child: Container(
                                                     width: 20,
@@ -489,7 +505,7 @@ class _DetailPageState extends State<DetailPage> {
                                                     )),
                                                   ),
                                                 );
-                                              }));
+                                              });
                                             }),
                                           ],
                                         )
