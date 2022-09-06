@@ -427,9 +427,9 @@ class _HomeState extends State<Home> {
                       );
                     }
                   }),
-              backdropColor: Color(0xffD9D9D9),
+              backdropColor: Color.fromARGB(179, 217, 217, 217),
               controller: _advancedDrawerController,
-              animationCurve: Curves.elasticIn,
+              animationCurve: Curves.easeIn,
               animationDuration: const Duration(milliseconds: 300),
               animateChildDecoration: true,
               rtlOpening: true,

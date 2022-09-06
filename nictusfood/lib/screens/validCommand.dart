@@ -20,13 +20,15 @@ class ValidationPage extends StatefulWidget {
   final String? lieuxLivraison;
   final String? moyentPayement;
   final String? idUser;
-  const ValidationPage(
-      {Key? key,
-      this.items,
-      this.lieuxLivraison,
-      this.moyentPayement,
-      required this.idUser})
-      : super(key: key);
+  final String? moyenLivraion;
+  const ValidationPage({
+    Key? key,
+    this.items,
+    this.lieuxLivraison,
+    this.moyentPayement,
+    required this.idUser,
+    this.moyenLivraion,
+  }) : super(key: key);
 
   @override
   State<ValidationPage> createState() => _ValidationPageState();
@@ -35,6 +37,18 @@ class ValidationPage extends StatefulWidget {
 class _ValidationPageState extends State<ValidationPage> {
   final controller = Get.put(MyCartController());
   bool load = false;
+
+  void getMoyenLivraison() {
+    print(" j'ai pris ma livraison ${widget.moyenLivraion}");
+  }
+
+  @override
+  void initState() {
+    getMoyenLivraison();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return load
@@ -201,54 +215,103 @@ class _ValidationPageState extends State<ValidationPage> {
               ],
             ),
           SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Livraison",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(right: 5),
-                child: Text(
-                  "1000 FCFA",
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(
-                      fontSize: 17,
+          widget.moyenLivraion == "emporter"
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "À emporter",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(
+                      padding: EdgeInsets.only(right: 5),
+                      child: Text(
+                        "0 FCFA",
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 17,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Livraison",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(right: 5),
+                      child: Text(
+                        "1000 FCFA",
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 17,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
           SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Total",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+          widget.moyenLivraion == "emporter"
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "${controller.getPrice()} FCFA",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "${controller.getPrice() + 1000} FCFA",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                "${controller.getPrice() + 1000} FCFA",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

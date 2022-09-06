@@ -36,6 +36,12 @@ class _CartPageState extends State<CartPage> {
   var groupValue = "emporter".obs;
 
   final controllerLivraison = Get.put(StateLivraison());
+  @override
+  void initState() {
+    // TODO: implement initState
+    radios();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +219,9 @@ class _CartPageState extends State<CartPage> {
                   value: "emporter",
                   groupValue: controllerLivraison.groupValue.value,
                   onChanged: (val) {
-                    controllerLivraison.changeValue(val);
+                    setState(() {
+                      controllerLivraison.changeValue(val);
+                    });
                   });
             }),
             Text(
@@ -234,7 +242,9 @@ class _CartPageState extends State<CartPage> {
                   value: "livrer",
                   groupValue: controllerLivraison.groupValue.value,
                   onChanged: (val) {
-                    controllerLivraison.changeValue(val!);
+                    setState(() {
+                      controllerLivraison.changeValue(val!);
+                    });
                   });
             }),
             Text(
@@ -296,6 +306,7 @@ class _CartPageState extends State<CartPage> {
                   lieuxLivraison: adresseDeLivraison.value,
                   moyentPayement: value.value,
                   idUser: idUser,
+                  moyenLivraion: controllerLivraison.groupValue.value,
                 ),
                 transition: Transition.rightToLeft,
                 popGesture: true,
@@ -453,53 +464,101 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
           SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Livraison",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              Text(
-                "1000 FCFA",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Total",
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Obx(() {
-                return Text(
-                  "${controller.getPrice() + 1000} FCFA",
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
+          controllerLivraison.groupValue.value == "emporter"
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "À emporter",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              })
-            ],
-          ),
+                    Text(
+                      "0 FCFA",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Livraison",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "1000 FCFA",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+          SizedBox(height: 10),
+          controllerLivraison.groupValue.value == "emporter"
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Obx(() {
+                      return Text(
+                        "${controller.getPrice()} FCFA",
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    })
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Obx(() {
+                      return Text(
+                        "${controller.getPrice() + 1000} FCFA",
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    })
+                  ],
+                ),
         ],
       ),
     );
