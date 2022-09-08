@@ -1,11 +1,13 @@
 class Category {
   int? categoryId;
   String? categoryName;
+  String? slug;
   String? categoryDesc;
   int? parent;
   String? image;
 
   Category({
+    required this.slug,
     this.categoryId,
     this.categoryName,
     this.categoryDesc,
@@ -15,6 +17,7 @@ class Category {
   Category.fromJson(Map<String, dynamic> json) {
     categoryId = json["id"];
     categoryName = json["name"];
+    slug = json["slug"];
     categoryDesc = json["description"];
     parent = json["parent"];
     image = json["image"] != null

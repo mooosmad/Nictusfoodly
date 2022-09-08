@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -242,13 +243,16 @@ class APIService {
           },
         ),
       );
-      print(response.data);
       response.data.forEach((element) {
         res.add(Category.fromJson(element));
       });
       res.removeWhere(
           (element) => element.categoryName!.toUpperCase() == 'NON CLASSÉ');
       print("---END GET CATEGORIES----");
+
+      res.sort((a, b) {
+        return a.slug!.compareTo(b.slug!);
+      });
 
       return res;
     } on DioError catch (e) {
