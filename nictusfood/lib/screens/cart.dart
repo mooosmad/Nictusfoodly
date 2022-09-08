@@ -38,8 +38,6 @@ class _CartPageState extends State<CartPage> {
   final controllerLivraison = Get.put(StateLivraison());
   @override
   void initState() {
-    // TODO: implement initState
-    radios();
     super.initState();
   }
 

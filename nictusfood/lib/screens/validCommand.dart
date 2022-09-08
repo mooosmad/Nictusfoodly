@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nictusfood/constant/colors.dart';
 import 'package:nictusfood/controller/cart_state.dart';
+import 'package:nictusfood/controller/changestatelivraison.dart';
 import 'package:nictusfood/models/cartmodel.dart';
 import 'package:nictusfood/models/customer.dart';
 import 'package:nictusfood/screens/loading.dart';
@@ -36,6 +37,9 @@ class ValidationPage extends StatefulWidget {
 
 class _ValidationPageState extends State<ValidationPage> {
   final controller = Get.put(MyCartController());
+  final controllerLivraison = Get.put(StateLivraison());
+  TextEditingController controllerNumberIfIsEmpty = TextEditingController();
+  final key = GlobalKey<FormState>();
   bool load = false;
 
   void getMoyenLivraison() {
@@ -321,48 +325,119 @@ class _ValidationPageState extends State<ValidationPage> {
     return Center(
       child: InkWell(
         onTap: () async {
-          setState(() {
-            load = true;
-          });
           var box = await Hive.openBox<Customer>('boxCustomer');
           var customer = box.get("customer");
 
-          if (kDebugMode) {
-            print("UTILISATEUR PRESENT $customer");
-          }
-          List<Map<String, dynamic>> products = controller.cart
-              .map((element) {
-                return {
-                  "product_id": element.productId,
-                  "quantity": element.quantity!.value,
-                };
-              })
-              .toList()
-              .cast<Map<String, dynamic>>();
-
-          // test api create commande ok
-          final r = await APIService().createCommande(
-            customer!.nom!,
-            widget.lieuxLivraison!,
-            customer.ville!,
-            customer.email!,
-            customer.phone!,
-            products,
-            int.parse(widget.idUser!),
-          );
-          if (r![0] == true) {
-            controller.cart.clear();
-            Fluttertoast.showToast(msg: "Commande effectué");
-            Get.offAll(
-              RemercimentPage(
-                idUser: widget.idUser!,
-                order: r[1],
+          if (customer!.phone!.trim().isEmpty) {
+            Get.defaultDialog(
+              title: "Entrer votre numéro svp",
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              content: Container(
+                child: Form(
+                  key: key,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: controllerNumberIfIsEmpty,
+                          validator: (v) {
+                            if (v!.isEmpty) {
+                              return "champ vide";
+                            }
+                            return null;
+                          },
+                          keyboardType: TextInputType.number,
+                          style: GoogleFonts.poppins(),
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            hintText: "Ex : 0000000000",
+                            hintStyle: GoogleFonts.poppins(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              confirm: GestureDetector(
+                onTap: () {
+                  if (key.currentState!.validate()) {
+                    box.put(
+                      "customer",
+                      customer.changeNumber(controllerNumberIfIsEmpty.text),
+                    );
+                    FocusScope.of(context).unfocus();
+                    Get.back();
+                  } else {}
+                },
+                child: Container(
+                  height: 50,
+                  width: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    color: maincolor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Valider",
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             );
+            // box.put("customer", customer);
           } else {
             setState(() {
-              load = false;
+              load = true;
             });
+            if (kDebugMode) {
+              print("UTILISATEUR PRESENT $customer");
+            }
+            List<Map<String, dynamic>> products = controller.cart
+                .map((element) {
+                  return {
+                    "product_id": element.productId,
+                    "quantity": element.quantity!.value,
+                  };
+                })
+                .toList()
+                .cast<Map<String, dynamic>>();
+
+            // test api create commande ok
+            final r = await APIService().createCommande(
+              controllerLivraison.groupValue.value == "livrer" ? true : false,
+              customer.nom!,
+              widget.lieuxLivraison!,
+              customer.ville!,
+              customer.email!,
+              customer.phone!,
+              products,
+              int.parse(widget.idUser!),
+            );
+            if (r![0] == true) {
+              controller.cart.clear();
+              Fluttertoast.showToast(msg: "Commande effectué");
+              Get.offAll(
+                RemercimentPage(
+                  idUser: widget.idUser!,
+                  order: r[1],
+                ),
+              );
+            } else {
+              setState(() {
+                load = false;
+              });
+            }
           }
         },
         child: Container(

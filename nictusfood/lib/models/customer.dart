@@ -55,4 +55,18 @@ class Customer {
       phone: json["billing"]["phone"],
     );
   }
+
+  Customer changeNumber(String newnumber) {
+    return Customer(
+      id: id,
+      dateCreated: dateCreated,
+      email: email,
+      nom: nom,
+      prenom: prenom,
+      urlPic: urlPic,
+      adresse: adresse,
+      ville: ville,
+      phone: newnumber,
+    );
+  }
 }

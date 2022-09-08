@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_function_literals_in_foreach_calls, avoid_print, deprecated_member_use
 
 import 'dart:async';
+import 'dart:developer';
 import 'package:animate_do/animate_do.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -31,7 +32,7 @@ import 'package:nictusfood/services/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-late Box box;
+late Box<Customer> box;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -132,7 +133,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     _advancedDrawerController.dispose();
-    closeBox();
+    // closeBox();
     super.dispose();
   }
 
@@ -444,6 +445,10 @@ class _HomeState extends State<Home> {
                     : FloatingActionButton(
                         backgroundColor: Color(0xfff0f1f2),
                         onPressed: () async {
+                          log(box.get("customer")!.email!);
+                          log(box.get("customer")!.phone!);
+
+                          log("****************");
                           Get.bottomSheet(
                             CartPage(),
                             enableDrag: true,

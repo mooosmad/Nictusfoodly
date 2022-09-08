@@ -362,6 +362,7 @@ class APIService {
   }
 
   Future<List<dynamic>>? createCommande(
+      bool aLivrer,
       String name,
       String adresseDeLivraison,
       String city,
@@ -372,6 +373,10 @@ class APIService {
     var authToken = base64.encode(
       utf8.encode("${Config.key}:${Config.secret}"),
     );
+    print("*************************************");
+    print(aLivrer);
+    print("*************************************");
+
     var data = {
       "payment_method": "",
       "payment_method_title": "",
@@ -404,7 +409,7 @@ class APIService {
         {
           "method_id": "flat_rate",
           "method_title": "Flat Rate",
-          "total": "1000.00"
+          "total": aLivrer ? "1000.00" : "0.0"
         }
       ]
     };
