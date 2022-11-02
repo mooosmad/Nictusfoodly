@@ -427,6 +427,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                   );
                                   if (res!) {
                                     Get.offAllNamed("/home");
+                                    //try to push
                                   } else {
                                     Get.offAllNamed("/home");
                                   }
