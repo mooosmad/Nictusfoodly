@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, file_names
 
+import 'dart:async';
+
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,6 +53,9 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getOrder();
+    });
+    Timer.periodic(Duration(seconds: 10), (timer) async {
       await getOrder();
     });
     super.initState();

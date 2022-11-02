@@ -6,12 +6,14 @@ import 'package:animate_do/animate_do.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:nictusfood/auth/login.dart';
 import 'package:nictusfood/auth/registrer.dart';
@@ -44,6 +46,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Customer? customer;
   List<Category>? category = [];
+  List<Category>? menuDuJourcategory = [];
+
   List<Category> maincategory = [];
   Location location = Location();
   bool? serviceEnabled;
@@ -87,9 +91,13 @@ class _HomeState extends State<Home> {
 
   getCategory() async {
     category = await APIService().getCategorie();
-
+    initializeDateFormatting('fr_FR', null);
     if (category != null) {
       List<Category> othercategory = [];
+      String menuDuJour =
+          "Menu ${DateFormat(DateFormat.WEEKDAY, "fr_FR").format(DateTime.now())}";
+      print(menuDuJour);
+      print("aaaaaaaaaaaaaaaaaaaa");
 
       category!.forEach((element) {
         print(element.categoryName);
@@ -102,12 +110,21 @@ class _HomeState extends State<Home> {
             element.categoryName == "Snacks" ||
             element.categoryName == "Boissons") {
           maincategory.add(element);
+        } else if (element.categoryName!.toLowerCase().trim() ==
+            menuDuJour.toLowerCase().trim()) {
+          menuDuJourcategory!.add(element);
         } else {
           othercategory.add(element);
         }
       });
       // maincategory.add({"La carte": othercategory});
       // print(maincategory.length);
+      print("00000000000000000000000000");
+      print(menuDuJourcategory);
+      menuDuJourcategory!.forEach((element) {
+        print(element.categoryName);
+      });
+      print("00000000000000000000000000");
     }
 
     load = false;
@@ -578,10 +595,14 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-        Get.to(ProductPage(
-            category: category,
-            isGrid: category.categoryName == "Boissons" ||
-                category.categoryName == "Desserts"));
+        Get.to(
+          ProductPage(
+              category: category.categoryName == "Menu du jour"
+                  ? menuDuJourcategory![0]
+                  : category,
+              isGrid: category.categoryName == "Boissons" ||
+                  category.categoryName == "Desserts"),
+        );
       },
       child: Container(
         decoration: BoxDecoration(

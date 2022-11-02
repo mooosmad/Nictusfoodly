@@ -95,17 +95,27 @@ class _ValidationPageState extends State<ValidationPage> {
                       ),
                       SizedBox(width: 10),
                       Expanded(
-                        child: FittedBox(
-                          child: Text(
-                            widget.lieuxLivraison!,
-                            style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
+                        child: widget.lieuxLivraison != "à emporter"
+                            ? FittedBox(
+                                child: Text(
+                                  widget.lieuxLivraison!,
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                widget.lieuxLivraison!,
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
                       )
                     ],
                   ),
