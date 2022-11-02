@@ -21,6 +21,13 @@ class DetailPage extends StatefulWidget {
   State<DetailPage> createState() => _DetailPageState();
 }
 
+class CategorieName {
+  final String? name;
+  bool? isShow = false;
+
+  CategorieName({this.name, this.isShow});
+}
+
 class _DetailPageState extends State<DetailPage> {
   final controller = Get.put(MyCartController());
 
@@ -30,7 +37,7 @@ class _DetailPageState extends State<DetailPage> {
   int suggestionNombre = 0;
   int suggestionPrice = 0;
   List<Product> suggestions = [];
-  List<String> categorieName = [];
+  List<CategorieName> categorieName = [];
 
   getSuggestion() async {
     for (var element in widget.product!.produitSuggere!) {
@@ -39,7 +46,7 @@ class _DetailPageState extends State<DetailPage> {
 
     print(suggestions.length);
     for (var element in suggestions) {
-      categorieName.add(element.categorieName!);
+      categorieName.add(CategorieName(name: element.categorieName!));
     }
     categorieName = categorieName.toSet().toList();
     getLengthOnItemInSuggestion();
@@ -416,98 +423,138 @@ class _DetailPageState extends State<DetailPage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      element,
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    for (var produit in suggestions)
-                                      if (produit.categorieName == element)
-                                        Row(
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (element.isShow == true) {
+                                              element.isShow = false;
+                                            } else {
+                                              element.isShow = true;
+                                            }
+                                          });
+                                        },
+                                        child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            RichText(
-                                              text: TextSpan(
-                                                  text: produit.productName!,
-                                                  style: GoogleFonts.poppins(
-                                                    textStyle: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  children: [
-                                                    TextSpan(
-                                                      text:
-                                                          "  + ${produit.price!} FCFA",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                        textStyle: TextStyle(
-                                                          fontSize: 14,
-                                                          color: maincolor,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ]),
+                                            Text(
+                                              element.name!,
+                                              style: GoogleFonts.poppins(
+                                                textStyle: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ),
-                                            Builder(builder: (context) {
-                                              var cartItem = CartModel(
-                                                quantity: 1.obs,
-                                                price: produit.price,
-                                                productDesc:
-                                                    produit.productDesc,
-                                                productName:
-                                                    produit.productName,
-                                                images: produit.images,
-                                                productId: produit.productId,
-                                                regularPrice:
-                                                    produit.regularPrice,
-                                                status: produit.status,
-                                              );
-                                              return Obx(() {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    if (Config().isExistscart(
-                                                        controller.cart,
-                                                        cartItem)) {
-                                                      suppressionInTheCart(
-                                                          cartItem);
-                                                    } else {
-                                                      addIntTheCart(cartItem);
-                                                    }
-
-                                                    getLengthOnItemInSuggestion();
-                                                  },
-                                                  child: Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Config()
-                                                              .isExistscart(
-                                                                  controller
-                                                                      .cart,
-                                                                  cartItem)
-                                                          ? Colors.green
-                                                          : maincolor,
-                                                    ),
-                                                    child: Center(
-                                                        child: Icon(
-                                                      Config().isExistscart(
-                                                              controller.cart,
-                                                              cartItem)
-                                                          ? Icons.check
-                                                          : Icons.add,
-                                                      size: 15,
-                                                    )),
-                                                  ),
-                                                );
-                                              });
-                                            }),
+                                            AnimatedContainer(
+                                              duration:
+                                                  Duration(milliseconds: 500),
+                                              child: Icon(
+                                                element.isShow == true
+                                                    ? Icons.arrow_downward
+                                                    : Icons.arrow_forward_ios,
+                                                size: 12,
+                                              ),
+                                            )
                                           ],
+                                        )),
+                                    for (var produit in suggestions)
+                                      if (produit.categorieName == element.name)
+                                        AnimatedContainer(
+                                          height:
+                                              element.isShow == true ? null : 0,
+                                          duration: Duration(milliseconds: 300),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              RichText(
+                                                text: TextSpan(
+                                                    text: produit.productName!,
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            "  + ${produit.price!} FCFA",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          textStyle: TextStyle(
+                                                            fontSize: 14,
+                                                            color: maincolor,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ]),
+                                              ),
+                                              element.isShow == true
+                                                  ? Builder(builder: (context) {
+                                                      var cartItem = CartModel(
+                                                        quantity: 1.obs,
+                                                        price: produit.price,
+                                                        productDesc:
+                                                            produit.productDesc,
+                                                        productName:
+                                                            produit.productName,
+                                                        images: produit.images,
+                                                        productId:
+                                                            produit.productId,
+                                                        regularPrice: produit
+                                                            .regularPrice,
+                                                        status: produit.status,
+                                                      );
+                                                      return Obx(() {
+                                                        return InkWell(
+                                                          onTap: () {
+                                                            if (Config()
+                                                                .isExistscart(
+                                                                    controller
+                                                                        .cart,
+                                                                    cartItem)) {
+                                                              suppressionInTheCart(
+                                                                  cartItem);
+                                                            } else {
+                                                              addIntTheCart(
+                                                                  cartItem);
+                                                            }
+
+                                                            getLengthOnItemInSuggestion();
+                                                          },
+                                                          child: Container(
+                                                            width: 20,
+                                                            height: 20,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              color: Config().isExistscart(
+                                                                      controller
+                                                                          .cart,
+                                                                      cartItem)
+                                                                  ? Colors.green
+                                                                  : maincolor,
+                                                            ),
+                                                            child: Center(
+                                                                child: Icon(
+                                                              Config().isExistscart(
+                                                                      controller
+                                                                          .cart,
+                                                                      cartItem)
+                                                                  ? Icons.check
+                                                                  : Icons.add,
+                                                              size: 15,
+                                                            )),
+                                                          ),
+                                                        );
+                                                      });
+                                                    })
+                                                  : Container(),
+                                            ],
+                                          ),
                                         )
                                   ],
                                 ),
