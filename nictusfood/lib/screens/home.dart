@@ -592,6 +592,9 @@ class _HomeState extends State<Home> {
   }
 
   Widget containerCard(Category category) {
+    if (category.categoryName == "Menu du jour") {
+      menuDuJourcategory![0].image = category.image;
+    }
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

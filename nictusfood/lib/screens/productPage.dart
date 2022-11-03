@@ -78,8 +78,9 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     print("**************");
-    getAssetBackground(widget.category!.categoryName!);
+    print(widget.category!.image);
     print(widget.category!.categoryName);
+    getAssetBackground(widget.category!.categoryName!);
     print("**************");
 
     getProductByCategorie();
@@ -376,7 +377,6 @@ class _ProductPageState extends State<ProductPage> {
                           transition: Transition.rightToLeft);
                     },
                     child: Container(
-                      // color: Colors.red,
                       margin: EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                       child: Row(
                         children: [
