@@ -400,7 +400,7 @@ class _DetailPageState extends State<DetailPage> {
                               ),
                             ),
                           if (!loadshimer)
-                            Padding(
+                           categorieName.isNotEmpty ? Padding(
                               padding: const EdgeInsets.only(left: 5),
                               child: Text(
                                 "Suggestion à ajouter au panier",
@@ -411,7 +411,7 @@ class _DetailPageState extends State<DetailPage> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ) : Container(),
                           if (!loadshimer)
                             for (var element in categorieName)
                               Container(
