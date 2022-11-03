@@ -38,6 +38,10 @@ class _ProductPageState extends State<ProductPage> {
   String? assetbackground;
 
   getProductByCategorie() async {
+    // if (widget.category!.categoryName!.trim() == "Menu du jour") {
+    //   //
+
+    // } else {
     setState(() {
       load = true;
     });
@@ -49,6 +53,7 @@ class _ProductPageState extends State<ProductPage> {
         load = false;
       });
     }
+    // }
   }
 
   getAssetBackground(String categorieName) {

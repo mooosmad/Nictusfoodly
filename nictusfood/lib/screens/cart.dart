@@ -29,7 +29,7 @@ class _CartPageState extends State<CartPage> {
 
   RxString value = "espece".obs;
 
-  RxString adresseDeLivraison = "".obs;
+  RxString adresseDeLivraison = "à emporter".obs;
 
   bool load = false;
 
@@ -131,7 +131,14 @@ class _CartPageState extends State<CartPage> {
                                                         ),
                                                       ),
                                                       SizedBox(height: 10),
-                                                      myMap(),
+                                                      Obx(() {
+                                                        return controllerLivraison
+                                                                    .groupValue
+                                                                    .value ==
+                                                                "emporter"
+                                                            ? Container()
+                                                            : myMap();
+                                                      }),
                                                       SizedBox(height: 10),
                                                       SizedBox(height: 10),
                                                       Text(
@@ -217,6 +224,7 @@ class _CartPageState extends State<CartPage> {
                   value: "emporter",
                   groupValue: controllerLivraison.groupValue.value,
                   onChanged: (val) {
+                    adresseDeLivraison.value = "à emporter";
                     setState(() {
                       controllerLivraison.changeValue(val);
                     });

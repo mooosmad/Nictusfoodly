@@ -10,7 +10,7 @@ class Loading extends StatelessWidget {
     return Container(
       color: maincolor,
       child: Center(
-        child: Lottie.asset("assets/lotties/62265-walking-taco.json",
+        child: Lottie.asset("assets/lotties/107669-cooking.json",
             width: 130, height: 130),
       ),
     );
